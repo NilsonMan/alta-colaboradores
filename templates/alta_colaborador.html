@@ -277,6 +277,60 @@ body.dark .doc-icon {
     border-radius: 12px;
 }
 
+/* =========================
+   MODAL CORREO - BOTONES
+========================= */
+#modalCorreo .modal-body {
+    text-align: center;
+}
+
+#modalCorreo .modal-footer {
+    justify-content: center;
+    gap: 12px;
+}
+
+#modalCorreo .modal-footer .btn {
+    min-width: 160px;
+    padding: 10px 0;
+    font-weight: 600;
+}
+
+/* =========================
+   OVERLAY CORREO
+========================= */
+
+#bloqueoCorreoWrapper {
+    position: relative; /* 🔑 referencia del overlay */
+}
+
+/* Capa de bloqueo */
+.overlay-correo {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(3px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+    z-index: 20;
+}
+
+/* Caja del mensaje */
+.overlay-box {
+    background: var(--card-bg);
+    padding: 16px 26px;
+    border-radius: 14px;
+
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
     </style>
 
 
@@ -313,21 +367,42 @@ body.dark .doc-icon {
             <div class="col-xl-11">
 
                 <div class="card">
-                    <div class="card-body p-4 p-md-5">
+<div class="card-body p-4 p-md-5">
 
-                        <h3 class="text-center fw-bold mb-4" style="color:var(--primary)">
-                            Alta de Colaboradores
-                        </h3>
+    <h3 class="text-center fw-bold mb-4" style="color:var(--primary)">
+        Alta de Colaboradores
+    </h3>
 
-                        <label class="form-label fw-bold">Área</label>
-                        <select id="area" class="form-select mb-4" onchange="seleccionarArea()">
-                            <option value="">Selecciona un área</option>
-                            {% for area in areas %}
-                            <option value="{{ area.id }}">{{ area.nombre }}</option>
-                            {% endfor %}
-                        </select>
+    <!-- ===== ÁREA ===== -->
+    <label class="form-label fw-bold">Área</label>
+    <select id="area" class="form-select mb-4" onchange="seleccionarArea()">
+        <option value="">Selecciona un área</option>
+        {% for area in areas %}
+        <option value="{{ area.id }}">{{ area.nombre }}</option>
+        {% endfor %}
+    </select>
 
-                        <form id="formulario" class="d-none" method="POST" enctype="multipart/form-data">
+    <!-- ===== CORREO (LIBRE, NUNCA BLOQUEADO) ===== -->
+    <div class="section-title">Correo institucional</div>
+    <input id="correo" name="correo" class="form-control" required>
+
+    <small id="estadoCorreo" class="text-warning fw-semibold d-block mb-4">
+        ⏳ Pendiente de confirmación
+    </small>
+
+    <!-- ===== BLOQUE BLOQUEABLE ===== -->
+    <div id="bloqueoCorreoWrapper">
+
+        <!-- OVERLAY -->
+        <div id="overlayCorreo" class="overlay-correo d-none">
+            <div class="overlay-box">
+                🔒 Confirma el correo institucional para continuar, al terminar de escirbir preciona fuera del campo
+            </div>
+        </div>
+
+
+                        <form id="formulario" class="d-none" method="POST" enctype="multipart/form-data" data-bloqueado="true">
+
                             <input type="hidden" name="area" id="areaSeleccionada">
 
                             <div class="section-title">Correo institucional</div>
@@ -575,123 +650,208 @@ body.dark .doc-icon {
         </div>
     </div>
 
-    <script>
-        function toggleDark() {
-            document.body.classList.toggle("dark");
-        }
+  <script>
+/* =========================
+   DARK MODE
+========================= */
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
 
-        function seleccionarArea() {
-            const select = document.getElementById("area");
-            const texto = select.options[select.selectedIndex].text.toLowerCase();
-            const esComercial = texto.includes("comercial");
+/* =========================
+   SELECCIÓN DE ÁREA
+   ❌ NO muestra el formulario
+   ✔️ Solo prepara datos
+========================= */
+function seleccionarArea() {
+    const select = document.getElementById("area");
+    const texto = select.options[select.selectedIndex].text.toLowerCase();
+    const esComercial = texto.includes("comercial");
 
-            document.getElementById("formulario").classList.remove("d-none");
-            document.getElementById("areaSeleccionada").value = select.value;
+    // Guardar área seleccionada
+    document.getElementById("areaSeleccionada").value = select.value;
 
-            document.getElementById("bloqueComercial")
-                .classList.toggle("d-none", !esComercial);
+    // Mostrar / ocultar bloque comercial
+    document.getElementById("bloqueComercial")
+        .classList.toggle("d-none", !esComercial);
 
-            fetch(`/puestos/${select.value}`)
-                .then(r => r.json())
-                .then(data => {
-                    const p = document.getElementById("puesto");
-                    p.innerHTML = "";
-                    data.forEach(x => {
-                        const o = document.createElement("option");
-                        o.value = x.id;
-                        o.text = x.nombre;
-                        p.appendChild(o);
-                    });
-                });
-        }
-
-        function toggleComisionista() {
-            const es = document.getElementById("comisionista").value === "Sí";
-            document.getElementById("sueldo").classList.toggle("d-none", es);
-            document.getElementById("labelSueldo").classList.toggle("d-none", es);
-            document.getElementById("numero_cuenta").classList.toggle("d-none", es);
-            document.getElementById("labelCuenta").classList.toggle("d-none", es);
-            document.getElementById("numero_comisiones").classList.toggle("d-none", !es);
-            document.getElementById("labelComisiones").classList.toggle("d-none", !es);
-        }
-
-        function toggleCredito(tipo) {
-            document.getElementById(tipo + "_credito")
-                .classList.toggle("d-none", event.target.value !== "Sí");
-        }
-
-        const correoInput = document.getElementById("correo");
-        const modalCorreo = new bootstrap.Modal(document.getElementById("modalCorreo"));
-        let correoConfirmado = false;
-
-        correoInput.addEventListener("blur", () => {
-            if (correoInput.value.trim() !== "" && !correoConfirmado) {
-                modalCorreo.show();
-            }
+    // Cargar puestos según área
+    fetch(`/puestos/${select.value}`)
+        .then(r => r.json())
+        .then(data => {
+            const p = document.getElementById("puesto");
+            p.innerHTML = "";
+            data.forEach(x => {
+                const o = document.createElement("option");
+                o.value = x.id;
+                o.text = x.nombre;
+                p.appendChild(o);
+            });
         });
 
-        document.getElementById("correoSi").onclick = () => {
-            correoConfirmado = true;
-            correoInput.readOnly = true;
-            modalCorreo.hide();
-        };
+    // 🔒 Asegurar que el formulario siga oculto
+    document.getElementById("formulario").classList.add("d-none");
+}
 
-        document.getElementById("correoNo").onclick = () => {
-            correoInput.readOnly = false;
-            correoInput.focus();
-            modalCorreo.hide();
-        };
-        let archivoActual = null;
+/* =========================
+   COMISIONISTA
+========================= */
+function toggleComisionista() {
+    const es = document.getElementById("comisionista").value === "Sí";
 
-        function documentoCargado(input) {
-            const card = input.closest(".doc-card");
-            card.classList.add("uploaded");
-            archivoActual = input.files[0];
-        }
+    document.getElementById("sueldo").classList.toggle("d-none", es);
+    document.getElementById("labelSueldo").classList.toggle("d-none", es);
 
-        function previsualizarDocumento(btn) {
-            const card = btn.closest(".doc-card");
-            const input = card.querySelector("input[type=file]");
-            const file = input.files[0];
-            if (!file) return;
+    document.getElementById("numero_cuenta").classList.toggle("d-none", es);
+    document.getElementById("labelCuenta").classList.toggle("d-none", es);
 
-            const url = URL.createObjectURL(file);
-            const iframe = document.getElementById("previewFrame");
-            const img = document.getElementById("previewImg");
+    document.getElementById("numero_comisiones").classList.toggle("d-none", !es);
+    document.getElementById("labelComisiones").classList.toggle("d-none", !es);
+}
 
-            iframe.style.display = "none";
-            img.style.display = "none";
+/* =========================
+   CRÉDITOS
+========================= */
+function toggleCredito(tipo) {
+    document.getElementById(tipo + "_credito")
+        .classList.toggle("d-none", event.target.value !== "Sí");
+}
 
-            if (file.type.includes("pdf")) {
-                iframe.src = url;
-                iframe.style.display = "block";
-            } else if (file.type.includes("image")) {
-                img.src = url;
-                img.style.display = "block";
-            }
+/* =========================
+   CONFIRMACIÓN DE CORREO (UX PRINCIPAL)
+========================= */
+const correoInput  = document.getElementById("correo");
+const overlayCorreo = document.getElementById("overlayCorreo");
+const estadoCorreo  = document.getElementById("estadoCorreo");
 
-            new bootstrap.Modal(document.getElementById("modalPreview")).show();
-        }
-        function cambiarDocumento(btn) {
-            const card = btn.closest(".doc-card");
-            const input = card.querySelector("input[type=file]");
+const modalCorreo = new bootstrap.Modal(
+    document.getElementById("modalCorreo"),
+    { backdrop: 'static', keyboard: false }
+);
 
-            // limpiar archivo
-            input.value = "";
+let correoConfirmado = false;
 
-            // reset visual
-            card.classList.remove("uploaded");
+/* Al salir del input correo */
+correoInput.addEventListener("blur", () => {
+    if (correoInput.value.trim() !== "" && !correoConfirmado) {
+        bloquearFormulario();
+        mostrarOverlayCorreo();
+        modalCorreo.show();
+    }
+});
 
-            // opcional: feedback suave
-            card.classList.add("shake");
-            setTimeout(() => card.classList.remove("shake"), 400);
+/* ✅ CONFIRMAR CORREO */
+document.getElementById("correoSi").onclick = () => {
+    correoConfirmado = true;
 
-            // abrir selector otra vez
-            input.click();
-        }
+    // Bloquear edición del correo
+    correoInput.readOnly = true;
 
+    // 🔓 Mostrar y desbloquear formulario
+    document.getElementById("formulario").classList.remove("d-none");
+    desbloquearFormulario();
+    ocultarOverlayCorreo();
 
-    </script>
+    // Feedback visual
+    estadoCorreo.textContent = "✅ Correo confirmado";
+    estadoCorreo.className = "text-success fw-semibold";
+
+    modalCorreo.hide();
+};
+
+/* 🔁 CORREGIR CORREO */
+document.getElementById("correoNo").onclick = () => {
+    correoConfirmado = false;
+
+    correoInput.value = "";
+    correoInput.focus();
+
+    // 🔒 Ocultar y bloquear formulario
+    document.getElementById("formulario").classList.add("d-none");
+    bloquearFormulario();
+    mostrarOverlayCorreo();
+
+    // Feedback visual
+    estadoCorreo.textContent = "⏳ Pendiente de confirmación";
+    estadoCorreo.className = "text-warning fw-semibold";
+
+    modalCorreo.hide();
+};
+
+/* =========================
+   BLOQUEO / DESBLOQUEO
+========================= */
+function bloquearFormulario() {
+    document.querySelectorAll(
+        "#formulario input:not(#correo), " +
+        "#formulario select, " +
+        "#formulario textarea, " +
+        "#formulario button"
+    ).forEach(el => el.disabled = true);
+}
+
+function desbloquearFormulario() {
+    document.querySelectorAll(
+        "#formulario input, " +
+        "#formulario select, " +
+        "#formulario textarea, " +
+        "#formulario button"
+    ).forEach(el => el.disabled = false);
+}
+
+/* =========================
+   OVERLAY UX
+========================= */
+function mostrarOverlayCorreo() {
+    overlayCorreo.classList.remove("d-none");
+}
+
+function ocultarOverlayCorreo() {
+    overlayCorreo.classList.add("d-none");
+}
+
+/* =========================
+   DOCUMENTOS
+========================= */
+function documentoCargado(input) {
+    const card = input.closest(".doc-card");
+    card.classList.add("uploaded");
+}
+
+function previsualizarDocumento(btn) {
+    const card = btn.closest(".doc-card");
+    const input = card.querySelector("input[type=file]");
+    const file = input.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const iframe = document.getElementById("previewFrame");
+    const img = document.getElementById("previewImg");
+
+    iframe.style.display = "none";
+    img.style.display = "none";
+
+    if (file.type.includes("pdf")) {
+        iframe.src = url;
+        iframe.style.display = "block";
+    } else if (file.type.includes("image")) {
+        img.src = url;
+        img.style.display = "block";
+    }
+
+    new bootstrap.Modal(document.getElementById("modalPreview")).show();
+}
+
+function cambiarDocumento(btn) {
+    const card = btn.closest(".doc-card");
+    const input = card.querySelector("input[type=file]");
+
+    input.value = "";
+    card.classList.remove("uploaded");
+
+    input.click();
+}
+</script>
 
 </body>
 
