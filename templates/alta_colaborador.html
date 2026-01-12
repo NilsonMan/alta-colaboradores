@@ -1,858 +1,545 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
+{% block title %}Alta de Colaboradores{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Alta de Colaboradores</title>
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/css/alta.css?v=2.1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+    .flash-message {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 217, 57, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 217, 57, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 217, 57, 0);
+        }
+    }
+</style>
+{% endblock %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-/* =========================
-   VARIABLES / DARK MODE
-========================= */
-:root {
-    --primary: #1c2a35;
-    --bg: #e9e9e9;
-    --card-bg: rgba(255, 255, 255, .82);
-    --text: #333333;
-    --box: rgba(238, 242, 251, .8);
-    --accent: #ffd939;
-}
-
-body.dark {
-    --primary: #ffd939;
-    --bg: #020617;
-    --card-bg: rgba(28, 42, 53, .78);
-    --text: #ffffff;
-    --box: rgba(255, 255, 255, .08);
-}
-
-/* =========================
-   FONDO CON IMAGEN
-========================= */
-body {
-    min-height: 100vh;
-    background:
-        linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)),
-        url("https://marnez.mx/wp-content/uploads/2025/05/Recurso-1-2048x1152.png")
-        center/cover fixed;
-    color: var(--text);
-    transition: background .3s, color .3s;
-}
-
-/* =========================
-   CARD PRINCIPAL
-========================= */
-.card {
-    border: none;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, .35);
-    backdrop-filter: blur(24px);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, .22);
-}
-
-body.dark .card {
-    background: rgba(28, 42, 53, .45);
-}
-
-/* =========================
-   TEXTOS
-========================= */
-h1,h2,h3,h4,h5,
-label,.form-label,
-.form-check-label,
-p,span {
-    color: var(--text) !important;
-}
-
-/* =========================
-   TÍTULOS DE SECCIÓN
-========================= */
-.section-title {
-    font-weight: 700;
-    color: var(--primary);
-    margin-top: 22px;
-    margin-bottom: 6px;
-    font-size: 1.05rem;
-}
-
-.section-title::after {
-    content: "";
-    width: 45px;
-    height: 3px;
-    background: var(--accent);
-    display: block;
-    border-radius: 4px;
-    margin-top: 4px;
-}
-
-/* =========================
-   FORM CONTROLS
-========================= */
-label {
-    font-weight: 500;
-    font-size: .9rem;
-}
-
-.form-control,
-.form-select {
-    border-radius: 14px;
-    background: rgba(255,255,255,.7);
-    padding: 6px 10px;
-    min-height: 38px;
-    font-size: .95rem;
-}
-
-textarea.form-control {
-    min-height: 70px;
-}
-
-body.dark .form-control,
-body.dark .form-select {
-    background: rgba(28,42,53,.85);
-    color: #ffffff;
-    border-color: #334155;
-}
-
-.form-control:focus,
-.form-select:focus {
-    box-shadow: 0 0 0 .15rem rgba(255,217,57,.35);
-    border-color: var(--accent);
-}
-
-/* =========================
-   ESPACIADOS
-========================= */
-.mb-3 { margin-bottom: 12px !important; }
-.mb-4 { margin-bottom: 16px !important; }
-
-/* =========================
-   BOTONES
-========================= */
-.btn-primary {
-    background: var(--primary);
-    border: none;
-    border-radius: 16px;
-    padding: 12px;
-    font-weight: 600;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: var(--accent);
-    color: #000;
-}
-
-/* =========================
-   CAJAS
-========================= */
-.box {
-    background: var(--box);
-    padding: 12px;
-    border-radius: 16px;
-}
-
-/* =========================
-   MODAL
-========================= */
-.modal-content {
-    border-radius: 18px;
-    background: var(--card-bg);
-    color: var(--text);
-}
-
-/* =========================
-   TOGGLE DARK
-========================= */
-.toggle-dark {
-    position: fixed;
-    top: 18px;
-    right: 18px;
-    z-index: 999;
-}
-
-.toggle-dark button {
-    border: none;
-    border-radius: 50px;
-    padding: 10px 16px;
-    background: var(--card-bg);
-    color: var(--text);
-}
-
-/* =========================
-   DOCUMENTOS
-========================= */
-.doc-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-}
-
-.doc-card {
-    position: relative;
-    perspective: 1000px;
-}
-
-.doc-inner {
-    position: relative;
-    width: 100%;
-    height: 160px;
-    transform-style: preserve-3d;
-    transition: transform .7s cubic-bezier(.4,.2,.2,1);
-}
-
-.doc-card.uploaded .doc-inner {
-    transform: rotateY(180deg);
-}
-
-.doc-face {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 14px;
-    text-align:center;
-}
-
-/* FRONT */
-.doc-front {
-    background: rgba(255,255,255,.65);
-    border: 2px dashed rgba(28,42,53,.35);
-}
-
-body.dark .doc-front {
-    background: rgba(28,42,53,.65);
-}
-
-/* BACK */
-.doc-back {
-    background: rgba(255,217,57,.2);
-    transform: rotateY(180deg);
-    border: 2px solid var(--primary);
-}
-
-/* TEXTO DOCUMENTOS EN DARK */
-body.dark .doc-title,
-body.dark .doc-hint,
-body.dark .doc-back .status {
-    color: #ffffff !important;
-}
-
-.doc-icon {
-    font-size: 28px;
-    color: var(--primary);
-}
-
-body.dark .doc-icon {
-    color: var(--accent);
-}
-
-.doc-title {
-    font-size: .9rem;
-    font-weight: 600;
-}
-
-.doc-hint {
-    font-size: .75rem;
-    opacity: .7;
-}
-
-.doc-card input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-
-/* BOTONES DOCUMENTOS */
-.btn-preview {
-    font-size: .8rem;
-    padding: 6px 12px;
-    border-radius: 12px;
-}
-
-/* =========================
-   MODAL CORREO - BOTONES
-========================= */
-#modalCorreo .modal-body {
-    text-align: center;
-}
-
-#modalCorreo .modal-footer {
-    justify-content: center;
-    gap: 12px;
-}
-
-#modalCorreo .modal-footer .btn {
-    min-width: 160px;
-    padding: 10px 0;
-    font-weight: 600;
-}
-
-/* =========================
-   OVERLAY CORREO
-========================= */
-
-#bloqueoCorreoWrapper {
-    position: relative; /* 🔑 referencia del overlay */
-}
-
-/* Capa de bloqueo */
-.overlay-correo {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    backdrop-filter: blur(3px);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 18px;
-    z-index: 20;
-}
-
-/* Caja del mensaje */
-.overlay-box {
-    background: var(--card-bg);
-    padding: 16px 26px;
-    border-radius: 14px;
-
-    font-weight: 600;
-    color: var(--text);
-    text-align: center;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,.25);
-}
-
-    </style>
-
-
-</head>
-
-<body>
-
-    <!-- BOTÓN DARK MODE -->
-    <div class="toggle-dark">
-        <button onclick="toggleDark()">🌙 / ☀️</button>
-    </div>
-    <!-- MODAL PREVISUALIZACIÓN -->
-    <div class="modal fade" id="modalPreview" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Previsualización del documento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body text-center">
-                    <iframe id="previewFrame" style="width:100%;height:75vh;border:none;display:none;"></iframe>
-
-                    <img id="previewImg" style="max-width:100%;max-height:75vh;display:none;">
-                </div>
+{% block content %}
+<!-- MODAL PREVISUALIZACIÓN -->
+<div class="modal fade" id="modalPreview" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Previsualización del documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="previewFrame" style="width:100%;height:75vh;border:none;display:none;"></iframe>
+                <img id="previewImg" style="max-width:100%;max-height:75vh;display:none;" alt="Previsualización">
             </div>
         </div>
     </div>
+</div>
 
-
-
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-xl-11">
-
-                <div class="card">
-<div class="card-body p-4 p-md-5">
-
-    <h3 class="text-center fw-bold mb-4" style="color:var(--primary)">
-        Alta de Colaboradores
-    </h3>
-
-    <!-- ===== ÁREA ===== -->
-    <label class="form-label fw-bold">Área</label>
-    <select id="area" class="form-select mb-4" onchange="seleccionarArea()">
-        <option value="">Selecciona un área</option>
-        {% for area in areas %}
-        <option value="{{ area.id }}">{{ area.nombre }}</option>
-        {% endfor %}
-    </select>
-
-    <!-- ===== CORREO (LIBRE, NUNCA BLOQUEADO) ===== -->
-    <div class="section-title">Correo institucional</div>
-    <input id="correo" name="correo" class="form-control" required>
-
-    <small id="estadoCorreo" class="text-warning fw-semibold d-block mb-4">
-        ⏳ Pendiente de confirmación
-    </small>
-
-    <!-- ===== BLOQUE BLOQUEABLE ===== -->
-    <div id="bloqueoCorreoWrapper">
-
-        <!-- OVERLAY -->
-        <div id="overlayCorreo" class="overlay-correo d-none">
-            <div class="overlay-box">
-                🔒 Confirma el correo institucional para continuar, al terminar de escirbir preciona fuera del campo
+<!-- MODAL CORREO -->
+<div class="modal fade" id="modalCorreo" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-envelope-check me-2"></i>Confirmar Correo
+                </h5>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <p class="mb-1">¿El correo institucional es correcto?</p>
+                <h5 id="correoConfirmacion" class="fw-bold text-primary"></h5>
+                <p class="text-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <strong>Importante:</strong> Este correo no podrá modificarse después.
+                </p>
+            </div>
+            <div class="modal-footer justify-content-center border-top-0">
+                <button type="button" class="btn btn-outline-secondary px-4" id="correoNo">
+                    <i class="bi bi-pencil me-1"></i>Corregir
+                </button>
+                <button type="button" class="btn btn-primary px-4" id="correoSi">
+                    <i class="bi bi-check-lg me-1"></i>Sí, es correcto
+                </button>
             </div>
         </div>
+    </div>
+</div>
 
-
-                        <form id="formulario" class="d-none" method="POST" enctype="multipart/form-data" data-bloqueado="true">
-
-                            <input type="hidden" name="area" id="areaSeleccionada">
-
-                            <div class="section-title">Correo institucional</div>
-                            <input id="correo" name="correo" class="form-control mb-3" required>
-
-                            <div class="section-title">Datos personales</div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label>Nombre</label>
-                                    <input name="nombre" class="form-control" required>
+<div class="container py-4">
+    <!-- Botones especiales -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-end gap-3">
+                <button class="btn btn-baja" id="btnBajaColaborador">
+                    <i class="bi bi-person-dash me-1"></i>Baja de Colaboradores
+                </button>
+                <button class="btn btn-cambio-area" id="btnCambioArea">
+                    <i class="bi bi-arrow-left-right me-1"></i>Cambio de Área
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mensajes Flash -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} 
+                                alert-dismissible fade show flash-message mb-2" 
+                         role="alert"
+                         style="max-width: 500px;">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-{{ 'exclamation-triangle-fill' if category == 'error' else 'check-circle-fill' }} 
+                                      me-2 fs-5"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold mb-1">
+                                    {% if category == 'error' %}
+                                        ⚠️ Error de validación
+                                    {% else %}
+                                        ✅ Éxito
+                                    {% endif %}
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label>Apellido</label>
-                                    <input name="apellido" class="form-control" required>
-                                </div>
+                                <div>{{ message|safe }}</div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label>Edad</label>
-                                    <input type="number" name="edad" class="form-control">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label>Estado civil</label>
-                                    <select name="estado_civil" class="form-select">
-                                        <option value="">Seleccione</option>
-                                        <option>Soltero(a)</option>
-                                        <option>Casado(a)</option>
-                                        <option>Divorciado(a)</option>
-                                        <option>Viudo(a)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label>Teléfono</label>
-                                    <input name="telefono" class="form-control">
-                                </div>
-                            </div>
-
-                            <label>Domicilio</label>
-                            <textarea name="domicilio" class="form-control mb-3"></textarea>
-
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label>RFC</label>
-                                    <input name="rfc" class="form-control">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>CURP</label>
-                                    <input name="curp" class="form-control">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>NSS</label>
-                                    <input name="nss" class="form-control">
-                                </div>
-                            </div>
-
-                            <label>Fecha de alta</label>
-                            <input type="date" name="fecha_alta" class="form-control form-control-sm mb-3" required>
-                            <div id="bloqueComercial" class="d-none">
-
-                                <div class="section-title">Información comercial</div>
-
-                                <label>Puesto comercial</label>
-                                <select name="rol_comercial" class="form-select mb-3">
-                                    <option value="">Seleccione</option>
-                                    <option>Asesor Diamante</option>
-                                    <option>Asesor Externo</option>
-                                    <option>Asesor Interno</option>
-                                    <option>Inmobiliaria</option>
-                                    <option>Inmobiliaria Premium</option>
+                            <button type="button" class="btn-close ms-2" 
+                                    data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <!-- CARD PRINCIPAL -->
+            <div class="card shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <!-- TÍTULO Y ÁREA -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold mb-3" style="color: #ffd939">
+                            <i class="bi bi-person-plus me-2"></i>Alta de Colaborador
+                        </h2>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Área del colaborador *</label>
+                                <select id="area" class="form-select form-select-lg shadow-sm" required>
+                                    <option value="">Selecciona un área</option>
+                                    {% for area in areas %}
+                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                    {% endfor %}
                                 </select>
-
-                                <label>¿Es comisionista?</label>
-                                <select id="comisionista" name="comisionista" class="form-select mb-3"
-                                    onchange="toggleComisionista()">
-                                    <option>No</option>
-                                    <option>Sí</option>
-                                </select>
-
-                                <label id="labelComisiones" class="d-none">Número de comisiones</label>
-                                <input id="numero_comisiones" name="numero_comisiones" class="form-control mb-3 d-none">
-
                             </div>
+                        </div>
+                    </div>
 
+                    <!-- FORMULARIO PRINCIPAL -->
+                    <form id="formulario" class="d-none" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="area" id="areaHidden">
 
-                            <div class="section-title">Información laboral</div>
-
-                            <label>Puesto</label>
-                            <select id="puesto" name="puesto" class="form-select mb-3" required></select>
-
-                            <label id="labelSueldo">Sueldo</label>
-                            <input id="sueldo" type="number" name="sueldo" class="form-control mb-3">
-
-                            <label>Reclutador(es)</label>
-                            <select name="reclutador" class="form-select mb-3">
-                                <option value="">Seleccione</option>
-                                {% for r in reclutadores %}
-                                <option value="{{ r.id }}">{{ r.nombre }}</option>
-                                {% endfor %}
-                            </select>
-
-                            <label>Método de pago</label>
-                            <select name="metodo_pago" class="form-select mb-3" required>
-                                <option value="">Seleccione</option>
-                                {% for m in metodos_pago %}
-                                <option value="{{ m.id }}">{{ m.nombre }}</option>
-                                {% endfor %}
-                            </select>
-
-                            <label>Banco</label>
-                            <select id="banco" name="banco" class="form-select mb-3">
-                                <option value="">Seleccione</option>
-                                {% for b in bancos %}
-                                <option value="{{ b.id }}">{{ b.nombre }}</option>
-                                {% endfor %}
-                            </select>
-
-                            <label id="labelCuenta">Número de cuenta (16 o 18 dígitos)</label>
-                            <input id="numero_cuenta" name="numero_cuenta" class="form-control mb-3" maxlength="18"
-                                pattern="[0-9]{16,18}">
-
-
-                            <div class="section-title">Créditos</div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>¿Tiene Infonavit?</label>
-                                    <select name="infonavit" class="form-select mb-2"
-                                        onchange="toggleCredito('infonavit')">
-                                        <option>No</option>
-                                        <option>Sí</option>
-                                    </select>
-                                    <input id="infonavit_credito" name="infonavit_credito"
-                                        class="form-control mb-3 d-none">
+                        <!-- SECCIÓN 1: DATOS PERSONALES -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="personalData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-person-circle me-2"></i>Datos Personales
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="personalData" class="section-content">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Nombre *</label>
+                                        <input id="nombre" name="nombre" class="form-control" required 
+                                               autocomplete="given-name"
+                                               placeholder="Escribe el nombre">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Apellido *</label>
+                                        <input id="apellido" name="apellido" class="form-control" required 
+                                               autocomplete="family-name"
+                                               placeholder="Escribe el apellido">
+                                    </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label>¿Tiene Fonacot?</label>
-                                    <select name="fonacot" class="form-select mb-2" onchange="toggleCredito('fonacot')">
-                                        <option>No</option>
-                                        <option>Sí</option>
-                                    </select>
-                                    <input id="fonacot_credito" name="fonacot_credito" class="form-control mb-3 d-none">
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-semibold">Correo institucional *</label>
+                                        <div class="input-group">
+                                            <input id="correo" name="correo" class="form-control" required 
+                                                   type="email" autocomplete="email"
+                                                   placeholder="Se generará automáticamente">
+                                            <button type="button" id="btnConfirmarCorreo" class="btn btn-primary d-none">
+                                                <i class="bi bi-check-circle me-1"></i>Confirmar
+                                            </button>
+                                        </div>
+                                        <div id="estadoCorreo" class="form-text">
+                                            <i class="bi bi-clock-history me-1"></i>Pendiente de confirmación
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Edad</label>
+                                        <input type="number" name="edad" class="form-control" min="18" max="70" 
+                                               autocomplete="off" placeholder="Ej: 25">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Estado civil</label>
+                                        <select name="estado_civil" class="form-select" autocomplete="off">
+                                            <option value="">Seleccione</option>
+                                            <option>Soltero(a)</option>
+                                            <option>Casado(a)</option>
+                                            <option>Divorciado(a)</option>
+                                            <option>Viudo(a)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Teléfono *</label>
+                                        <input name="telefono" class="form-control" type="tel" 
+                                               pattern="[0-9]{10}" maxlength="10" minlength="10"
+                                               placeholder="10 dígitos" required autocomplete="tel">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">RFC *</label>
+                                        <input name="rfc" class="form-control text-uppercase" maxlength="20"
+                                               placeholder="RFC"
+                                               required autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Domicilio</label>
+                                        <textarea name="domicilio" class="form-control" rows="2"
+                                                  autocomplete="street-address" placeholder="Calle, número, colonia, ciudad"></textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-semibold">CURP *</label>
+                                        <input name="curp" id="curp" class="form-control text-uppercase" 
+                                               maxlength="18" minlength="18" required
+                                               autocomplete="off" placeholder="18 caracteres">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-semibold">NSS *</label>
+                                        <input name="nss" class="form-control" pattern="[0-9]{11}" maxlength="11" minlength="11"
+                                               placeholder="11 dígitos" required autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="section-title">Documentación</div>
+                        <!-- SECCIÓN 2: INFORMACIÓN LABORAL -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="laboralData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-briefcase me-2"></i>Información Laboral
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="laboralData" class="section-content">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Fecha de alta *</label>
+                                        <input type="date" name="fecha_alta" class="form-control" required 
+                                               max="{{ today }}" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold" id="labelPuesto">Puesto *</label>
+                                        <select id="puesto" name="puesto" class="form-select">
+                                            <option value="">Seleccione un puesto</option>
+                                        </select>
+                                        <select id="rol_comercial" name="rol_comercial" class="form-select d-none">
+                                            <option value="">Seleccione un rol comercial</option>
+                                            <option value="Asesor Diamante">Asesor Diamante</option>
+                                            <option value="Asesor Externo">Asesor Externo</option>
+                                            <option value="Asesor Interno">Asesor Interno</option>
+                                            <option value="Inmobiliaria">Inmobiliaria</option>
+                                            <option value="Inmobiliaria Premium">Inmobiliaria Premium</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold" id="labelSueldo">Sueldo</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input id="sueldo" type="number" name="sueldo" class="form-control" 
+                                                   min="0" step="0.01" placeholder="0.00">
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div class="box">
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Reclutador(es)</label>
+                                        <select name="reclutador" class="form-select" autocomplete="off">
+                                            <option value="">Seleccione</option>
+                                            {% for r in reclutadores %}
+                                            <option value="{{ r.id }}">{{ r.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Método de pago *</label>
+                                        <select name="metodo_pago" class="form-select" required autocomplete="off">
+                                            <option value="">Seleccione</option>
+                                            {% for m in metodos_pago %}
+                                            <option value="{{ m.id }}">{{ m.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Banco *</label>
+                                        <select id="banco" name="banco" class="form-select" autocomplete="off">
+                                            <option value="">Seleccione</option>
+                                            {% for b in bancos %}
+                                            <option value="{{ b.id }}">{{ b.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-semibold">Número de cuenta *</label>
+                                        <input id="numero_cuenta" name="numero_cuenta" class="form-control"
+                                               pattern="[0-9]{16,18}" minlength="16" maxlength="18"
+                                               placeholder="16 o 18 dígitos" required autocomplete="cc-number">
+                                        <div class="form-text">Ingresa los 16 o 18 dígitos de tu cuenta bancaria</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 3: CRÉDITOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="creditosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-cash-stack me-2"></i>Créditos
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="creditosData" class="section-content">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">¿Tiene Infonavit?</label>
+                                        <select name="infonavit" class="form-select" onchange="toggleCredito('infonavit')">
+                                            <option>No</option>
+                                            <option>Sí</option>
+                                        </select>
+                                        <div class="mt-2">
+                                            <input id="infonavit_credito" name="infonavit_credito" 
+                                                   class="form-control d-none" autocomplete="off"
+                                                   placeholder="Número de crédito Infonavit">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">¿Tiene Fonacot?</label>
+                                        <select name="fonacot" class="form-select" onchange="toggleCredito('fonacot')">
+                                            <option>No</option>
+                                            <option>Sí</option>
+                                        </select>
+                                        <div class="mt-2">
+                                            <input id="fonacot_credito" name="fonacot_credito" 
+                                                   class="form-control d-none" autocomplete="off"
+                                                   placeholder="Número de crédito Fonacot">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 4: DOCUMENTACIÓN -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="documentosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-files me-2"></i>Documentación Requerida
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="documentosData" class="section-content">
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Arrastra o selecciona archivos (PDF, JPG, PNG) máximo 10MB cada uno
+                                </div>
+                                
                                 <div class="doc-grid">
-
-                                    {% for d in ["Constancia fiscal","CURP","INE","RFC","NSS","Comprobante
-                                    domicilio","Comprobante estudios","Carta 1","Carta 2"] %}
+                                    {% for d in ["Constancia fiscal","CURP","INE","RFC","NSS","Comprobante domicilio","Comprobante estudios","Carta 1","Carta 2"] %}
                                     <div class="doc-card">
                                         <div class="doc-inner">
-
-                                            <!-- FRONT -->
                                             <div class="doc-face doc-front">
                                                 <div class="doc-icon">📄</div>
                                                 <div class="doc-title">{{ d }}</div>
-                                                <div class="doc-hint">Arrastra o selecciona archivo</div>
-                                                <input type="file" name="documentos[]" accept=".pdf,.jpg,.jpeg,.png"
-                                                    onchange="documentoCargado(this)">
+                                                <div class="doc-hint">Haz clic o arrastra</div>
+                                                <input type="file" name="documentos[]" 
+                                                       accept=".pdf,.jpg,.jpeg,.png" 
+                                                       data-max-size="10485760">
                                             </div>
-
-                                            <!-- BACK -->
                                             <div class="doc-face doc-back">
-                                                <div class="status">✅ Documento cargado</div>
-
-                                                <div class="d-flex gap-2">
-                                                    <button type="button" class="btn btn-outline-primary btn-preview"
-                                                        onclick="previsualizarDocumento(this)">
-                                                        👁️ Previsualizar
+                                                <div class="status">✅ Cargado</div>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="previsualizarDocumento(this)">
+                                                        <i class="bi bi-eye"></i>
                                                     </button>
-
-                                                    <button type="button" class="btn btn-outline-secondary btn-preview"
-                                                        onclick="cambiarDocumento(this)">
-                                                        🔁 Cambiar
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                            onclick="cambiarDocumento(this)">
+                                                        <i class="bi bi-arrow-clockwise"></i>
                                                     </button>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                     {% endfor %}
-
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <div id="progressContainer" class="progress-container">
+                                        <div class="progress-wrapper">
+                                            <div class="progress-bar-container">
+                                                <div id="uploadProgress" class="progress-bar"></div>
+                                            </div>
+                                            <div class="progress-percentage" id="progressPercentage">0%</div>
+                                        </div>
+                                        <div class="progress-text">
+                                            <span id="uploadStatus">0 de 9 documentos cargados</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-
-
-
-                            <div class="section-title">Equipo electrónico</div>
-                            <div class="box">
-                                {% for r in recursos %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="equipo[]" value="{{ r.id }}">
-                                    <label class="form-check-label">{{ r.nombre }}</label>
-                                </div>
-                                {% endfor %}
+                        <!-- SECCIÓN 5: RECURSOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="recursosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-laptop me-2"></i>Equipo y Programas
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
                             </div>
-
-                            <div class="section-title">Programas</div>
-                            <div class="box">
-                                {% for p in programas %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="programas[]"
-                                        value="{{ p.id }}">
-                                    <label class="form-check-label">{{ p.nombre }}</label>
+                            <div id="recursosData" class="section-content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold mb-3">Equipo electrónico</h6>
+                                        <div class="box">
+                                            {% for r in recursos %}
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="equipo[]" value="{{ r.id }}" id="recurso_{{ r.id }}">
+                                                <label class="form-check-label" for="recurso_{{ r.id }}">
+                                                    {{ r.nombre }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold mb-3">Programas</h6>
+                                        <div class="box">
+                                            {% for p in programas %}
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="programas[]" value="{{ p.id }}" id="programa_{{ p.id }}">
+                                                <label class="form-check-label" for="programa_{{ p.id }}">
+                                                    {{ p.nombre }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
                                 </div>
-                                {% endfor %}
                             </div>
+                        </div>
 
-                            <div class="section-title">Comentarios</div>
-                            <textarea name="comentarios" class="form-control mb-4"></textarea>
+                        <!-- SECCIÓN 6: COMENTARIOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="comentariosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-chat-left-text me-2"></i>Comentarios Adicionales
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="comentariosData" class="section-content">
+                                <textarea name="comentarios" class="form-control" rows="3" 
+                                          maxlength="500" placeholder="Observaciones, notas o comentarios adicionales..."></textarea>
+                                <div class="form-text text-end">
+                                    <span id="charCount">0</span>/500 caracteres
+                                </div>
+                            </div>
+                        </div>
 
-                            <button class="btn btn-primary w-100">Guardar colaborador</button>
-                        </form>
-
-                    </div>
+                        <!-- BOTÓN DE ENVÍO -->
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold">
+                                <i class="bi bi-save me-2"></i>Guardar Colaborador
+                            </button>
+                            <div class="mt-2">
+                                <small class="text-muted">* Campos obligatorios</small>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <!-- MODAL CORREO (NO TOCADO) -->
-    <div class="modal fade" id="modalCorreo" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar correo</h5>
-                </div>
-                <div class="modal-body">
-                    <p>¿El correo ingresado es correcto?<br>
-                        <strong>Este correo no podrá modificarse más adelante.</strong>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="correoNo">No, corregir</button>
-                    <button type="button" class="btn btn-primary" id="correoSi">Sí, es correcto</button>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/alta.js?v=2.1"></script>
 
-  <script>
-/* =========================
-   DARK MODE
-========================= */
-function toggleDark() {
-    document.body.classList.toggle("dark");
-}
+<script>
+// Configuración global
+window.APP_CONFIG = {
+    dominioCorreo: '@marnezdesarrollos.com',
+    AREA_COMERCIAL_ID: 2,
+    MAX_FILE_SIZE: 10485760,
+    today: new Date().toISOString().split('T')[0]
+};
 
-/* =========================
-   SELECCIÓN DE ÁREA
-   ❌ NO muestra el formulario
-   ✔️ Solo prepara datos
-========================= */
-function seleccionarArea() {
-    const select = document.getElementById("area");
-    const texto = select.options[select.selectedIndex].text.toLowerCase();
-    const esComercial = texto.includes("comercial");
+window.VALIDATION_REGEX = {
+    curp: /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$/,
+    email: /^[^\s@]+@marnezdesarrollos\.com$/i
+};
 
-    // Guardar área seleccionada
-    document.getElementById("areaSeleccionada").value = select.value;
+// Auto-eliminar mensajes flash
+setTimeout(() => {
+    document.querySelectorAll('.flash-message').forEach(alert => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    });
+}, 5000);
 
-    // Mostrar / ocultar bloque comercial
-    document.getElementById("bloqueComercial")
-        .classList.toggle("d-none", !esComercial);
-
-    // Cargar puestos según área
-    fetch(`/puestos/${select.value}`)
-        .then(r => r.json())
-        .then(data => {
-            const p = document.getElementById("puesto");
-            p.innerHTML = "";
-            data.forEach(x => {
-                const o = document.createElement("option");
-                o.value = x.id;
-                o.text = x.nombre;
-                p.appendChild(o);
-            });
-        });
-
-    // 🔒 Asegurar que el formulario siga oculto
-    document.getElementById("formulario").classList.add("d-none");
-}
-
-/* =========================
-   COMISIONISTA
-========================= */
-function toggleComisionista() {
-    const es = document.getElementById("comisionista").value === "Sí";
-
-    document.getElementById("sueldo").classList.toggle("d-none", es);
-    document.getElementById("labelSueldo").classList.toggle("d-none", es);
-
-    document.getElementById("numero_cuenta").classList.toggle("d-none", es);
-    document.getElementById("labelCuenta").classList.toggle("d-none", es);
-
-    document.getElementById("numero_comisiones").classList.toggle("d-none", !es);
-    document.getElementById("labelComisiones").classList.toggle("d-none", !es);
-}
-
-/* =========================
-   CRÉDITOS
-========================= */
-function toggleCredito(tipo) {
-    document.getElementById(tipo + "_credito")
-        .classList.toggle("d-none", event.target.value !== "Sí");
-}
-
-/* =========================
-   CONFIRMACIÓN DE CORREO (UX PRINCIPAL)
-========================= */
-const correoInput  = document.getElementById("correo");
-const overlayCorreo = document.getElementById("overlayCorreo");
-const estadoCorreo  = document.getElementById("estadoCorreo");
-
-const modalCorreo = new bootstrap.Modal(
-    document.getElementById("modalCorreo"),
-    { backdrop: 'static', keyboard: false }
-);
-
-let correoConfirmado = false;
-
-/* Al salir del input correo */
-correoInput.addEventListener("blur", () => {
-    if (correoInput.value.trim() !== "" && !correoConfirmado) {
-        bloquearFormulario();
-        mostrarOverlayCorreo();
-        modalCorreo.show();
+// Auto-focus en el área select
+document.addEventListener('DOMContentLoaded', function() {
+    const areaSelect = document.getElementById('area');
+    if (areaSelect && areaSelect.value === '') {
+        areaSelect.focus();
     }
 });
-
-/* ✅ CONFIRMAR CORREO */
-document.getElementById("correoSi").onclick = () => {
-    correoConfirmado = true;
-
-    // Bloquear edición del correo
-    correoInput.readOnly = true;
-
-    // 🔓 Mostrar y desbloquear formulario
-    document.getElementById("formulario").classList.remove("d-none");
-    desbloquearFormulario();
-    ocultarOverlayCorreo();
-
-    // Feedback visual
-    estadoCorreo.textContent = "✅ Correo confirmado";
-    estadoCorreo.className = "text-success fw-semibold";
-
-    modalCorreo.hide();
-};
-
-/* 🔁 CORREGIR CORREO */
-document.getElementById("correoNo").onclick = () => {
-    correoConfirmado = false;
-
-    correoInput.value = "";
-    correoInput.focus();
-
-    // 🔒 Ocultar y bloquear formulario
-    document.getElementById("formulario").classList.add("d-none");
-    bloquearFormulario();
-    mostrarOverlayCorreo();
-
-    // Feedback visual
-    estadoCorreo.textContent = "⏳ Pendiente de confirmación";
-    estadoCorreo.className = "text-warning fw-semibold";
-
-    modalCorreo.hide();
-};
-
-/* =========================
-   BLOQUEO / DESBLOQUEO
-========================= */
-function bloquearFormulario() {
-    document.querySelectorAll(
-        "#formulario input:not(#correo), " +
-        "#formulario select, " +
-        "#formulario textarea, " +
-        "#formulario button"
-    ).forEach(el => el.disabled = true);
-}
-
-function desbloquearFormulario() {
-    document.querySelectorAll(
-        "#formulario input, " +
-        "#formulario select, " +
-        "#formulario textarea, " +
-        "#formulario button"
-    ).forEach(el => el.disabled = false);
-}
-
-/* =========================
-   OVERLAY UX
-========================= */
-function mostrarOverlayCorreo() {
-    overlayCorreo.classList.remove("d-none");
-}
-
-function ocultarOverlayCorreo() {
-    overlayCorreo.classList.add("d-none");
-}
-
-/* =========================
-   DOCUMENTOS
-========================= */
-function documentoCargado(input) {
-    const card = input.closest(".doc-card");
-    card.classList.add("uploaded");
-}
-
-function previsualizarDocumento(btn) {
-    const card = btn.closest(".doc-card");
-    const input = card.querySelector("input[type=file]");
-    const file = input.files[0];
-    if (!file) return;
-
-    const url = URL.createObjectURL(file);
-    const iframe = document.getElementById("previewFrame");
-    const img = document.getElementById("previewImg");
-
-    iframe.style.display = "none";
-    img.style.display = "none";
-
-    if (file.type.includes("pdf")) {
-        iframe.src = url;
-        iframe.style.display = "block";
-    } else if (file.type.includes("image")) {
-        img.src = url;
-        img.style.display = "block";
-    }
-
-    new bootstrap.Modal(document.getElementById("modalPreview")).show();
-}
-
-function cambiarDocumento(btn) {
-    const card = btn.closest(".doc-card");
-    const input = card.querySelector("input[type=file]");
-
-    input.value = "";
-    card.classList.remove("uploaded");
-
-    input.click();
-}
 </script>
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,0 +1,58 @@
+<!-- Template para filas de detalle -->
+<template id="templateRowDetalle">
+    <tr>
+        <td><strong>{mes}</strong></td>
+        <td class="text-center">
+            <span class="badge bg-warning fs-6">{gestion}</span>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-info fs-6">{comercial}</span>
+        </td>
+        <td class="text-center">{bajas_gestion}</td>
+        <td class="text-center">{bajas_comercial}</td>
+        <td class="text-center">
+            <strong>{total_contrataciones}</strong>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-danger">{total_bajas}</span>
+        </td>
+        <td>
+            <div class="d-flex align-items-center">
+                <div class="progress flex-grow-1" style="height: 20px;">
+                    <div class="progress-bar {retencion_class}" 
+                         style="width: {retencion}%" 
+                         role="progressbar">
+                        {retencion}%
+                    </div>
+                </div>
+                <div class="ms-2" style="width: 50px;">
+                    <small>{retencion}%</small>
+                </div>
+            </div>
+        </td>
+        <td class="text-center">
+            <button class="btn btn-sm btn-outline-info" onclick="dashboardBI.showReclutadoresPorMes({mes_num})">
+                <i class="bi bi-eye"></i> Ver
+            </button>
+        </td>
+    </tr>
+</template>
+
+<!-- Template para items de reclutadores -->
+<template id="templateReclutadorItem">
+    <a href="#" class="list-group-item list-group-item-action" data-reclutador-id="{id}">
+        <div class="d-flex w-100 justify-content-between align-items-center">
+            <div>
+                <h6 class="mb-1">{nombre}</h6>
+                <small class="text-muted">ID: {id}</small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-primary rounded-pill fs-6">{total}</span>
+                <small class="d-block text-muted">contrataciones</small>
+            </div>
+        </div>
+        <div class="progress mt-2" style="height: 5px;">
+            <div class="progress-bar bg-primary" style="width: {porcentaje}%"></div>
+        </div>
+    </a>
+</template>

@@ -1,43 +1,115 @@
+import os
+import sys
+import time
+import hashlib
+import logging
+import re
+from datetime import datetime, date, timedelta
+from contextlib import contextmanager
+from functools import wraps
+
 from flask import (
-    Flask, render_template, request,
-    jsonify, redirect, url_for, send_file
-)
-from sqlalchemy import (
-    create_engine, Column, Integer, String,
-    ForeignKey, Table, Boolean, Text, Date
-)
-from sqlalchemy.orm import (
-    sessionmaker, declarative_base, relationship
+    Flask,
+    render_template,
+    request,
+    jsonify,
+    redirect,
+    url_for,
+    send_file,
+    g,
+    session,
+    flash
 )
 from werkzeug.utils import secure_filename
-from datetime import datetime
-from contextlib import contextmanager
-import os
 import unicodedata
 
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Table,
+    Boolean,
+    Text,
+    Date,
+    extract,
+    func,
+    case,
+    Index,
+    text,
+    and_,
+    or_
+)
+from sqlalchemy.orm import (
+    sessionmaker,
+    declarative_base,
+    relationship
+)
+from sqlalchemy.pool import QueuePool
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+
 # ======================================
-# FLASK
+# CONFIGURACIÓN
+# ======================================
+class Config:
+    # Flask
+    SECRET_KEY = 'dev-secret-key-change-in-production-12345'
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    
+    # Database
+    DB_HOST = 'localhost'
+    DB_PORT = '3306'
+    DB_NAME = 'alta_colaboradores'
+    DB_USER = 'root'
+    DB_PASSWORD = 'Manu3l21'
+    
+    # Paths
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+    LOGS_FOLDER = os.path.join(BASE_DIR, "logs")
+    
+ # Dashboard - ACTUALIZADO SEGÚN TU ESTRUCTURA
+    AREA_COMERCIAL_ID = 2  # CAMBIADO: area_id = 2 es comercial (no 5)
+    RECLUTADOR_COMERCIAL_IDS = [5]  # reclutador_id = 3 es comercial
+# ======================================
+# INICIALIZACIÓN FLASK
 # ======================================
 app = Flask(__name__)
+app.config.from_object(Config)
+
+# Crear directorios necesarios
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['LOGS_FOLDER'], exist_ok=True)
 
 # ======================================
-# RUTAS
+# LOGGING
 # ======================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(app.config['LOGS_FOLDER'], 'app.log')),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # ======================================
-# DB MYSQL
+# BASE DE DATOS
 # ======================================
+DB_URL = f"mysql+pymysql://{app.config['DB_USER']}:{app.config['DB_PASSWORD']}@{app.config['DB_HOST']}:{app.config['DB_PORT']}/{app.config['DB_NAME']}?charset=utf8mb4"
+
 engine = create_engine(
-    "mysql+pymysql://root:Manu3l21@localhost:3306/alta_colaboradores?charset=utf8mb4",
-    echo=True,
+    DB_URL,
+    echo=False,
+    poolclass=QueuePool,
     pool_size=10,
     max_overflow=20,
+    pool_pre_ping=True,
+    pool_recycle=3600,
     pool_timeout=30,
-    pool_recycle=1800
+    connect_args={'connect_timeout': 10, 'charset': 'utf8mb4'}
 )
 
 SessionLocal = sessionmaker(
@@ -48,62 +120,59 @@ SessionLocal = sessionmaker(
 
 @contextmanager
 def get_db():
+    """Context manager for database sessions."""
     db = SessionLocal()
     try:
         yield db
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Database error: {e}", exc_info=True)
+        raise
     finally:
         db.close()
 
 Base = declarative_base()
 
 # ======================================
-# UTILIDAD
+# MODELOS
 # ======================================
-def normalizar_texto(texto):
-    texto = texto.strip().lower()
-    texto = unicodedata.normalize("NFD", texto)
-    return "".join(c for c in texto if unicodedata.category(c) != "Mn")
-
-# ======================================
-# MANY TO MANY
-# ======================================
+# Tablas many-to-many
 colaborador_recurso = Table(
     "colaborador_recurso",
     Base.metadata,
-    Column("colaborador_id", ForeignKey("colaboradores.id")),
-    Column("recurso_id", ForeignKey("recursos_ti.id"))
+    Column("colaborador_id", ForeignKey("colaboradores.id", ondelete="CASCADE")),
+    Column("recurso_id", ForeignKey("recursos_ti.id", ondelete="CASCADE")),
+    Index('idx_colaborador_recurso', 'colaborador_id', 'recurso_id')
 )
 
 colaborador_programa = Table(
     "colaborador_programa",
     Base.metadata,
-    Column("colaborador_id", ForeignKey("colaboradores.id")),
-    Column("programa_id", ForeignKey("programas.id"))
+    Column("colaborador_id", ForeignKey("colaboradores.id", ondelete="CASCADE")),
+    Column("programa_id", ForeignKey("programas.id", ondelete="CASCADE")),
+    Index('idx_colaborador_programa', 'colaborador_id', 'programa_id')
 )
 
-# ======================================
-# MODELOS
-# ======================================
 class Area(Base):
     __tablename__ = "areas"
     id = Column(Integer, primary_key=True)
-    nombre = Column(String(100), unique=True)
-    nombre_normalizado = Column(String(100), unique=True)
-
+    nombre = Column(String(100), unique=True, nullable=False)
+    nombre_normalizado = Column(String(100), unique=True, nullable=False)
     puestos = relationship("Puesto", back_populates="area")
 
 class Puesto(Base):
     __tablename__ = "puestos"
     id = Column(Integer, primary_key=True)
-    nombre = Column(String(100))
-    area_id = Column(Integer, ForeignKey("areas.id"))
-
+    nombre = Column(String(100), nullable=False)
+    area_id = Column(Integer, ForeignKey("areas.id"), nullable=False)
     area = relationship("Area", back_populates="puestos")
 
 class Reclutador(Base):
     __tablename__ = "reclutadores"
     id = Column(Integer, primary_key=True)
     nombre = Column(String(150), unique=True, nullable=False)
+    colaboradores = relationship("Colaborador", back_populates="reclutador_rel")
 
 class Banco(Base):
     __tablename__ = "bancos"
@@ -118,74 +187,81 @@ class MetodoPago(Base):
 class Colaborador(Base):
     __tablename__ = "colaboradores"
     id = Column(Integer, primary_key=True)
-
-    # ===== DATOS GENERALES =====
-    nombre = Column(String(100))
-    apellido = Column(String(100))
-    correo = Column(String(150))
+    
+    # DATOS PERSONALES
+    nombre = Column(String(100), nullable=False)
+    apellido = Column(String(100), nullable=False)
+    correo = Column(String(150), unique=True, nullable=False)
     edad = Column(Integer)
     estado_civil = Column(String(50))
     domicilio = Column(Text)
     telefono = Column(String(20))
-
-    rfc = Column(String(13))
-    curp = Column(String(18))
-    nss = Column(String(15))
-    fecha_alta = Column(Date)
-
+    
+    # DATOS OFICIALES
+    rfc = Column(String(13), unique=True, nullable=False)
+    curp = Column(String(18), unique=True, nullable=False)
+    nss = Column(String(15), unique=True, nullable=False)
+    fecha_alta = Column(Date, nullable=False)
+    
+    # LABORALES
     sueldo = Column(Integer)
     comentarios = Column(Text)
-
-    # ===== COMERCIAL =====
+    baja = Column(Boolean, default=False)
+    fecha_baja = Column(Date)
+    motivo_baja = Column(String(200))
+    
+    # COMERCIAL
     rol_comercial = Column(String(100))
     comisionista = Column(Boolean)
-
+    metodo_pago = Column(String(100))
+    banco = Column(String(100))
+    numero_cuenta = Column(String(18))
+    numero_comisiones = Column(String(50))
+    reclutador = Column(String(150))
+    
+    # CRÉDITOS
+    tiene_infonavit = Column(Boolean, default=False)
+    infonavit_credito = Column(String(50))
+    tiene_fonacot = Column(Boolean, default=False)
+    fonacot_credito = Column(String(50))
+    
+    # ÁREA Y PUESTO
+    area_id = Column(Integer, ForeignKey("areas.id"), nullable=False)
+    puesto_id = Column(Integer, ForeignKey("puestos.id"))
+    
+    # RELACIONES ORM (FKs)
     metodo_pago_id = Column(Integer, ForeignKey("metodos_pago.id"))
     banco_id = Column(Integer, ForeignKey("bancos.id"))
     reclutador_id = Column(Integer, ForeignKey("reclutadores.id"))
-
-    numero_cuenta = Column(String(18))
-    numero_comisiones = Column(String(50))
-
-    metodo_pago = relationship("MetodoPago")
-    banco = relationship("Banco")
-    reclutador = relationship("Reclutador")
-
-    # ===== CRÉDITOS =====
-    tiene_infonavit = Column(Boolean)
-    infonavit_credito = Column(String(50))
-    tiene_fonacot = Column(Boolean)
-    fonacot_credito = Column(String(50))
-
-    area_id = Column(Integer, ForeignKey("areas.id"))
-    puesto_id = Column(Integer, ForeignKey("puestos.id"))
-
+    
+    # RELACIONES ORM
+    metodo_pago_rel = relationship("MetodoPago", foreign_keys=[metodo_pago_id])
+    banco_rel = relationship("Banco", foreign_keys=[banco_id])
+    reclutador_rel = relationship("Reclutador", back_populates="colaboradores", foreign_keys=[reclutador_id])
     area = relationship("Area")
     puesto = relationship("Puesto")
-
+    
     recursos = relationship(
         "RecursoTI",
         secondary=colaborador_recurso,
         back_populates="colaboradores"
     )
-
+    
     programas = relationship(
         "Programa",
         secondary=colaborador_programa,
         back_populates="colaboradores"
     )
-
+    
     documentos = relationship(
         "Documento",
-        back_populates="colaborador",
-        cascade="all, delete-orphan"
+        back_populates="colaborador"
     )
 
 class RecursoTI(Base):
     __tablename__ = "recursos_ti"
     id = Column(Integer, primary_key=True)
-    nombre = Column(String(100), unique=True)
-
+    nombre = Column(String(100), unique=True, nullable=False)
     colaboradores = relationship(
         "Colaborador",
         secondary=colaborador_recurso,
@@ -195,8 +271,7 @@ class RecursoTI(Base):
 class Programa(Base):
     __tablename__ = "programas"
     id = Column(Integer, primary_key=True)
-    nombre = Column(String(100), unique=True)
-
+    nombre = Column(String(100), unique=True, nullable=False)
     colaboradores = relationship(
         "Colaborador",
         secondary=colaborador_programa,
@@ -206,136 +281,1794 @@ class Programa(Base):
 class Documento(Base):
     __tablename__ = "documentos"
     id = Column(Integer, primary_key=True)
-    colaborador_id = Column(Integer, ForeignKey("colaboradores.id"))
-    nombre_archivo = Column(String(200))
-    ruta_archivo = Column(String(300))
+    colaborador_id = Column(Integer, ForeignKey("colaboradores.id", ondelete="CASCADE"), nullable=False)
+    nombre_archivo = Column(String(200), nullable=False)
+    ruta_archivo = Column(String(300), nullable=False)
     tipo = Column(String(50))
-
+    tamano = Column(Integer)
+    fecha_subida = Column(Date, default=datetime.now)
     colaborador = relationship("Colaborador", back_populates="documentos")
 
 # ======================================
-# CREAR TABLAS
+# DECORADORES
 # ======================================
-Base.metadata.create_all(engine)
+def require_db(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        with get_db() as db:
+            g.db = db
+            return f(*args, **kwargs)
+    return decorated_function
 
 # ======================================
-# FORMULARIO
+# API - DASHBOARD DATOS (CORREGIDO COMPLETAMENTE)
 # ======================================
-@app.route("/", methods=["GET", "POST"])
-def alta():
-    with get_db() as db:
-        areas = db.query(Area).all()
-        recursos = db.query(RecursoTI).all()
-        programas = db.query(Programa).all()
-        bancos = db.query(Banco).all()
-        reclutadores = db.query(Reclutador).all()
-        metodos_pago = db.query(MetodoPago).all()
 
-        if request.method == "POST":
-            area = db.get(Area, int(request.form["area"]))
-            es_comercial = "comercial" in area.nombre_normalizado
-            es_comisionista = request.form.get("comisionista") == "Sí"
+# ======================================
+# CONFIGURACIÓN - ACTUALIZADA
+# ======================================
+class Config:
+    # Flask
+    SECRET_KEY = 'dev-secret-key-change-in-production-12345'
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    
+    # Database
+    DB_HOST = 'localhost'
+    DB_PORT = '3306'
+    DB_NAME = 'alta_colaboradores'
+    DB_USER = 'root'
+    DB_PASSWORD = 'Manu3l21'
+    
+    # Paths
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+    LOGS_FOLDER = os.path.join(BASE_DIR, "logs")
+    
+    # Dashboard - ACTUALIZADO SEGÚN TU ESTRUCTURA
+    AREA_COMERCIAL_ID = 2  # CAMBIADO: area_id = 2 es comercial (no 5)
+    RECLUTADOR_COMERCIAL_IDS = [3]  # reclutador_id = 3 es comercial
 
-            col = Colaborador(
-                nombre=request.form.get("nombre"),
-                apellido=request.form.get("apellido"),
-                correo=request.form.get("correo"),
-                edad=request.form.get("edad") or None,
-                estado_civil=request.form.get("estado_civil"),
-                domicilio=request.form.get("domicilio"),
-                telefono=request.form.get("telefono"),
-                rfc=request.form.get("rfc"),
-                curp=request.form.get("curp"),
-                nss=request.form.get("nss"),
-                fecha_alta=datetime.strptime(request.form.get("fecha_alta"), "%Y-%m-%d"),
-                sueldo=request.form.get("sueldo") or None,
-                comentarios=request.form.get("comentarios"),
-                rol_comercial=request.form.get("rol_comercial") if es_comercial else None,
-                comisionista=es_comisionista if es_comercial else None,
-                metodo_pago_id=request.form.get("metodo_pago") or None,
-                banco_id=request.form.get("banco") or None,
-                reclutador_id=request.form.get("reclutador") or None,
-                numero_cuenta=request.form.get("numero_cuenta"),
-                numero_comisiones=request.form.get("numero_comisiones"),
-                tiene_infonavit=request.form.get("infonavit") == "Sí",
-                infonavit_credito=request.form.get("infonavit_credito"),
-                tiene_fonacot=request.form.get("fonacot") == "Sí",
-                fonacot_credito=request.form.get("fonacot_credito"),
-                area_id=area.id,
-                puesto_id=int(request.form.get("puesto"))
+# ======================================
+# API - DASHBOARD DATOS (COMPLETAMENTE REVISADO)
+# ======================================
+
+@app.route("/api/kpis")
+@require_db
+def api_kpis():
+    """API para KPIs del dashboard - REVISADO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API KPIs solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        # Filtros base para TODAS las contrataciones (incluyendo bajas)
+        filters_total = [
+            extract("year", Colaborador.fecha_alta) == year
+        ]
+        
+        # Filtros para contrataciones ACTIVAS (sin baja)
+        filters_activos = [
+            extract("year", Colaborador.fecha_alta) == year,
+            Colaborador.baja == False
+        ]
+        
+        # Filtro para COMERCIAL: area_id = 2 O reclutador_id = 3
+        filters_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        # Filtro para GESTIÓN: NO comercial
+        filters_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
             )
-
-            db.add(col)
-            db.commit()
-
-            for rid in request.form.getlist("equipo[]"):
-                col.recursos.append(db.get(RecursoTI, int(rid)))
-
-            for pid in request.form.getlist("programas[]"):
-                col.programas.append(db.get(Programa, int(pid)))
-
-            carpeta = os.path.join(app.config["UPLOAD_FOLDER"], f"colaborador_{col.id}")
-            os.makedirs(carpeta, exist_ok=True)
-
-            for f in request.files.getlist("documentos[]"):
-                if f and f.filename:
-                    nombre = secure_filename(f.filename)
-                    ruta = os.path.join(carpeta, nombre)
-                    f.save(ruta)
-                    db.add(Documento(
-                        colaborador_id=col.id,
-                        nombre_archivo=nombre,
-                        ruta_archivo=ruta,
-                        tipo="General"
-                    ))
-
-            db.commit()
-            return redirect(url_for("dashboard"))
-
-        return render_template(
-            "alta_colaborador.html",
-            areas=areas,
-            recursos=recursos,
-            programas=programas,
-            bancos=bancos,
-            reclutadores=reclutadores,
-            metodos_pago=metodos_pago
         )
+        
+        # Agregar filtro de mes si se especifica
+        if month:
+            filters_total.append(extract("month", Colaborador.fecha_alta) == month)
+            filters_activos.append(extract("month", Colaborador.fecha_alta) == month)
+        
+        # TOTAL de contrataciones (incluyendo bajas) - CAMBIADO
+        total_contrataciones = db.query(func.count(Colaborador.id))\
+            .filter(*filters_total)\
+            .scalar() or 0
+        
+        # Contrataciones ACTIVAS (sin baja)
+        total_activos = db.query(func.count(Colaborador.id))\
+            .filter(*filters_activos)\
+            .scalar() or 0
+        
+        # Contrataciones COMERCIALES (area_id = 2 O reclutador_id = 3) - TOTAL (INCLUYENDO BAJAS)
+        total_comercial = db.query(func.count(Colaborador.id))\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year,
+                filters_comercial
+            )\
+            .scalar() or 0
+        
+        # Contrataciones GESTIÓN (no comercial) - TOTAL (INCLUYENDO BAJAS)
+        total_gestion = db.query(func.count(Colaborador.id))\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year,
+                filters_gestion
+            )\
+            .scalar() or 0
+        
+        # Contrataciones COMERCIALES ACTIVAS (sin baja)
+        total_comercial_activos = db.query(func.count(Colaborador.id))\
+            .filter(
+                *filters_activos,
+                filters_comercial
+            )\
+            .scalar() or 0
+        
+        # Contrataciones GESTIÓN ACTIVAS (sin baja)
+        total_gestion_activos = db.query(func.count(Colaborador.id))\
+            .filter(
+                *filters_activos,
+                filters_gestion
+            )\
+            .scalar() or 0
+        
+        # Bajas comerciales
+        filters_baja_comercial = [
+            Colaborador.baja == True,
+            Colaborador.fecha_baja.isnot(None),
+            extract("year", Colaborador.fecha_baja) == year,
+            filters_comercial
+        ]
+        
+        # Bajas gestión
+        filters_baja_gestion = [
+            Colaborador.baja == True,
+            Colaborador.fecha_baja.isnot(None),
+            extract("year", Colaborador.fecha_baja) == year,
+            filters_gestion
+        ]
+        
+        if month:
+            filters_baja_comercial.append(extract("month", Colaborador.fecha_baja) == month)
+            filters_baja_gestion.append(extract("month", Colaborador.fecha_baja) == month)
+        
+        # Bajas comerciales
+        bajas_comercial = db.query(func.count(Colaborador.id))\
+            .filter(*filters_baja_comercial)\
+            .scalar() or 0
+        
+        # Bajas gestión
+        bajas_gestion = db.query(func.count(Colaborador.id))\
+            .filter(*filters_baja_gestion)\
+            .scalar() or 0
+        
+        # Tasa de retención (basada en activos vs total)
+        retencion = 0
+        if total_contrataciones > 0:
+            retencion = round(total_activos / total_contrataciones * 100, 1)
+        
+        logger.info(f"KPIs calculados: total={total_contrataciones}, activos={total_activos}, comercial={total_comercial}, gestion={total_gestion}")
+        
+        return jsonify({
+            "total": total_contrataciones,          # Incluye bajas
+            "activos": total_activos,               # Solo activos
+            "comercial": total_comercial,           # Comercial TOTAL (incluye bajas)
+            "gestion": total_gestion,               # Gestión TOTAL (incluye bajas)
+            "comercial_activos": total_comercial_activos,  # Comercial solo activos
+            "gestion_activos": total_gestion_activos,      # Gestión solo activos
+            "bajas_comercial": bajas_comercial,
+            "bajas_gestion": bajas_gestion,
+            "retencion": retencion,
+            "year": year,
+            "month": month if month else "todos"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in KPIs API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener KPIs"}), 500
+
+
+@app.route("/api/contrataciones")
+@require_db
+def api_contrataciones():
+    """API para obtener contrataciones por mes - REVISADO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API Contrataciones solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        resultados = []
+        
+        # Si se especifica un mes, solo devolver ese mes
+        if month:
+            mes_range = [month]
+        else:
+            mes_range = range(1, 13)
+        
+        # Definir filtros para comercial y gestión
+        filtro_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        filtro_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+            )
+        )
+        
+        for mes_num in mes_range:
+            # Filtros para TOTAL de contrataciones (INCLUYENDO BAJAS)
+            filters_total = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num
+            ]
+            
+            # Filtros para contrataciones ACTIVAS (sin baja)
+            filters_activos = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num,
+                Colaborador.baja == False
+            ]
+            
+            # Contrataciones de GESTIÓN - TOTAL (incluye bajas)
+            gestion_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - TOTAL (incluye bajas)
+            comercial_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de GESTIÓN - ACTIVAS (sin baja)
+            gestion_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - ACTIVAS (sin baja)
+            comercial_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Total de contrataciones para este mes (TODAS, incluyendo bajas)
+            total_mes_con_bajas = gestion_total + comercial_total
+            
+            # Total de contrataciones ACTIVAS para este mes
+            total_mes_activos = gestion_activos + comercial_activos
+            
+            resultados.append({
+                "mes": meses[mes_num - 1],
+                "gestion": gestion_total,          # Total gestión (incluye bajas)
+                "gestion_activos": gestion_activos, # Gestión activos
+                "comercial": comercial_total,       # Total comercial (incluye bajas)
+                "comercial_activos": comercial_activos, # Comercial activos
+                "total_activos": total_mes_activos,
+                "total_con_bajas": total_mes_con_bajas,
+                "mes_num": mes_num
+            })
+        
+        logger.info(f"Contrataciones para {year}: {len(resultados)} registros")
+        
+        # Si se filtró por un mes específico, devolver solo ese mes
+        if month and len(resultados) > 0:
+            return jsonify(resultados[0])
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in contrataciones API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener contrataciones"}), 500
+
+
+
+    """API para obtener contrataciones por mes - REVISADO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API Contrataciones solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        resultados = []
+        
+        # Si se especifica un mes, solo devolver ese mes
+        if month:
+            mes_range = [month]
+        else:
+            mes_range = range(1, 13)
+        
+        # Definir filtros para comercial y gestión
+        filtro_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        filtro_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+            )
+        )
+        
+        for mes_num in mes_range:
+            # Filtros base para el mes
+            filters_mes = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num,
+                Colaborador.baja == False
+            ]
+            
+            # Contrataciones de GESTIÓN (no comercial)
+            gestion = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_mes,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL (area_id = 2 O reclutador_id = 3)
+            comercial = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_mes,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Total de contrataciones para este mes (incluyendo bajas)
+            total_mes_con_bajas = db.query(func.count(Colaborador.id))\
+                .filter(
+                    extract("year", Colaborador.fecha_alta) == year,
+                    extract("month", Colaborador.fecha_alta) == mes_num
+                )\
+                .scalar() or 0
+            
+            resultados.append({
+                "mes": meses[mes_num - 1],
+                "gestion": gestion,
+                "comercial": comercial,
+                "total_activos": gestion + comercial,
+                "total_con_bajas": total_mes_con_bajas,
+                "mes_num": mes_num
+            })
+        
+        logger.info(f"Contrataciones para {year}: {len(resultados)} registros")
+        
+        # Si se filtró por un mes específico, devolver solo ese mes
+        if month and len(resultados) > 0:
+            return jsonify(resultados[0])
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in contrataciones API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener contrataciones"}), 500
+
+@app.route("/api/reclutadores/comercial")
+@require_db
+def api_reclutadores_comercial():
+    """API para obtener reclutadores del área comercial - REVISADO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Reclutadores Comercial solicitada para año: {year}")
+    
+    try:
+        db = g.db
+        
+        # Consulta para obtener reclutadores comerciales:
+        # 1. Reclutadores con area_id = 2 (comercial)
+        # 2. O reclutadores con id en RECLUTADOR_COMERCIAL_IDS
+        sql = text("""
+            SELECT 
+                r.id,
+                r.nombre,
+                COUNT(c.id) as total
+            FROM reclutadores r
+            LEFT JOIN colaboradores c ON c.reclutador_id = r.id
+                AND YEAR(c.fecha_alta) = :year
+                AND c.baja = FALSE
+                AND (
+                    c.area_id = :area_id 
+                    OR c.reclutador_id IN :reclutador_ids
+                )
+            WHERE r.id IN :reclutador_ids 
+                OR EXISTS (
+                    SELECT 1 FROM colaboradores c2 
+                    WHERE c2.reclutador_id = r.id 
+                    AND c2.area_id = :area_id
+                    AND YEAR(c2.fecha_alta) = :year
+                    AND c2.baja = FALSE
+                )
+            GROUP BY r.id, r.nombre
+            HAVING COUNT(c.id) > 0
+            ORDER BY total DESC
+        """)
+        
+        resultados = db.execute(sql, {
+            'year': year,
+            'area_id': app.config['AREA_COMERCIAL_ID'],
+            'reclutador_ids': tuple(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        }).fetchall()
+        
+        reclutadores = []
+        for row in resultados:
+            reclutadores.append({
+                "id": row.id,
+                "nombre": row.nombre,
+                "total": row.total
+            })
+        
+        logger.info(f"Reclutadores comerciales encontrados: {len(reclutadores)}")
+        
+        return jsonify(reclutadores)
+        
+    except Exception as e:
+        logger.error(f"Error in reclutadores comercial API: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/bajas")
+@require_db
+def api_bajas():
+    """API para obtener bajas por mes - REVISADO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API Bajas solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        resultados = []
+        
+        # Filtros para comercial y gestión
+        filtro_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        filtro_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+            )
+        )
+        
+        # Si se especifica un mes, solo devolver ese mes
+        if month:
+            mes_range = [month]
+        else:
+            mes_range = range(1, 13)
+        
+        for mes_num in mes_range:
+            # Filtros base para bajas del mes
+            filters_mes = [
+                Colaborador.baja == True,
+                Colaborador.fecha_baja.isnot(None),
+                extract("year", Colaborador.fecha_baja) == year,
+                extract("month", Colaborador.fecha_baja) == mes_num
+            ]
+            
+            # Bajas de GESTIÓN (no comercial)
+            gestion = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_mes,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Bajas de COMERCIAL (comercial)
+            comercial = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_mes,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            resultados.append({
+                "mes": meses[mes_num - 1],
+                "gestion": gestion,
+                "comercial": comercial,
+                "total": gestion + comercial,
+                "mes_num": mes_num
+            })
+        
+        logger.info(f"Bajas para {year}: {len(resultados)} registros")
+        
+        # Si se filtró por un mes específico, devolver solo ese mes
+        if month and len(resultados) > 0:
+            return jsonify(resultados[0])
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in bajas API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener bajas"}), 500
+
+@app.route("/api/contrataciones/comparativa")
+@require_db
+def api_contrataciones_comparativa():
+    """API para comparativa entre años - REVISADO."""
+    years = request.args.getlist("years[]", type=int)
+    
+    if not years:
+        current_year = date.today().year
+        years = [current_year - 2, current_year - 1, current_year]
+    
+    logger.info(f"API Comparativa solicitada para años: {years}")
+    
+    try:
+        db = g.db
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        # Filtros para comercial y gestión
+        filtro_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        filtro_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+            )
+        )
+        
+        comparativa = {}
+        
+        for year in years:
+            datos_year = []
+            
+            for mes_num in range(1, 13):
+                # Total de contrataciones (ACTIVOS)
+                total = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False
+                    )\
+                    .scalar() or 0
+                
+                # Contrataciones comerciales - ACTIVOS
+                comercial = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,
+                        filtro_comercial
+                    )\
+                    .scalar() or 0
+                
+                # Contrataciones gestión - ACTIVOS
+                gestion = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,
+                        filtro_gestion
+                    )\
+                    .scalar() or 0
+                
+                datos_year.append({
+                    "mes": meses[mes_num - 1],
+                    "total": total,
+                    "comercial": comercial,
+                    "gestion": gestion,
+                    "mes_num": mes_num
+                })
+            
+            comparativa[str(year)] = datos_year
+        
+        return jsonify(comparativa)
+        
+    except Exception as e:
+        logger.error(f"Error in comparativa API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener comparativa"}), 500
+    """API para comparativa entre años."""
+    years = request.args.getlist("years[]", type=int)
+    
+    if not years:
+        current_year = date.today().year
+        years = [current_year - 2, current_year - 1, current_year]
+    
+    logger.info(f"API Comparativa solicitada para años: {years}")
+    
+    try:
+        db = g.db
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        comparativa = {}
+        
+        for year in years:
+            datos_year = []
+            
+            for mes_num in range(1, 13):
+                # Total de contrataciones (ACTIVOS)
+                total = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False
+                    )\
+                    .scalar() or 0
+                
+                # Contrataciones comerciales (ID:5) - ACTIVOS
+                comercial = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,
+                        Colaborador.area_id == app.config['AREA_COMERCIAL_ID']
+                    )\
+                    .scalar() or 0
+                
+                # Contrataciones gestión (no ID:5) - ACTIVOS
+                gestion = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,
+                        Colaborador.area_id != app.config['AREA_COMERCIAL_ID']
+                    )\
+                    .scalar() or 0
+                
+                datos_year.append({
+                    "mes": meses[mes_num - 1],
+                    "total": total,
+                    "comercial": comercial,
+                    "gestion": gestion,
+                    "mes_num": mes_num
+                })
+            
+            comparativa[str(year)] = datos_year
+        
+        return jsonify(comparativa)
+        
+    except Exception as e:
+        logger.error(f"Error in comparativa API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener comparativa"}), 500
+
+
+    """API para obtener reclutadores del área comercial - CORREGIDO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Reclutadores Comercial solicitada para año: {year}")
+    
+    try:
+        db = g.db
+        
+        # Consulta corregida: obtener reclutadores que han reclutado para área comercial
+        # y contar sus contrataciones (solo activos)
+        sql = text("""
+            SELECT 
+                r.id,
+                r.nombre,
+                COUNT(c.id) as total
+            FROM reclutadores r
+            LEFT JOIN colaboradores c ON c.reclutador_id = r.id
+                AND YEAR(c.fecha_alta) = :year
+                AND c.baja = FALSE
+                AND c.area_id = :area_id
+            GROUP BY r.id, r.nombre
+            HAVING COUNT(c.id) > 0
+            ORDER BY total DESC
+        """)
+        
+        resultados = db.execute(sql, {
+            'year': year,
+            'area_id': app.config['AREA_COMERCIAL_ID']
+        }).fetchall()
+        
+        reclutadores = []
+        for row in resultados:
+            reclutadores.append({
+                "id": row.id,
+                "nombre": row.nombre,
+                "total": row.total
+            })
+        
+        logger.info(f"Reclutadores comerciales encontrados: {len(reclutadores)}")
+        
+        return jsonify(reclutadores)
+        
+    except Exception as e:
+        logger.error(f"Error in reclutadores comercial API: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/contrataciones/reclutador")
+@require_db
+def api_contrataciones_reclutador():
+    """API para contrataciones por reclutador - CORREGIDO PARA INCLUIR BAJAS."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Reclutadores solicitada para año: {year}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        # Obtener todos los reclutadores que tienen colaboradores en el año (INCLUYENDO BAJAS)
+        reclutadores = db.query(Reclutador)\
+            .join(Colaborador, Reclutador.id == Colaborador.reclutador_id)\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year
+                # REMOVED: Colaborador.baja == False  # AHORA INCLUIMOS BAJAS
+            )\
+            .distinct()\
+            .order_by(Reclutador.nombre)\
+            .all()
+        
+        resultados = []
+        
+        for reclutador in reclutadores:
+            contratos_por_mes = []
+            contratos_activos_por_mes = []
+            total_anual = 0
+            total_anual_activos = 0
+            
+            for mes_num in range(1, 13):
+                # Contar TOTAL de contrataciones por reclutador y mes (INCLUYENDO BAJAS)
+                total = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        # REMOVED: Colaborador.baja == False  # AHORA INCLUIMOS BAJAS
+                        Colaborador.reclutador_id == reclutador.id
+                    )\
+                    .scalar() or 0
+                
+                # Contar contrataciones ACTIVAS por reclutador y mes (sin baja)
+                total_activos = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,  # Solo activos
+                        Colaborador.reclutador_id == reclutador.id
+                    )\
+                    .scalar() or 0
+                
+                total_anual += total
+                total_anual_activos += total_activos
+                
+                contratos_por_mes.append({
+                    "mes": meses[mes_num - 1],
+                    "total": total,
+                    "total_activos": total_activos,
+                    "mes_num": mes_num
+                })
+            
+            if total_anual > 0:
+                resultados.append({
+                    "reclutador": reclutador.nombre,
+                    "reclutador_id": reclutador.id,
+                    "contratos": contratos_por_mes,
+                    "total_anual": total_anual,
+                    "total_anual_activos": total_anual_activos
+                })
+        
+        # También agregar contrataciones sin reclutador asignado (INCLUYENDO BAJAS)
+        contratos_sin_reclutador = []
+        total_sin_reclutador = 0
+        total_sin_reclutador_activos = 0
+        
+        for mes_num in range(1, 13):
+            total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    extract("year", Colaborador.fecha_alta) == year,
+                    extract("month", Colaborador.fecha_alta) == mes_num,
+                    # REMOVED: Colaborador.baja == False  # AHORA INCLUIMOS BAJAS
+                    Colaborador.reclutador_id.is_(None)
+                )\
+                .scalar() or 0
+            
+            total_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    extract("year", Colaborador.fecha_alta) == year,
+                    extract("month", Colaborador.fecha_alta) == mes_num,
+                    Colaborador.baja == False,  # Solo activos
+                    Colaborador.reclutador_id.is_(None)
+                )\
+                .scalar() or 0
+            
+            total_sin_reclutador += total
+            total_sin_reclutador_activos += total_activos
+            
+            contratos_sin_reclutador.append({
+                "mes": meses[mes_num - 1],
+                "total": total,
+                "total_activos": total_activos,
+                "mes_num": mes_num
+            })
+        
+        if total_sin_reclutador > 0:
+            resultados.append({
+                "reclutador": "Sin reclutador asignado",
+                "reclutador_id": 0,
+                "contratos": contratos_sin_reclutador,
+                "total_anual": total_sin_reclutador,
+                "total_anual_activos": total_sin_reclutador_activos
+            })
+        
+        # Ordenar por total anual descendente
+        resultados.sort(key=lambda x: x["total_anual"], reverse=True)
+        
+        logger.info(f"Reclutadores encontrados: {len(resultados)}")
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in reclutador API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener datos de reclutadores"}), 500
+
+
+
+    """API para contrataciones por reclutador - CORREGIDO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Reclutadores solicitada para año: {year}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        # Obtener todos los reclutadores que tienen colaboradores en el año (ACTIVOS)
+        reclutadores = db.query(Reclutador)\
+            .join(Colaborador, Reclutador.id == Colaborador.reclutador_id)\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year,
+                Colaborador.baja == False
+            )\
+            .distinct()\
+            .order_by(Reclutador.nombre)\
+            .all()
+        
+        resultados = []
+        
+        for reclutador in reclutadores:
+            contratos_por_mes = []
+            total_anual = 0
+            
+            for mes_num in range(1, 13):
+                # Contar contrataciones por reclutador y mes (solo activos)
+                total = db.query(func.count(Colaborador.id))\
+                    .filter(
+                        extract("year", Colaborador.fecha_alta) == year,
+                        extract("month", Colaborador.fecha_alta) == mes_num,
+                        Colaborador.baja == False,
+                        Colaborador.reclutador_id == reclutador.id
+                    )\
+                    .scalar() or 0
+                
+                total_anual += total
+                
+                contratos_por_mes.append({
+                    "mes": meses[mes_num - 1],
+                    "total": total,
+                    "mes_num": mes_num
+                })
+            
+            if total_anual > 0:
+                resultados.append({
+                    "reclutador": reclutador.nombre,
+                    "reclutador_id": reclutador.id,
+                    "contratos": contratos_por_mes,
+                    "total_anual": total_anual
+                })
+        
+        # También agregar contrataciones sin reclutador asignado
+        contratos_sin_reclutador = []
+        total_sin_reclutador = 0
+        
+        for mes_num in range(1, 13):
+            total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    extract("year", Colaborador.fecha_alta) == year,
+                    extract("month", Colaborador.fecha_alta) == mes_num,
+                    Colaborador.baja == False,
+                    Colaborador.reclutador_id.is_(None)
+                )\
+                .scalar() or 0
+            
+            total_sin_reclutador += total
+            
+            contratos_sin_reclutador.append({
+                "mes": meses[mes_num - 1],
+                "total": total,
+                "mes_num": mes_num
+            })
+        
+        if total_sin_reclutador > 0:
+            resultados.append({
+                "reclutador": "Sin reclutador asignado",
+                "reclutador_id": 0,
+                "contratos": contratos_sin_reclutador,
+                "total_anual": total_sin_reclutador
+            })
+        
+        # Ordenar por total anual descendente
+        resultados.sort(key=lambda x: x["total_anual"], reverse=True)
+        
+        logger.info(f"Reclutadores encontrados: {len(resultados)}")
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in reclutador API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener datos de reclutadores"}), 500
+
+@app.route("/api/contrataciones/detalle-reclutador/<int:reclutador_id>")
+@require_db
+def api_contrataciones_detalle_reclutador(reclutador_id):
+    """API para obtener detalle de contrataciones por reclutador específico - CORREGIDO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Detalle Reclutador {reclutador_id} solicitada para año: {year}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        # Verificar si es "Sin reclutador asignado"
+        if reclutador_id == 0:
+            reclutador_nombre = "Sin reclutador asignado"
+            reclutador_id_filter = None
+        else:
+            reclutador = db.query(Reclutador).filter_by(id=reclutador_id).first()
+            if not reclutador:
+                return jsonify({"error": "Reclutador no encontrado"}), 404
+            reclutador_nombre = reclutador.nombre
+            reclutador_id_filter = reclutador_id
+        
+        contratos_por_mes = []
+        total_anual = 0
+        
+        for mes_num in range(1, 13):
+            # Contar contrataciones por reclutador y mes (solo activos)
+            query = db.query(func.count(Colaborador.id))\
+                .filter(
+                    extract("year", Colaborador.fecha_alta) == year,
+                    extract("month", Colaborador.fecha_alta) == mes_num,
+                    Colaborador.baja == False
+                )
+            
+            if reclutador_id == 0:
+                query = query.filter(Colaborador.reclutador_id.is_(None))
+            else:
+                query = query.filter(Colaborador.reclutador_id == reclutador_id)
+            
+            total = query.scalar() or 0
+            total_anual += total
+            
+            contratos_por_mes.append({
+                "mes": meses[mes_num - 1],
+                "total": total,
+                "mes_num": mes_num
+            })
+        
+        return jsonify({
+            "reclutador": {
+                "id": reclutador_id,
+                "nombre": reclutador_nombre
+            },
+            "contratos": contratos_por_mes,
+            "total_anual": total_anual,
+            "year": year
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in detalle reclutador API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener detalle del reclutador"}), 500
+
+@app.route("/api/contrataciones/mes-detalle/<int:mes>")
+@require_db
+def api_contrataciones_mes_detalle(mes):
+    """API para obtener detalle de contrataciones por mes específico - NUEVO."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    
+    logger.info(f"API Mes Detalle solicitada para mes: {mes}, año: {year}")
+    
+    try:
+        db = g.db
+        
+        # Obtener reclutadores con contrataciones en este mes (ACTIVOS)
+        sql = text("""
+            SELECT 
+                COALESCE(r.nombre, 'Sin reclutador asignado') as reclutador_nombre,
+                COALESCE(r.id, 0) as reclutador_id,
+                COUNT(c.id) as total
+            FROM colaboradores c
+            LEFT JOIN reclutadores r ON c.reclutador_id = r.id
+            WHERE YEAR(c.fecha_alta) = :year
+                AND MONTH(c.fecha_alta) = :mes
+                AND c.baja = FALSE
+            GROUP BY COALESCE(r.id, 0), COALESCE(r.nombre, 'Sin reclutador asignado')
+            HAVING COUNT(c.id) > 0
+            ORDER BY total DESC
+        """)
+        
+        resultados = db.execute(sql, {'year': year, 'mes': mes}).fetchall()
+        
+        # Total del mes (ACTIVOS)
+        total_mes = db.query(func.count(Colaborador.id))\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes,
+                Colaborador.baja == False
+            )\
+            .scalar() or 0
+        
+        # Total comercial (área_id = 5) - ACTIVOS
+        total_comercial = db.query(func.count(Colaborador.id))\
+            .filter(
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes,
+                Colaborador.baja == False,
+                Colaborador.area_id == app.config['AREA_COMERCIAL_ID']
+            )\
+            .scalar() or 0
+        
+        # Total por área comercial (para detalle)
+        detalles_comercial = []
+        if total_comercial > 0:
+            sql_comercial = text("""
+                SELECT 
+                    COALESCE(r.nombre, 'Sin reclutador asignado') as reclutador_nombre,
+                    COALESCE(r.id, 0) as reclutador_id,
+                    COUNT(c.id) as total
+                FROM colaboradores c
+                LEFT JOIN reclutadores r ON c.reclutador_id = r.id
+                WHERE YEAR(c.fecha_alta) = :year
+                    AND MONTH(c.fecha_alta) = :mes
+                    AND c.baja = FALSE
+                    AND c.area_id = :area_id
+                GROUP BY COALESCE(r.id, 0), COALESCE(r.nombre, 'Sin reclutador asignado')
+                HAVING COUNT(c.id) > 0
+                ORDER BY total DESC
+            """)
+            
+            resultados_comercial = db.execute(sql_comercial, {
+                'year': year, 
+                'mes': mes,
+                'area_id': app.config['AREA_COMERCIAL_ID']
+            }).fetchall()
+            
+            for row in resultados_comercial:
+                detalles_comercial.append({
+                    "reclutador": row.reclutador_nombre,
+                    "reclutador_id": row.reclutador_id if row.reclutador_id != 0 else None,
+                    "total": row.total
+                })
+        
+        detalles = []
+        for row in resultados:
+            detalles.append({
+                "reclutador": row.reclutador_nombre,
+                "reclutador_id": row.reclutador_id if row.reclutador_id != 0 else None,
+                "total": row.total
+            })
+        
+        return jsonify({
+            "mes": mes,
+            "year": year,
+            "total_mes": total_mes,
+            "total_comercial": total_comercial,
+            "detalles": detalles,
+            "detalles_comercial": detalles_comercial
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in mes detalle API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener detalle del mes"}), 500
+
+@app.route("/api/buscar-reclutador")
+@require_db
+def api_buscar_reclutador():
+    """API para buscar ID de reclutador por nombre."""
+    nombre = request.args.get("nombre", "").strip()
+    
+    if not nombre:
+        return jsonify({"error": "Nombre requerido"}), 400
+    
+    try:
+        db = g.db
+        
+        reclutador = db.query(Reclutador).filter_by(nombre=nombre).first()
+        if reclutador:
+            return jsonify({
+                "id": reclutador.id,
+                "nombre": reclutador.nombre
+            })
+        else:
+            # Intentar búsqueda sin acentos
+            def remove_accents(text):
+                if not text:
+                    return text
+                text = unicodedata.normalize('NFD', text)
+                text = text.encode('ascii', 'ignore').decode('utf-8')
+                return text.lower()
+            
+            nombre_sin_acentos = remove_accents(nombre)
+            
+            all_reclutadores = db.query(Reclutador).all()
+            matches = []
+            
+            for r in all_reclutadores:
+                r_nombre_sin_acentos = remove_accents(r.nombre)
+                if nombre_sin_acentos in r_nombre_sin_acentos.lower():
+                    matches.append({
+                        "id": r.id,
+                        "nombre": r.nombre
+                    })
+            
+            if matches:
+                return jsonify(matches)
+            
+            return jsonify({"error": "Reclutador no encontrado"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error buscando reclutador: {e}", exc_info=True)
+        return jsonify({"error": "Error al buscar reclutador"}), 500
 
 # ======================================
-# PUESTOS
+# RUTAS DE VISTAS
 # ======================================
-@app.route("/puestos/<int:area_id>")
-def puestos_por_area(area_id):
-    with get_db() as db:
-        puestos = db.query(Puesto).filter_by(area_id=area_id).all()
-        return jsonify([{"id": p.id, "nombre": p.nombre} for p in puestos])
 
-# ======================================
-# DASHBOARD
-# ======================================
 @app.route("/dashboard")
+@require_db
 def dashboard():
-    with get_db() as db:
-        colaboradores = db.query(Colaborador).all()
-        total = db.query(Colaborador).count()
-        return render_template(
-            "dashboard.html",
-            colaboradores=colaboradores,
-            total=total
+    """Página principal del dashboard BI."""
+    try:
+        db = g.db
+        
+        # Obtener años disponibles desde fecha_alta
+        min_year = db.query(func.min(extract("year", Colaborador.fecha_alta))).scalar()
+        max_year = db.query(func.max(extract("year", Colaborador.fecha_alta))).scalar()
+        
+        # También considerar años desde fecha_baja
+        min_year_baja = db.query(func.min(extract("year", Colaborador.fecha_baja))).scalar()
+        max_year_baja = db.query(func.max(extract("year", Colaborador.fecha_baja))).scalar()
+        
+        # Encontrar el rango completo de años
+        years_set = set()
+        
+        if min_year:
+            years_set.add(int(min_year))
+        if max_year:
+            years_set.add(int(max_year))
+        if min_year_baja:
+            years_set.add(int(min_year_baja))
+        if max_year_baja:
+            years_set.add(int(max_year_baja))
+        
+        # Agregar año actual si no hay datos
+        if not years_set:
+            years_set.add(date.today().year)
+        
+        # Crear lista ordenada
+        years = sorted(years_set, reverse=True)
+        
+        # Si hay pocos años, agregar algunos para tener rango
+        if len(years) < 3:
+            current_year = date.today().year
+            years = [current_year - 2, current_year - 1, current_year]
+        
+        return render_template("dashboard_bi.html",
+            current_year=date.today().year,
+            available_years=years,
+            current_date=date.today().strftime("%d/%m/%Y")
+        )
+        
+    except Exception as e:
+        logger.error(f"Error loading dashboard: {e}", exc_info=True)
+        return render_template("dashboard_bi.html", 
+            current_year=date.today().year,
+            available_years=[date.today().year],
+            current_date=date.today().strftime("%d/%m/%Y"),
+            error=str(e)
         )
 
+@app.route("/", methods=["GET", "POST"])
+@require_db
+def alta():
+    """Página principal de alta de colaboradores."""
+    try:
+        db = g.db
+        
+        areas = db.query(Area).order_by(Area.nombre).all()
+        recursos = db.query(RecursoTI).order_by(RecursoTI.nombre).all()
+        programas = db.query(Programa).order_by(Programa.nombre).all()
+        bancos = db.query(Banco).order_by(Banco.nombre).all()
+        reclutadores = db.query(Reclutador).order_by(Reclutador.nombre).all()
+        metodos_pago = db.query(MetodoPago).order_by(MetodoPago.nombre).all()
+        
+        puestos_por_area = {}
+        for area in areas:
+            puestos = db.query(Puesto).filter_by(area_id=area.id).order_by(Puesto.nombre).all()
+            puestos_por_area[area.id] = [{"id": p.id, "nombre": p.nombre} for p in puestos]
+        
+        form_data = {
+            'areas': areas,
+            'recursos': recursos,
+            'programas': programas,
+            'bancos': bancos,
+            'reclutadores': reclutadores,
+            'metodos_pago': metodos_pago,
+            'puestos_por_area': puestos_por_area,
+            'today': date.today().isoformat(),
+            'AREA_COMERCIAL_ID': app.config['AREA_COMERCIAL_ID']
+        }
+        
+        if request.method == "POST":
+            return handle_alta_post(db)
+        
+        return render_template("alta_colaborador.html", **form_data)
+        
+    except Exception as e:
+        logger.error(f"Error in alta: {e}", exc_info=True)
+        flash(f"Error al cargar el formulario: {str(e)}", "error")
+        return render_template("alta_colaborador.html", today=date.today().isoformat())
+
+def handle_alta_post(db):
+    """Maneja el POST del formulario de alta."""
+    try:
+        required_fields = ['area', 'nombre', 'apellido', 'correo', 'rfc', 'curp', 'nss', 'fecha_alta']
+        missing_fields = []
+        
+        for field in required_fields:
+            if not request.form.get(field):
+                missing_fields.append(field)
+        
+        if missing_fields:
+            flash(f"Campos requeridos faltantes: {', '.join(missing_fields)}", "error")
+            return redirect(url_for('alta'))
+        
+        try:
+            area_id = int(request.form.get("area"))
+        except (ValueError, TypeError):
+            flash("Área no válida", "error")
+            return redirect(url_for('alta'))
+        
+        colaborador = crear_colaborador(db, area_id)
+        
+        if request.files.getlist("documentos[]"):
+            guardar_documentos(db, colaborador.id)
+        
+        flash(f"✅ ¡Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> creado exitosamente!", "success")
+        return redirect(url_for("dashboard"))
+        
+    except IntegrityError as e:
+        db.rollback()
+        logger.error(f"Error de integridad: {e}")
+        flash("❌ Error: Datos duplicados o inválidos", "error")
+        return redirect(url_for('alta'))
+        
+    except Exception as e:
+        logger.error(f"Error creando colaborador: {e}", exc_info=True)
+        flash(f"❌ Error al guardar el colaborador: {str(e)}", "error")
+        return redirect(url_for('alta'))
+
+def crear_colaborador(db, area_id):
+    """Crea un nuevo colaborador."""
+    fecha_alta_str = request.form.get("fecha_alta")
+    try:
+        fecha_alta = datetime.strptime(fecha_alta_str, "%Y-%m-%d").date() if fecha_alta_str else date.today()
+    except ValueError:
+        fecha_alta = date.today()
+    
+    sueldo_str = request.form.get("sueldo", "0")
+    try:
+        sueldo = float(sueldo_str) if sueldo_str and sueldo_str.strip() else None
+    except ValueError:
+        sueldo = None
+    
+    edad_str = request.form.get("edad")
+    try:
+        edad = int(edad_str) if edad_str and edad_str.strip() else None
+    except (ValueError, TypeError):
+        edad = None
+    
+    col = Colaborador(
+        nombre=request.form.get("nombre", "").strip(),
+        apellido=request.form.get("apellido", "").strip(),
+        correo=request.form.get("correo", "").strip(),
+        edad=edad,
+        estado_civil=request.form.get("estado_civil"),
+        domicilio=request.form.get("domicilio"),
+        telefono=request.form.get("telefono"),
+        rfc=request.form.get("rfc", "").upper(),
+        curp=request.form.get("curp", "").upper(),
+        nss=request.form.get("nss", ""),
+        fecha_alta=fecha_alta,
+        sueldo=sueldo,
+        comentarios=request.form.get("comentarios"),
+        rol_comercial=request.form.get("rol_comercial") if area_id == app.config['AREA_COMERCIAL_ID'] else None,
+        comisionista=request.form.get("comisionista") == "Sí" if area_id == app.config['AREA_COMERCIAL_ID'] else None,
+        metodo_pago=request.form.get("metodo_pago_string"),
+        banco=request.form.get("banco_string"),
+        reclutador=request.form.get("reclutador_string"),
+        metodo_pago_id=int(request.form.get("metodo_pago")) if request.form.get("metodo_pago") else None,
+        banco_id=int(request.form.get("banco")) if request.form.get("banco") else None,
+        reclutador_id=int(request.form.get("reclutador")) if request.form.get("reclutador") else None,
+        numero_cuenta=request.form.get("numero_cuenta"),
+        numero_comisiones=request.form.get("numero_comisiones"),
+        tiene_infonavit=request.form.get("infonavit") == "Sí",
+        infonavit_credito=request.form.get("infonavit_credito"),
+        tiene_fonacot=request.form.get("fonacot") == "Sí",
+        fonacot_credito=request.form.get("fonacot_credito"),
+        area_id=area_id,
+        puesto_id=int(request.form.get("puesto")) if request.form.get("puesto") else None,
+        baja=False,
+        fecha_baja=None,
+        motivo_baja=None
+    )
+    
+    db.add(col)
+    db.flush()
+    
+    agregar_relaciones(db, col)
+    
+    db.commit()
+    return col
+
+def agregar_relaciones(db, colaborador):
+    """Agrega recursos y programas al colaborador."""
+    equipo_ids = request.form.getlist("equipo[]")
+    if equipo_ids:
+        try:
+            ids = [int(id) for id in equipo_ids if id and id.strip()]
+            if ids:
+                recursos = db.query(RecursoTI).filter(RecursoTI.id.in_(ids)).all()
+                for recurso in recursos:
+                    colaborador.recursos.append(recurso)
+        except ValueError:
+            pass
+    
+    programa_ids = request.form.getlist("programas[]")
+    if programa_ids:
+        try:
+            ids = [int(id) for id in programa_ids if id and id.strip()]
+            if ids:
+                programas = db.query(Programa).filter(Programa.id.in_(ids)).all()
+                for programa in programas:
+                    colaborador.programas.append(programa)
+        except ValueError:
+            pass
+
+def guardar_documentos(db, colaborador_id):
+    """Guarda los documentos subidos."""
+    carpeta = os.path.join(app.config['UPLOAD_FOLDER'], f"colaborador_{colaborador_id}")
+    os.makedirs(carpeta, exist_ok=True)
+    
+    for f in request.files.getlist("documentos[]"):
+        if f and f.filename:
+            allowed_extensions = {'.pdf', '.jpg', '.jpeg', '.png'}
+            file_ext = os.path.splitext(f.filename)[1].lower()
+            
+            if file_ext not in allowed_extensions:
+                continue
+            
+            f.seek(0, os.SEEK_END)
+            file_size = f.tell()
+            f.seek(0)
+            
+            if file_size > 10 * 1024 * 1024:
+                continue
+            
+            nombre = secure_filename(f.filename)
+            ruta = os.path.join(carpeta, nombre)
+            f.save(ruta)
+            
+            doc = Documento(
+                colaborador_id=colaborador_id,
+                nombre_archivo=nombre,
+                ruta_archivo=ruta,
+                tipo=file_ext[1:].upper(),
+                tamano=file_size,
+                fecha_subida=date.today()
+            )
+            db.add(doc)
+
+@app.route("/puestos/<int:area_id>")
+@require_db
+def puestos_por_area(area_id: int):
+    """API para obtener puestos por área."""
+    try:
+        db = g.db
+        puestos = db.query(Puesto).filter_by(area_id=area_id).order_by(Puesto.nombre).all()
+        return jsonify([{"id": p.id, "nombre": p.nombre} for p in puestos])
+    except Exception as e:
+        logger.error(f"Error getting puestos for area {area_id}: {e}")
+        return jsonify([])
+
+@app.route("/api/verificar-duplicados", methods=["POST"])
+@require_db
+def verificar_duplicados():
+    """API para verificar duplicados en tiempo real."""
+    try:
+        data = request.get_json()
+        db = g.db
+        
+        resultados = {
+            'correo': False,
+            'rfc': False,
+            'curp': False,
+            'nss': False
+        }
+        
+        if 'correo' in data and data['correo']:
+            existe = db.query(Colaborador).filter_by(correo=data['correo'].strip()).first()
+            resultados['correo'] = existe is not None
+        
+        if 'rfc' in data and data['rfc']:
+            existe = db.query(Colaborador).filter_by(rfc=data['rfc'].strip().upper()).first()
+            resultados['rfc'] = existe is not None
+        
+        if 'curp' in data and data['curp']:
+            existe = db.query(Colaborador).filter_by(curp=data['curp'].strip().upper()).first()
+            resultados['curp'] = existe is not None
+        
+        if 'nss' in data and data['nss']:
+            existe = db.query(Colaborador).filter_by(nss=data['nss'].strip()).first()
+            resultados['nss'] = existe is not None
+        
+        return jsonify({
+            'success': True,
+            'resultados': resultados
+        })
+        
+    except Exception as e:
+        logger.error(f"Error verificando duplicados: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 # ======================================
-# VER DOCUMENTO
+# INICIALIZACIÓN
 # ======================================
-@app.route("/documento/<int:id>")
-def ver_documento(id):
+def initialize_app():
+    """Inicializa la aplicación."""
+    logger.info("Starting application initialization...")
+    
+    Base.metadata.create_all(engine)
+    logger.info("Database tables verified/created")
+    
+    create_initial_data()
+    
+    logger.info("Application initialized successfully")
+
+def create_initial_data():
+    """Crea datos iniciales si las tablas están vacías."""
     with get_db() as db:
-        doc = db.get(Documento, id)
-        return send_file(doc.ruta_archivo)
+        if db.query(Area).count() == 0:
+            logger.info("Creating initial data...")
+            
+            areas = [
+                Area(nombre="Gestión", nombre_normalizado="gestion"),
+                Area(nombre="Comercial", nombre_normalizado="comercial")
+            ]
+            db.add_all(areas)
+            db.flush()
+            
+            puestos = [
+                Puesto(nombre="Analista", area_id=1),
+                Puesto(nombre="Coordinador", area_id=1),
+                Puesto(nombre="Gerente", area_id=1),
+                Puesto(nombre="Vendedor", area_id=2),
+                Puesto(nombre="Coordinador Comercial", area_id=2),
+                Puesto(nombre="Gerente Comercial", area_id=2)
+            ]
+            db.add_all(puestos)
+            
+            metodos = [
+                MetodoPago(nombre="Transferencia"),
+                MetodoPago(nombre="Cheque"),
+                MetodoPago(nombre="Efectivo")
+            ]
+            db.add_all(metodos)
+            
+            bancos = [
+                Banco(nombre="BBVA"),
+                Banco(nombre="Banorte"),
+                Banco(nombre="Santander"),
+                Banco(nombre="HSBC")
+            ]
+            db.add_all(bancos)
+            
+            reclutadores = [
+                Reclutador(nombre="Francesca Argáez"),
+                Reclutador(nombre="Jazmín Moo"),
+                Reclutador(nombre="Ana Mata"),
+                Reclutador(nombre="Rousseli Trejo"),
+                Reclutador(nombre="Comercial"),  # ID:5 - Este es especial para área comercial
+                Reclutador(nombre="Julio"),
+                Reclutador(nombre="Nilson"),
+                Reclutador(nombre="Erick")
+            ]
+            db.add_all(reclutadores)
+            
+            db.commit()
+            logger.info("Initial data created")
+
+
+# ======================================
+# API PARA BÚSQUEDA DE COLABORADORES EXISTENTES
+# ======================================
+@app.route("/api/buscar-colaborador", methods=["GET"])
+@require_db
+def api_buscar_colaborador():
+    """API para buscar colaborador por diferentes campos."""
+    try:
+        campo = request.args.get('campo')
+        valor = request.args.get('valor')
+        
+        if not campo or not valor:
+            return jsonify({"error": "Parámetros inválidos"}), 400
+        
+        db = g.db
+        
+        query = db.query(Colaborador)
+        
+        if campo == 'correo':
+            query = query.filter(Colaborador.correo == valor)
+        elif campo == 'rfc':
+            query = query.filter(Colaborador.rfc == valor.upper())
+        elif campo == 'curp':
+            query = query.filter(Colaborador.curp == valor.upper())
+        elif campo == 'nss':
+            query = query.filter(Colaborador.nss == valor)
+        else:
+            return jsonify({"error": "Campo no válido"}), 400
+        
+        colaborador = query.first()
+        
+        if colaborador:
+            return jsonify({
+                "existe": True,
+                "colaborador": {
+                    "id": colaborador.id,
+                    "nombre": colaborador.nombre,
+                    "apellido": colaborador.apellido,
+                    "correo": colaborador.correo,
+                    "area": colaborador.area.nombre if colaborador.area else "N/A",
+                    "fecha_alta": colaborador.fecha_alta.strftime("%Y-%m-%d") if colaborador.fecha_alta else "N/A",
+                    "baja": colaborador.baja
+                }
+            })
+        else:
+            return jsonify({"existe": False})
+            
+    except Exception as e:
+        logger.error(f"Error buscando colaborador: {e}", exc_info=True)
+        return jsonify({"error": "Error al buscar colaborador"}), 500
+
+# ======================================
+# API PARA PROCESAR BAJA
+# ======================================
+@app.route("/api/procesar-baja", methods=["POST"])
+@require_db
+def api_procesar_baja():
+    """API para procesar baja de colaborador."""
+    try:
+        data = request.get_json()
+        
+        required_fields = ['colaborador_id', 'motivo', 'fecha_baja']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Campo requerido faltante: {field}"}), 400
+        
+        db = g.db
+        
+        colaborador = db.query(Colaborador).filter_by(id=data['colaborador_id']).first()
+        if not colaborador:
+            return jsonify({"error": "Colaborador no encontrado"}), 404
+        
+        if colaborador.baja:
+            return jsonify({"error": "El colaborador ya está dado de baja"}), 400
+        
+        # Procesar baja
+        colaborador.baja = True
+        colaborador.fecha_baja = datetime.strptime(data['fecha_baja'], "%Y-%m-%d").date()
+        colaborador.motivo_baja = data['motivo']
+        
+        if data.get('comentarios'):
+            colaborador.comentarios = (colaborador.comentarios or "") + f"\n\n[BAJA] {data['comentarios']}"
+        
+        db.commit()
+        
+        logger.info(f"Baja procesada para colaborador ID: {colaborador.id}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Baja procesada exitosamente",
+            "colaborador": {
+                "id": colaborador.id,
+                "nombre": f"{colaborador.nombre} {colaborador.apellido}"
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error procesando baja: {e}", exc_info=True)
+        db.rollback()
+        return jsonify({"error": "Error al procesar la baja"}), 500
+
+# ======================================
+# API PARA PROCESAR CAMBIO DE ÁREA
+# ======================================
+@app.route("/api/procesar-cambio-area", methods=["POST"])
+@require_db
+def api_procesar_cambio_area():
+    """API para procesar cambio de área."""
+    try:
+        data = request.get_json()
+        
+        required_fields = ['colaborador_id', 'nueva_area_id', 'fecha_cambio']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Campo requerido faltante: {field}"}), 400
+        
+        db = g.db
+        
+        colaborador = db.query(Colaborador).filter_by(id=data['colaborador_id']).first()
+        if not colaborador:
+            return jsonify({"error": "Colaborador no encontrado"}), 404
+        
+        # Verificar nueva área
+        nueva_area = db.query(Area).filter_by(id=data['nueva_area_id']).first()
+        if not nueva_area:
+            return jsonify({"error": "Área no válida"}), 400
+        
+        # Registrar cambio
+        area_anterior = colaborador.area.nombre if colaborador.area else "N/A"
+        
+        colaborador.area_id = data['nueva_area_id']
+        
+        # Si se proporciona nuevo puesto, actualizarlo
+        if data.get('nuevo_puesto_id'):
+            colaborador.puesto_id = data['nuevo_puesto_id']
+        
+        # Registrar comentario sobre el cambio
+        comentario = f"\n\n[CAMBIO ÁREA] {datetime.now().strftime('%Y-%m-%d')}: "
+        comentario += f"Cambio de '{area_anterior}' a '{nueva_area.nombre}'"
+        
+        if data.get('razon'):
+            comentario += f" - Razón: {data['razon']}"
+        
+        colaborador.comentarios = (colaborador.comentarios or "") + comentario
+        
+        db.commit()
+        
+        logger.info(f"Cambio de área procesado para colaborador ID: {colaborador.id}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Cambio de área procesado exitosamente",
+            "colaborador": {
+                "id": colaborador.id,
+                "nombre": f"{colaborador.nombre} {colaborador.apellido}",
+                "area_anterior": area_anterior,
+                "area_nueva": nueva_area.nombre
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error procesando cambio de área: {e}", exc_info=True)
+        db.rollback()
+        return jsonify({"error": "Error al procesar el cambio de área"}), 500
+
+# ======================================
+# API PARA BUSCAR COLABORADOR POR TEXTO
+# ======================================
+@app.route("/api/buscar-colaboradores", methods=["GET"])
+@require_db
+def api_buscar_colaboradores():
+    """API para buscar colaboradores por nombre, correo o ID."""
+    try:
+        query = request.args.get('q', '').strip()
+        
+        if not query or len(query) < 2:
+            return jsonify({"resultados": []})
+        
+        db = g.db
+        
+        # Buscar por ID si es numérico
+        if query.isdigit():
+            colaboradores = db.query(Colaborador)\
+                .filter(
+                    or_(
+                        Colaborador.id == int(query),
+                        Colaborador.nombre.ilike(f"%{query}%"),
+                        Colaborador.apellido.ilike(f"%{query}%"),
+                        Colaborador.correo.ilike(f"%{query}%")
+                    )
+                )\
+                .limit(10)\
+                .all()
+        else:
+            # Buscar por texto
+            colaboradores = db.query(Colaborador)\
+                .filter(
+                    or_(
+                        Colaborador.nombre.ilike(f"%{query}%"),
+                        Colaborador.apellido.ilike(f"%{query}%"),
+                        Colaborador.correo.ilike(f"%{query}%")
+                    )
+                )\
+                .limit(10)\
+                .all()
+        
+        resultados = []
+        for col in colaboradores:
+            resultados.append({
+                "id": col.id,
+                "nombre_completo": f"{col.nombre} {col.apellido}",
+                "correo": col.correo,
+                "area": col.area.nombre if col.area else "N/A",
+                "activo": not col.baja,
+                "fecha_alta": col.fecha_alta.strftime("%Y-%m-%d") if col.fecha_alta else "N/A"
+            })
+        
+        return jsonify({"resultados": resultados})
+        
+    except Exception as e:
+        logger.error(f"Error buscando colaboradores: {e}", exc_info=True)
+        return jsonify({"resultados": []})
 
 # ======================================
 # MAIN
 # ======================================
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.config['SESSION_COOKIE_SECURE'] = False
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    
+    initialize_app()
+    
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True,
+        threaded=True
+    )

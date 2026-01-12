@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard BI{% endblock %}</title>
+    
+    <!-- Meta theme color para PWA -->
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    
+    {% block head %}{% endblock %}
+    
+    <style>
+        /* Estilos mínimos para evitar flash */
+        body {
+            background: #f8f9fa;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark {
+            background: #0f172a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Script para aplicar dark mode inmediatamente (evita flash) -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // Aplicar modo oscuro ANTES de que se renderice la página
+            const saved = localStorage.getItem('darkMode');
+            const isDark = saved === 'true';
+            
+            if (isDark) {
+                document.body.classList.add('dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                
+                // Actualizar meta theme color
+                let metaTheme = document.querySelector('meta[name="theme-color"]');
+                if (!metaTheme) {
+                    metaTheme = document.createElement('meta');
+                    metaTheme.name = 'theme-color';
+                    document.head.appendChild(metaTheme);
+                }
+                metaTheme.content = '#0f172a';
+            }
+        })();
+    </script>
+
+    <!-- =======================
+         NAVBAR SUPERIOR
+    ======================= -->
+    <nav class="navbar navbar-dark px-3">
+        <button class="btn btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#menu" aria-label="Abrir menú">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <span class="navbar-brand mx-auto">
+            <i class="bi bi-bar-chart-fill me-2"></i>Dashboard BI Profesional
+        </span>
+
+        <button class="btn btn-outline-warning" id="btnDarkMode" aria-label="Cambiar modo oscuro/claro">
+            <span id="darkModeIcon">🌙</span>
+        </button>
+    </nav>
+
+    <!-- =======================
+         MENÚ LATERAL
+    ======================= -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="menuLabel">
+                <i class="bi bi-menu-button-wide-fill me-2"></i>Menú Principal
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        
+        <div class="offcanvas-body">
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('dashboard') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a href="{{ url_for('alta') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'alta' %}active{% endif %}">
+                    <i class="bi bi-person-plus me-2"></i>Alta Colaborador
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people-fill me-2"></i>Colaboradores
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-gear-fill me-2"></i>Configuración
+                </a>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top">
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Versión 1.0.0
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =======================
+         CONTENIDO PRINCIPAL
+    ======================= -->
+    <main class="container-fluid py-3 px-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- =======================
+         FOOTER
+    ======================= -->
+    <footer class="text-center py-3 border-top mt-4">
+        <div class="container">
+            <small class="text-muted">
+                © 2024 Dashboard BI Profesional. Todos los derechos reservados.
+                <span class="d-block mt-1">
+                    <i class="bi bi-clock me-1"></i>
+                    <span id="currentTime"></span>
+                    •
+                    <span id="userStatus"></span>
+                </span>
+            </small>
+        </div>
+    </footer>
+
+    <!-- =======================
+         SCRIPTS
+    ======================= -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    
+    <!-- Dark Mode Manager -->
+    <script src="/static/js/dark-mode-manager.js"></script>
+    
+    <!-- Utilidades -->
+    <script>
+        // Actualizar hora actual
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                timeElement.textContent = now.toLocaleTimeString('es-MX', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            }
+        }
+        
+        // Actualizar cada segundo
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+        
+        // Indicador de usuario conectado
+        document.addEventListener('DOMContentLoaded', function() {
+            const userStatus = document.getElementById('userStatus');
+            if (userStatus) {
+                userStatus.textContent = 'Conectado';
+                userStatus.className = 'text-success';
+            }
+        });
+        
+        // Manejar clicks en offcanvas links para cerrarlo automáticamente
+        document.querySelectorAll('.offcanvas a').forEach(link => {
+            link.addEventListener('click', function() {
+                const offcanvas = document.getElementById('menu');
+                if (offcanvas) {
+                    const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
+                    if (bsOffcanvas) {
+                        bsOffcanvas.hide();
+                    }
+                }
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
