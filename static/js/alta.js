@@ -1,5 +1,5 @@
 // ============================================
-// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.3
+// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.4
 // ============================================
 
 (function() {
@@ -17,7 +17,8 @@
     
     const VALIDATION = window.VALIDATION_REGEX || {
         curp: /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$/,
-        email: /^[^\s@]+@marnezdesarrollos\.com$/i
+        email: /^[^\s@]+@marnezdesarrollos\.com$/i,
+        rfc: /^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$/
     };
     
     // =========================
@@ -38,7 +39,10 @@
         sueldoInput: document.getElementById('sueldo'),
         areaHidden: document.getElementById('areaHidden'),
         correoConfirmacion: document.getElementById('correoConfirmacion'),
-        rfcInput: document.querySelector('input[name="rfc"]')
+        rfcInput: document.getElementById('rfcInput'),
+        rfcStatus: document.getElementById('rfcStatus'),
+        btnVerificarRFC: document.getElementById('btnVerificarRFC'),
+        btnSubmitForm: document.getElementById('btnSubmitForm')
     };
     
     // =========================
@@ -62,7 +66,9 @@
         documentos: new Map(),
         usuarioRegistrado: false,
         modalUsuarioRegistrado: null,
-        previewModal: null
+        previewModal: null,
+        rfcVerificado: false,
+        currentPreviewFile: null
     };
     
     // =========================
@@ -83,7 +89,7 @@
     // INICIALIZACIÓN DE COMPONENTES
     // =========================
     function initComponents() {
-        console.log('Inicializando módulo de alta V2.3...');
+        console.log('Inicializando módulo de alta V2.4...');
         
         initValidations();
         initAreaManager();
@@ -100,108 +106,11 @@
         
         updateDocumentCounter();
         
-        console.log('Módulo de alta V2.3 inicializado correctamente');
+        console.log('Módulo de alta V2.4 inicializado correctamente');
     }
     
     // =========================
-    // VERIFICACIÓN DE RFC AL BOTÓN "COLABORADOR"
-    // =========================
-    function initVerificacionRFC() {
-        const btnColaborador = document.getElementById('btnColaborador');
-        if (!btnColaborador) return;
-        
-        btnColaborador.addEventListener('click', async function(e) {
-            e.preventDefault();
-            
-            const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
-            
-            if (!rfc || rfc.length < 12) {
-                showToast('Error', 'Ingresa un RFC válido (12-13 caracteres)', 'warning');
-                DOM.rfcInput?.focus();
-                return;
-            }
-            
-            await verificarRFC(rfc);
-        });
-    }
-    
-    // =========================
-    // VERIFICAR RFC EN SERVIDOR
-    // =========================
-    async function verificarRFC(rfc) {
-        try {
-            // Mostrar carga
-            if (DOM.rfcInput) {
-                DOM.rfcInput.classList.add('is-validating');
-            }
-            
-            // Simular llamada al servidor (en producción sería fetch)
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Datos de ejemplo
-            const usuarioExistente = Math.random() > 0.5;
-            
-            if (usuarioExistente) {
-                mostrarInfoColaboradorExistente({
-                    nombre: 'Juan Pérez González',
-                    rfc: rfc,
-                    correo: 'juan.perez@marnezdesarrollos.com',
-                    area: 'Ventas',
-                    estado: 'Activo',
-                    fecha_alta: '2023-05-15',
-                    puesto: 'Asesor Comercial'
-                });
-            } else {
-                showToast('RFC disponible', 'No se encontró un colaborador con este RFC', 'success');
-            }
-            
-        } catch (error) {
-            console.error('Error verificando RFC:', error);
-            showToast('Error', 'No se pudo verificar el RFC', 'danger');
-        } finally {
-            if (DOM.rfcInput) {
-                DOM.rfcInput.classList.remove('is-validating');
-            }
-        }
-    }
-    
-    // =========================
-    // MOSTRAR INFORMACIÓN DE COLABORADOR EXISTENTE
-    // =========================
-    function mostrarInfoColaboradorExistente(datos) {
-        const modalElement = document.getElementById('modalUsuarioRegistrado');
-        if (!modalElement) return;
-        
-        // Actualizar datos en el modal
-        document.getElementById('dupNombre').textContent = datos.nombre;
-        document.getElementById('dupRFC').textContent = datos.rfc;
-        document.getElementById('dupCorreo').textContent = datos.correo;
-        document.getElementById('dupArea').textContent = datos.area;
-        document.getElementById('dupEstado').textContent = datos.estado;
-        
-        // Configurar botón de continuar
-        const btnContinuar = document.getElementById('btnContinuarRegistro');
-        if (btnContinuar) {
-            btnContinuar.addEventListener('click', function() {
-                const confirmado = document.getElementById('confirmarNuevoRegistro').checked;
-                
-                if (!confirmado) {
-                    showToast('Atención', 'Debes confirmar que es un nuevo registro', 'warning');
-                    return;
-                }
-                
-                MODALS.usuarioRegistrado.hide();
-                showToast('Procediendo', 'Puedes continuar con el alta del colaborador', 'info');
-            }, { once: true });
-        }
-        
-        // Mostrar modal
-        MODALS.usuarioRegistrado = MODALS.usuarioRegistrado || new bootstrap.Modal(modalElement);
-        MODALS.usuarioRegistrado.show();
-    }
-    
-    // =========================
-    // VALIDACIÓN RFC (13 caracteres)
+    // VERIFICACIÓN DE RFC (ACTUALIZADA)
     // =========================
     function initRFCValidation() {
         if (!DOM.rfcInput) return;
@@ -219,14 +128,19 @@
             
             e.target.value = value;
             
+            // Resetear estado de verificación si cambia el RFC
+            STATE.rfcVerificado = false;
+            updateRFCStatus('not-verified');
+            updateSubmitButton();
+            
             if (value.length >= 12 && value.length <= 13) {
                 e.target.classList.remove('is-invalid');
-                e.target.classList.add('is-valid');
+                e.target.classList.add('rfc-not-verified');
             } else if (value.length > 0 && value.length < 12) {
-                e.target.classList.remove('is-valid');
+                e.target.classList.remove('rfc-not-verified');
                 e.target.classList.add('is-invalid');
             } else {
-                e.target.classList.remove('is-valid', 'is-invalid');
+                e.target.classList.remove('rfc-not-verified', 'is-invalid');
             }
         });
         
@@ -239,7 +153,454 @@
     }
     
     // =========================
-    // MANEJADOR DE DOCUMENTOS - CON PREVISUALIZACIÓN
+    // INICIALIZAR VERIFICACIÓN RFC
+    // =========================
+    function initVerificacionRFC() {
+        if (!DOM.btnVerificarRFC) return;
+        
+        DOM.btnVerificarRFC.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+            
+            if (!rfc || rfc.length < 12) {
+                showToast('Error', 'Ingresa un RFC válido (12-13 caracteres)', 'warning');
+                DOM.rfcInput?.focus();
+                return;
+            }
+            
+            await verificarRFC(rfc);
+        });
+        
+        // También verificar al hacer blur si el RFC tiene longitud válida
+        DOM.rfcInput?.addEventListener('blur', function() {
+            const rfc = this.value.trim();
+            if (rfc.length >= 12 && rfc.length <= 13 && !STATE.rfcVerificado) {
+                setTimeout(() => {
+                    if (!STATE.rfcVerificado) {
+                        showToast('Atención', 'Debes verificar el RFC antes de continuar', 'info');
+                    }
+                }, 500);
+            }
+        });
+    }
+    
+    // =========================
+    // VERIFICAR RFC EN SERVIDOR (ACTUALIZADA)
+    // =========================
+    async function verificarRFC(rfc) {
+        try {
+            // Mostrar carga
+            if (DOM.rfcInput) {
+                DOM.rfcInput.classList.add('is-validating');
+            }
+            
+            if (DOM.btnVerificarRFC) {
+                DOM.btnVerificarRFC.disabled = true;
+                DOM.btnVerificarRFC.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Verificando...';
+            }
+            
+            // Simular llamada al servidor (en producción sería fetch)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Datos de ejemplo - cambiar por lógica real
+            const usuarioExistente = Math.random() > 0.5;
+            
+            if (usuarioExistente) {
+                // Mostrar modal de colaborador existente
+                mostrarInfoColaboradorExistente({
+                    nombre: 'Juan Pérez González',
+                    rfc: rfc,
+                    correo: 'juan.perez@marnezdesarrollos.com',
+                    area: 'Ventas',
+                    estado: 'Activo',
+                    fecha_alta: '2023-05-15',
+                    puesto: 'Asesor Comercial'
+                });
+                
+                updateRFCStatus('error', 'RFC ya registrado');
+                STATE.rfcVerificado = false;
+            } else {
+                showToast('RFC disponible', 'No se encontró un colaborador con este RFC', 'success');
+                updateRFCStatus('verified', 'RFC verificado y disponible');
+                STATE.rfcVerificado = true;
+                
+                if (DOM.rfcInput) {
+                    DOM.rfcInput.classList.remove('rfc-not-verified');
+                    DOM.rfcInput.classList.add('rfc-verified');
+                }
+            }
+            
+            updateSubmitButton();
+            
+        } catch (error) {
+            console.error('Error verificando RFC:', error);
+            showToast('Error', 'No se pudo verificar el RFC', 'danger');
+            updateRFCStatus('error', 'Error en verificación');
+            STATE.rfcVerificado = false;
+            updateSubmitButton();
+        } finally {
+            if (DOM.rfcInput) {
+                DOM.rfcInput.classList.remove('is-validating');
+            }
+            
+            if (DOM.btnVerificarRFC) {
+                DOM.btnVerificarRFC.disabled = false;
+                DOM.btnVerificarRFC.innerHTML = '<i class="bi bi-search me-1"></i>Verificar';
+            }
+        }
+    }
+    
+    // =========================
+    // ACTUALIZAR ESTADO DEL RFC
+    // =========================
+    function updateRFCStatus(status, message = '') {
+        if (!DOM.rfcStatus) return;
+        
+        const statusMap = {
+            'verified': {
+                icon: 'check-circle-fill',
+                text: 'RFC verificado',
+                color: 'success',
+                badgeClass: 'verified',
+                badgeText: '✅ Verificado'
+            },
+            'not-verified': {
+                icon: 'clock-history',
+                text: 'No verificado',
+                color: 'secondary',
+                badgeClass: 'not-verified',
+                badgeText: '⏱️ Pendiente'
+            },
+            'error': {
+                icon: 'exclamation-triangle-fill',
+                text: 'Error o duplicado',
+                color: 'danger',
+                badgeClass: 'error',
+                badgeText: '❌ ' + (message || 'Error')
+            }
+        };
+        
+        const statusInfo = statusMap[status] || statusMap['not-verified'];
+        
+        DOM.rfcStatus.innerHTML = `
+            <span class="text-${statusInfo.color} d-flex align-items-center gap-2">
+                <i class="bi bi-${statusInfo.icon}"></i>
+                <span>${statusInfo.text}</span>
+                <span class="verification-badge ${statusInfo.badgeClass}">
+                    ${statusInfo.badgeText}
+                </span>
+            </span>
+        `;
+    }
+    
+    // =========================
+    // ACTUALIZAR BOTÓN DE ENVÍO
+    // =========================
+    function updateSubmitButton() {
+        if (!DOM.btnSubmitForm) return;
+        
+        if (STATE.rfcVerificado && STATE.correoConfirmado) {
+            DOM.btnSubmitForm.disabled = false;
+            DOM.btnSubmitForm.title = '';
+        } else {
+            DOM.btnSubmitForm.disabled = true;
+            
+            if (!STATE.rfcVerificado && !STATE.correoConfirmado) {
+                DOM.btnSubmitForm.title = 'Debes verificar el RFC y confirmar el correo';
+            } else if (!STATE.rfcVerificado) {
+                DOM.btnSubmitForm.title = 'Debes verificar el RFC antes de continuar';
+            } else if (!STATE.correoConfirmado) {
+                DOM.btnSubmitForm.title = 'Debes confirmar el correo antes de continuar';
+            }
+        }
+    }
+    
+    // =========================
+    // MOSTRAR INFORMACIÓN DE COLABORADOR EXISTENTE (ACTUALIZADA)
+    // =========================
+    function mostrarInfoColaboradorExistente(datos) {
+        const modalElement = document.getElementById('modalUsuarioRegistrado');
+        if (!modalElement) return;
+        
+        // Actualizar datos en el modal
+        document.getElementById('dupNombre').textContent = datos.nombre;
+        document.getElementById('dupRFC').textContent = datos.rfc;
+        document.getElementById('dupCorreo').textContent = datos.correo;
+        document.getElementById('dupArea').textContent = datos.area;
+        document.getElementById('dupEstado').textContent = datos.estado;
+        document.getElementById('dupPuesto').textContent = datos.puesto;
+        
+        // Configurar botón de cambiar área
+        const btnCambiarArea = document.getElementById('btnCambiarAreaModal');
+        if (btnCambiarArea) {
+            btnCambiarArea.addEventListener('click', function() {
+                MODALS.usuarioRegistrado.hide();
+                
+                // Redirigir a la página de cambio de área
+                setTimeout(() => {
+                    window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
+                }, 500);
+            }, { once: true });
+        }
+        
+        // Mostrar modal
+        MODALS.usuarioRegistrado = MODALS.usuarioRegistrado || new bootstrap.Modal(modalElement);
+        MODALS.usuarioRegistrado.show();
+        
+        // Bloquear formulario
+        lockForm();
+    }
+    
+    // =========================
+    // VERIFICACIÓN DE USUARIO REGISTRADO (ACTUALIZADA)
+    // =========================
+    async function verificarUsuarioRegistrado() {
+        const nombre = DOM.nombreInput ? DOM.nombreInput.value.trim() : '';
+        const apellido = DOM.apellidoInput ? DOM.apellidoInput.value.trim() : '';
+        const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+        const curp = document.querySelector('input[name="curp"]') ? document.querySelector('input[name="curp"]').value.trim() : '';
+        const nss = document.querySelector('input[name="nss"]') ? document.querySelector('input[name="nss"]').value.trim() : '';
+        
+        if (!nombre && !apellido && !rfc && !curp && !nss) {
+            return false;
+        }
+        
+        try {
+            if (DOM.correoInput) {
+                DOM.correoInput.classList.add('is-validating');
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const usuarioYaRegistrado = Math.random() > 0.5;
+            
+            if (usuarioYaRegistrado) {
+                STATE.usuarioRegistrado = true;
+                
+                let campoDuplicado = '';
+                let valorDuplicado = '';
+                
+                if (rfc && Math.random() > 0.5) {
+                    campoDuplicado = 'rfc';
+                    valorDuplicado = rfc;
+                } else if (curp && Math.random() > 0.5) {
+                    campoDuplicado = 'curp';
+                    valorDuplicado = curp;
+                } else if (nss && Math.random() > 0.5) {
+                    campoDuplicado = 'nss';
+                    valorDuplicado = nss;
+                } else {
+                    campoDuplicado = 'nombre';
+                    valorDuplicado = `${nombre} ${apellido}`;
+                }
+                
+                mostrarModalUsuarioRegistrado(campoDuplicado, valorDuplicado);
+                return true;
+            }
+            
+            STATE.usuarioRegistrado = false;
+            return false;
+            
+        } catch (error) {
+            console.error('Error verificando usuario registrado:', error);
+            return false;
+        } finally {
+            if (DOM.correoInput) {
+                DOM.correoInput.classList.remove('is-validating');
+            }
+        }
+    }
+    
+    // =========================
+    // MODAL DE USUARIO REGISTRADO (ACTUALIZADO)
+    // =========================
+    function mostrarModalUsuarioRegistrado(campo, valor) {
+        let modalElement = document.getElementById('modalUsuarioRegistrado');
+        
+        if (!modalElement) {
+            modalElement = document.createElement('div');
+            modalElement.id = 'modalUsuarioRegistrado';
+            modalElement.className = 'modal fade modal-duplicate';
+            modalElement.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                Usuario Ya Registrado
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-person-x-fill text-danger" style="font-size: 3rem;"></i>
+                            </div>
+                            <p class="text-center mb-3">
+                                <strong>El colaborador ya se encuentra registrado en el sistema.</strong>
+                            </p>
+                            <div class="duplicate-details">
+                                <p class="mb-2"><strong>Campo duplicado:</strong> <span id="duplicateField"></span></p>
+                                <p class="mb-0"><strong>Valor:</strong> <code id="duplicateValue"></code></p>
+                            </div>
+                            <div class="alert alert-danger mt-3">
+                                <i class="bi bi-exclamation-octagon me-2"></i>
+                                <strong>No puedes continuar con el alta.</strong> 
+                                <p class="mb-0 mt-1">Utiliza la opción "Cambiar de Área" para modificar los datos del colaborador existente.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i>Cerrar
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnCambiarAreaFromModal">
+                                <i class="bi bi-arrow-left-right me-1"></i>Cambiar de Área
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalElement);
+        }
+        
+        const fieldNames = {
+            'nombre': 'Nombre Completo',
+            'correo': 'Correo Electrónico',
+            'rfc': 'RFC',
+            'curp': 'CURP',
+            'nss': 'Número de Seguro Social'
+        };
+        
+        document.getElementById('duplicateField').textContent = fieldNames[campo] || campo;
+        document.getElementById('duplicateValue').textContent = valor;
+        
+        STATE.modalUsuarioRegistrado = new bootstrap.Modal(modalElement);
+        STATE.modalUsuarioRegistrado.show();
+        
+        // Configurar botón de cambiar área
+        const btnCambiarArea = document.getElementById('btnCambiarAreaFromModal');
+        if (btnCambiarArea) {
+            btnCambiarArea.addEventListener('click', function() {
+                STATE.modalUsuarioRegistrado.hide();
+                
+                // Redirigir a la página de cambio de área
+                setTimeout(() => {
+                    window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
+                }, 500);
+            }, { once: true });
+        }
+        
+        // Cuando se cierra el modal, desbloquear formulario
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            unlockForm();
+            
+            const input = document.querySelector(`input[name="${campo}"]`);
+            if (input) {
+                input.focus();
+                input.select();
+            }
+            
+            STATE.usuarioRegistrado = false;
+        }, { once: true });
+    }
+    
+    // =========================
+    // CONFIRMAR CORREO (ACTUALIZADA)
+    // =========================
+    function confirmEmail(confirmed) {
+        STATE.correoConfirmado = confirmed;
+        STATE.modalMostrado = false;
+        
+        if (confirmed) {
+            DOM.correoInput.readOnly = true;
+            DOM.correoInput.classList.add('is-valid');
+            DOM.correoInput.classList.remove('is-invalid');
+            
+            if (DOM.estadoCorreo) {
+                DOM.estadoCorreo.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Correo confirmado';
+                DOM.estadoCorreo.className = 'text-success fw-semibold mt-1';
+            }
+            
+            if (DOM.btnConfirmarCorreo) {
+                DOM.btnConfirmarCorreo.classList.add('d-none');
+                DOM.btnConfirmarCorreo.classList.remove('pulse');
+            }
+            
+            unlockForm();
+            
+            showToast('✅ Correo confirmado', 'Correo institucional confirmado correctamente', 'success');
+        } else {
+            DOM.correoInput.readOnly = false;
+            DOM.correoInput.focus();
+            DOM.correoInput.select();
+            DOM.correoInput.classList.remove('is-valid');
+            
+            if (DOM.estadoCorreo) {
+                DOM.estadoCorreo.innerHTML = '<i class="bi bi-clock-history me-1"></i>Pendiente de confirmación';
+                DOM.estadoCorreo.className = 'text-warning fw-semibold mt-1';
+            }
+            
+            if (DOM.btnConfirmarCorreo) {
+                DOM.btnConfirmarCorreo.classList.remove('d-none');
+            }
+        }
+        
+        // Actualizar estado del botón de enviar
+        updateSubmitButton();
+        
+        if (MODALS.correo) {
+            MODALS.correo.hide();
+        }
+    }
+    
+    // =========================
+    // ENVÍO DE FORMULARIO (ACTUALIZADO)
+    // =========================
+    function initFormSubmitter() {
+        if (!DOM.formulario) return;
+        
+        DOM.formulario.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validar que el RFC esté verificado
+            if (!STATE.rfcVerificado) {
+                showToast('Error', 'Debes verificar el RFC antes de enviar el formulario', 'danger');
+                DOM.rfcInput?.focus();
+                DOM.rfcInput?.classList.add('shake');
+                setTimeout(() => DOM.rfcInput?.classList.remove('shake'), 500);
+                return;
+            }
+            
+            // Validar que el correo esté confirmado
+            if (!STATE.correoConfirmado) {
+                showToast('Atención', 'Debes confirmar el correo antes de enviar', 'warning');
+                requestEmailConfirmation();
+                return;
+            }
+            
+            if (!validateForm()) {
+                scrollToFirstError();
+                return;
+            }
+            
+            const hayDuplicados = Object.values(STATE.camposDuplicados).some(v => v === true);
+            if (hayDuplicados) {
+                showToast('Error', 'Hay campos duplicados. Por favor corrija antes de enviar.', 'danger');
+                scrollToFirstDuplicate();
+                return;
+            }
+            
+            if (STATE.documentosCargados === 0) {
+                const confirmed = confirm('No has cargado ningún documento. ¿Deseas continuar de todas formas?');
+                if (!confirmed) return;
+            }
+            
+            await submitForm();
+        });
+    }
+    
+    // =========================
+    // MANEJADOR DE DOCUMENTOS (SE MANTIENE IGUAL)
     // =========================
     function initDocumentManager() {
         console.log('Inicializando gestor de documentos...');
@@ -313,130 +674,8 @@
     }
     
     // =========================
-    // PREVISUALIZACIÓN DE DOCUMENTOS
+    // FUNCIONES AUXILIARES (SE MANTIENEN IGUAL)
     // =========================
-    function initPreviewModal() {
-        const modalElement = document.getElementById('modalPreview');
-        if (!modalElement) return;
-        
-        MODALS.preview = new bootstrap.Modal(modalElement);
-        
-        // Configurar descarga
-        const downloadBtn = document.getElementById('downloadPreview');
-        if (downloadBtn) {
-            downloadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const currentFile = STATE.currentPreviewFile;
-                if (currentFile) {
-                    const url = URL.createObjectURL(currentFile);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = currentFile.name;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
-            });
-        }
-    }
-    
-    // =========================
-    // FUNCIÓN GLOBAL PARA PREVISUALIZAR
-    // =========================
-    window.previsualizarDocumento = function(btn) {
-        const card = btn.closest('.doc-card');
-        if (!card) return;
-        
-        const fileName = card.querySelector('.doc-title').textContent;
-        const file = STATE.documentos.get(fileName);
-        
-        if (!file) {
-            showToast('Error', 'No hay documento para previsualizar', 'warning');
-            return;
-        }
-        
-        mostrarPrevisualizacion(file);
-    };
-    
-    function mostrarPrevisualizacion(file) {
-        if (!MODALS.preview) {
-            initPreviewModal();
-        }
-        
-        const iframe = document.getElementById('previewFrame');
-        const img = document.getElementById('previewImg');
-        const unsupported = document.getElementById('previewUnsupported');
-        const downloadBtn = document.getElementById('downloadPreview');
-        
-        // Resetear displays
-        iframe.style.display = 'none';
-        img.style.display = 'none';
-        unsupported.classList.add('d-none');
-        
-        // Guardar archivo actual para descarga
-        STATE.currentPreviewFile = file;
-        
-        // Configurar descarga
-        if (downloadBtn) {
-            downloadBtn.href = '#';
-        }
-        
-        if (file.type.includes('pdf')) {
-            const url = URL.createObjectURL(file);
-            iframe.src = url;
-            iframe.style.display = 'block';
-        } else if (file.type.includes('image')) {
-            const url = URL.createObjectURL(file);
-            img.src = url;
-            img.style.display = 'block';
-        } else {
-            unsupported.classList.remove('d-none');
-        }
-        
-        // Mostrar modal
-        MODALS.preview.show();
-        
-        // Liberar URL cuando se cierre el modal
-        const modalElement = document.getElementById('modalPreview');
-        modalElement.addEventListener('hidden.bs.modal', () => {
-            if (iframe.src) URL.revokeObjectURL(iframe.src);
-            if (img.src) URL.revokeObjectURL(img.src);
-        }, { once: true });
-    }
-    
-    // =========================
-    // FUNCIÓN GLOBAL PARA CAMBIAR DOCUMENTO
-    // =========================
-    window.cambiarDocumento = function(btn) {
-        const card = btn.closest('.doc-card');
-        if (!card) return;
-        
-        const input = card.querySelector('input[type="file"]');
-        if (!input) return;
-        
-        const fileName = card.querySelector('.doc-title').textContent;
-        
-        if (card.classList.contains('flipped')) {
-            STATE.documentosCargados = Math.max(0, STATE.documentosCargados - 1);
-            STATE.documentos.delete(fileName);
-        }
-        
-        card.classList.remove('flipped');
-        input.value = '';
-        
-        // Limpiar nombre de archivo
-        const fileNameElement = card.querySelector('.doc-file-name');
-        if (fileNameElement) {
-            fileNameElement.textContent = '';
-        }
-        
-        setTimeout(() => {
-            updateUploadProgress();
-        }, 300);
-        
-        setTimeout(() => input.click(), 100);
-    };
     
     function updateDocumentCounter() {
         STATE.documentosCargados = document.querySelectorAll('.doc-card.flipped').length;
@@ -555,7 +794,7 @@
     }
     
     // =========================
-    // MANEJADOR DE CORREO
+    // MANEJADOR DE CORREO (SE MANTIENE IGUAL)
     // =========================
     function initEmailManager() {
         if (!DOM.nombreInput || !DOM.apellidoInput) return;
@@ -657,183 +896,8 @@
         });
     }
     
-    function confirmEmail(confirmed) {
-        STATE.correoConfirmado = confirmed;
-        STATE.modalMostrado = false;
-        
-        if (confirmed) {
-            DOM.correoInput.readOnly = true;
-            DOM.correoInput.classList.add('is-valid');
-            DOM.correoInput.classList.remove('is-invalid');
-            
-            if (DOM.estadoCorreo) {
-                DOM.estadoCorreo.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Correo confirmado';
-                DOM.estadoCorreo.className = 'text-success fw-semibold mt-1';
-            }
-            
-            if (DOM.btnConfirmarCorreo) {
-                DOM.btnConfirmarCorreo.classList.add('d-none');
-                DOM.btnConfirmarCorreo.classList.remove('pulse');
-            }
-            
-            unlockForm();
-            
-            showToast('✅ Correo confirmado', 'Correo institucional confirmado correctamente', 'success');
-        } else {
-            DOM.correoInput.readOnly = false;
-            DOM.correoInput.focus();
-            DOM.correoInput.select();
-            DOM.correoInput.classList.remove('is-valid');
-            
-            if (DOM.estadoCorreo) {
-                DOM.estadoCorreo.innerHTML = '<i class="bi bi-clock-history me-1"></i>Pendiente de confirmación';
-                DOM.estadoCorreo.className = 'text-warning fw-semibold mt-1';
-            }
-            
-            if (DOM.btnConfirmarCorreo) {
-                DOM.btnConfirmarCorreo.classList.remove('d-none');
-            }
-        }
-        
-        if (MODALS.correo) {
-            MODALS.correo.hide();
-        }
-    }
-    
     // =========================
-    // VERIFICACIÓN DE USUARIO REGISTRADO
-    // =========================
-    async function verificarUsuarioRegistrado() {
-        const nombre = DOM.nombreInput ? DOM.nombreInput.value.trim() : '';
-        const apellido = DOM.apellidoInput ? DOM.apellidoInput.value.trim() : '';
-        const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
-        const curp = document.querySelector('input[name="curp"]') ? document.querySelector('input[name="curp"]').value.trim() : '';
-        const nss = document.querySelector('input[name="nss"]') ? document.querySelector('input[name="nss"]').value.trim() : '';
-        
-        if (!nombre && !apellido && !rfc && !curp && !nss) {
-            return false;
-        }
-        
-        try {
-            if (DOM.correoInput) {
-                DOM.correoInput.classList.add('is-validating');
-            }
-            
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const usuarioYaRegistrado = Math.random() > 0.5;
-            
-            if (usuarioYaRegistrado) {
-                STATE.usuarioRegistrado = true;
-                
-                let campoDuplicado = '';
-                let valorDuplicado = '';
-                
-                if (rfc && Math.random() > 0.5) {
-                    campoDuplicado = 'rfc';
-                    valorDuplicado = rfc;
-                } else if (curp && Math.random() > 0.5) {
-                    campoDuplicado = 'curp';
-                    valorDuplicado = curp;
-                } else if (nss && Math.random() > 0.5) {
-                    campoDuplicado = 'nss';
-                    valorDuplicado = nss;
-                } else {
-                    campoDuplicado = 'nombre';
-                    valorDuplicado = `${nombre} ${apellido}`;
-                }
-                
-                mostrarModalUsuarioRegistrado(campoDuplicado, valorDuplicado);
-                return true;
-            }
-            
-            STATE.usuarioRegistrado = false;
-            return false;
-            
-        } catch (error) {
-            console.error('Error verificando usuario registrado:', error);
-            return false;
-        } finally {
-            if (DOM.correoInput) {
-                DOM.correoInput.classList.remove('is-validating');
-            }
-        }
-    }
-    
-    // =========================
-    // MODAL DE USUARIO REGISTRADO
-    // =========================
-    function mostrarModalUsuarioRegistrado(campo, valor) {
-        let modalElement = document.getElementById('modalUsuarioRegistrado');
-        
-        if (!modalElement) {
-            modalElement = document.createElement('div');
-            modalElement.id = 'modalUsuarioRegistrado';
-            modalElement.className = 'modal fade modal-duplicate';
-            modalElement.innerHTML = `
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                                Usuario Ya Registrado
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center mb-4">
-                                <i class="bi bi-person-x-fill text-danger" style="font-size: 3rem;"></i>
-                            </div>
-                            <p class="text-center mb-3">
-                                <strong>El colaborador ya se encuentra registrado en el sistema.</strong>
-                            </p>
-                            <div class="duplicate-details">
-                                <p class="mb-2"><strong>Campo duplicado:</strong> <span id="duplicateField"></span></p>
-                                <p class="mb-0"><strong>Valor:</strong> <code id="duplicateValue"></code></p>
-                            </div>
-                            <div class="alert alert-warning mt-3">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <strong>Importante:</strong> Puedes corregir los datos en los campos correspondientes.
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                <i class="bi bi-arrow-left me-1"></i>Entendido
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modalElement);
-        }
-        
-        const fieldNames = {
-            'nombre': 'Nombre Completo',
-            'correo': 'Correo Electrónico',
-            'rfc': 'RFC',
-            'curp': 'CURP',
-            'nss': 'Número de Seguro Social'
-        };
-        
-        document.getElementById('duplicateField').textContent = fieldNames[campo] || campo;
-        document.getElementById('duplicateValue').textContent = valor;
-        
-        STATE.modalUsuarioRegistrado = new bootstrap.Modal(modalElement);
-        STATE.modalUsuarioRegistrado.show();
-        
-        modalElement.addEventListener('hidden.bs.modal', function() {
-            const input = document.querySelector(`input[name="${campo}"]`);
-            if (input) {
-                input.focus();
-                input.select();
-            }
-            
-            STATE.usuarioRegistrado = false;
-        }, { once: true });
-    }
-    
-    // =========================
-    // VERIFICACIÓN DE DUPLICADOS
+    // VERIFICACIÓN DE DUPLICADOS (SE MANTIENE IGUAL)
     // =========================
     function initDuplicateChecker() {
         const campos = [
@@ -922,7 +986,7 @@
     }
     
     // =========================
-    // FUNCIONES DE VALIDACIÓN BÁSICA
+    // FUNCIONES DE VALIDACIÓN BÁSICA (SE MANTIENEN IGUAL)
     // =========================
     function initValidations() {
         const curpInput = document.querySelector('input[name="curp"]');
@@ -993,7 +1057,7 @@
     }
     
     // =========================
-    // MANEJADOR DE ÁREAS
+    // MANEJADOR DE ÁREAS (SE MANTIENE IGUAL)
     // =========================
     function initAreaManager() {
         if (!DOM.areaSelect) return;
@@ -1081,42 +1145,6 @@
             DOM.puestoSelect.innerHTML = '<option value="">Error al cargar</option>';
             showToast('Error', 'No se pudieron cargar los puestos', 'danger');
         }
-    }
-    
-    // =========================
-    // ENVÍO DE FORMULARIO
-    // =========================
-    function initFormSubmitter() {
-        if (!DOM.formulario) return;
-        
-        DOM.formulario.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!validateForm()) {
-                scrollToFirstError();
-                return;
-            }
-            
-            if (!STATE.correoConfirmado) {
-                showToast('Atención', 'Debes confirmar el correo antes de enviar', 'warning');
-                requestEmailConfirmation();
-                return;
-            }
-            
-            const hayDuplicados = Object.values(STATE.camposDuplicados).some(v => v === true);
-            if (hayDuplicados) {
-                showToast('Error', 'Hay campos duplicados. Por favor corrija antes de enviar.', 'danger');
-                scrollToFirstDuplicate();
-                return;
-            }
-            
-            if (STATE.documentosCargados === 0) {
-                const confirmed = confirm('No has cargado ningún documento. ¿Deseas continuar de todas formas?');
-                if (!confirmed) return;
-            }
-            
-            await submitForm();
-        });
     }
     
     function validateForm() {
@@ -1208,7 +1236,7 @@
     }
     
     // =========================
-    // TOGGLES DE SECCIONES
+    // TOGGLES DE SECCIONES (SE MANTIENE IGUAL)
     // =========================
     function initSectionToggles() {
         document.querySelectorAll('.section-toggle').forEach(toggle => {
@@ -1245,7 +1273,7 @@
     }
     
     // =========================
-    // CONTADOR DE CARACTERES
+    // CONTADOR DE CARACTERES (SE MANTIENE IGUAL)
     // =========================
     function initCharacterCounter() {
         const textarea = document.querySelector('textarea[name="comentarios"]');
@@ -1273,7 +1301,7 @@
     }
     
     // =========================
-    // MEJORAS DE FORMULARIO
+    // MEJORAS DE FORMULARIO (SE MANTIENE IGUAL)
     // =========================
     function initFormEnhancements() {
         setTimeout(() => {
@@ -1299,7 +1327,7 @@
     }
     
     // =========================
-    // BLOQUEO/DESBLOQUEO DE FORMULARIO
+    // BLOQUEO/DESBLOQUEO DE FORMULARIO (ACTUALIZADA)
     // =========================
     function lockForm() {
         if (!DOM.formulario) return;
@@ -1309,7 +1337,7 @@
         
         elements.forEach(el => {
             const id = el.id;
-            if (!["nombre", "apellido", "correo", "btnConfirmarCorreo"].includes(id)) {
+            if (!["nombre", "apellido", "correo", "btnConfirmarCorreo", "rfcInput", "btnVerificarRFC"].includes(id)) {
                 el.disabled = true;
             }
         });
@@ -1328,10 +1356,14 @@
         if (DOM.correoInput && STATE.correoConfirmado) {
             DOM.correoInput.readOnly = true;
         }
+        
+        if (DOM.rfcInput && STATE.rfcVerificado) {
+            DOM.rfcInput.readOnly = true;
+        }
     }
     
     // =========================
-    // BOTONES ESPECIALES
+    // BOTONES ESPECIALES (ACTUALIZADA)
     // =========================
     function initBotonesEspeciales() {
         const btnBaja = document.getElementById('btnBajaColaborador');
@@ -1346,30 +1378,13 @@
         if (btnCambioArea) {
             btnCambioArea.addEventListener('click', function(e) {
                 e.preventDefault();
-                mostrarModalCambioArea();
+                window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
             });
-        }
-        
-        // Añadir botón colaborador si no existe
-        if (!document.getElementById('btnColaborador')) {
-            const btnColaborador = document.createElement('button');
-            btnColaborador.id = 'btnColaborador';
-            btnColaborador.className = 'btn btn-info';
-            btnColaborador.innerHTML = '<i class="bi bi-person-check me-1"></i>Verificar Colaborador';
-            
-            const areaGroup = DOM.areaSelect?.parentNode;
-            if (areaGroup) {
-                areaGroup.parentNode.insertBefore(btnColaborador, areaGroup.nextSibling);
-            }
         }
     }
     
     function mostrarModalBaja() {
         showToast('Funcionalidad', 'Módulo de baja de colaboradores - En desarrollo', 'info');
-    }
-    
-    function mostrarModalCambioArea() {
-        showToast('Funcionalidad', 'Módulo de cambio de área - En desarrollo', 'info');
     }
     
     // =========================
@@ -1433,15 +1448,132 @@
     }
     
     // =========================
+    // PREVISUALIZACIÓN DE DOCUMENTOS (SE MANTIENE IGUAL)
+    // =========================
+    function initPreviewModal() {
+        const modalElement = document.getElementById('modalPreview');
+        if (!modalElement) return;
+        
+        MODALS.preview = new bootstrap.Modal(modalElement);
+        
+        const downloadBtn = document.getElementById('downloadPreview');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const currentFile = STATE.currentPreviewFile;
+                if (currentFile) {
+                    const url = URL.createObjectURL(currentFile);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = currentFile.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            });
+        }
+    }
+    
+    window.previsualizarDocumento = function(btn) {
+        const card = btn.closest('.doc-card');
+        if (!card) return;
+        
+        const fileName = card.querySelector('.doc-title').textContent;
+        const file = STATE.documentos.get(fileName);
+        
+        if (!file) {
+            showToast('Error', 'No hay documento para previsualizar', 'warning');
+            return;
+        }
+        
+        mostrarPrevisualizacion(file);
+    };
+    
+    function mostrarPrevisualizacion(file) {
+        if (!MODALS.preview) {
+            initPreviewModal();
+        }
+        
+        const iframe = document.getElementById('previewFrame');
+        const img = document.getElementById('previewImg');
+        const unsupported = document.getElementById('previewUnsupported');
+        const downloadBtn = document.getElementById('downloadPreview');
+        
+        iframe.style.display = 'none';
+        img.style.display = 'none';
+        unsupported.classList.add('d-none');
+        
+        STATE.currentPreviewFile = file;
+        
+        if (downloadBtn) {
+            downloadBtn.href = '#';
+        }
+        
+        if (file.type.includes('pdf')) {
+            const url = URL.createObjectURL(file);
+            iframe.src = url;
+            iframe.style.display = 'block';
+        } else if (file.type.includes('image')) {
+            const url = URL.createObjectURL(file);
+            img.src = url;
+            img.style.display = 'block';
+        } else {
+            unsupported.classList.remove('d-none');
+        }
+        
+        MODALS.preview.show();
+        
+        const modalElement = document.getElementById('modalPreview');
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            if (iframe.src) URL.revokeObjectURL(iframe.src);
+            if (img.src) URL.revokeObjectURL(img.src);
+        }, { once: true });
+    }
+    
+    window.cambiarDocumento = function(btn) {
+        const card = btn.closest('.doc-card');
+        if (!card) return;
+        
+        const input = card.querySelector('input[type="file"]');
+        if (!input) return;
+        
+        const fileName = card.querySelector('.doc-title').textContent;
+        
+        if (card.classList.contains('flipped')) {
+            STATE.documentosCargados = Math.max(0, STATE.documentosCargados - 1);
+            STATE.documentos.delete(fileName);
+        }
+        
+        card.classList.remove('flipped');
+        input.value = '';
+        
+        const fileNameElement = card.querySelector('.doc-file-name');
+        if (fileNameElement) {
+            fileNameElement.textContent = '';
+        }
+        
+        setTimeout(() => {
+            updateUploadProgress();
+        }, 300);
+        
+        setTimeout(() => input.click(), 100);
+    };
+    
+    // =========================
     // INICIALIZACIÓN
     // =========================
     function init() {
-        console.log('Inicializando módulo de alta de colaboradores V2.3...');
+        console.log('Inicializando módulo de alta de colaboradores V2.4...');
         
         initComponents();
         lockForm();
         
-        console.log('Módulo de alta V2.3 inicializado correctamente');
+        // Inicializar estado del RFC
+        updateRFCStatus('not-verified');
+        updateSubmitButton();
+        
+        console.log('Módulo de alta V2.4 inicializado correctamente');
     }
     
     // =========================

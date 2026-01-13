@@ -20321,3 +20321,2167 @@ jinja2.exceptions.UndefinedError: 'STATE' is undefined
 2026-01-13 09:52:29,295 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:52:29] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
 2026-01-13 09:52:29,297 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:52:29] "[36mGET /static/js/alta.js?v=2.3 HTTP/1.1[0m" 304 -
 2026-01-13 09:52:29,315 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:52:29] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:13:16,543 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:16] "GET / HTTP/1.1" 200 -
+2026-01-13 10:13:16,856 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:16] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:13:16,870 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:16] "GET /static/css/alta.css?v=2.3 HTTP/1.1" 200 -
+2026-01-13 10:13:16,874 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:16] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:13:16,909 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:16] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:13:17,107 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:13:17] "GET /static/js/alta.js?v=2.4 HTTP/1.1" 200 -
+2026-01-13 10:16:16,204 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 10:16:16,884 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:18:32,956 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:18:33,122 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:18:33,159 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:18:33,209 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 10:18:33,211 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 10:18:33,217 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:18:35,166 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:18:35,288 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:18:35,555 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:18:35,584 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 10:18:35,590 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 10:18:36,457 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "GET / HTTP/1.1" 200 -
+2026-01-13 10:18:36,875 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:18:36,883 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:18:36,887 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 10:18:36,889 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:18:36,918 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:18:36] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:19:46,894 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:19:46] "[33mGET /cambio-area-colaborador HTTP/1.1[0m" 404 -
+2026-01-13 10:21:30,368 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 10:21:30,599 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:21:31,710 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:21:31,791 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:21:31,821 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:21:31,835 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 10:21:31,837 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 10:21:36,996 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:21:37,168 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:37] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:21:37,398 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:37] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:21:37,685 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:37] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:21:37,688 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:37] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:21:37,861 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:37] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:21:38,085 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:21:38,089 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:21:38,114 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:21:38,266 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:21:38,286 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:38] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:38,451 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:21:38,461 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:38] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:38,565 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:21:38,568 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:38] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:39,171 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:21:39,187 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:21:39,246 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:21:39,277 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:21:39,299 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:39] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:39,663 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:39] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:39,950 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:21:39,958 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:39] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:42,426 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:21:42,435 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:21:42,470 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:21:42,555 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:21:42,570 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:21:42,580 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:21:42,789 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:21:42,796 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:21:42,803 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:21:42,958 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:21:43,000 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:42] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:43,149 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:21:43,154 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:43] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:43,298 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:21:43,302 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:43] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:43,877 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:21:43,883 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:21:43,937 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:21:43,980 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:21:44,020 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:44] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:44,423 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:44] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:21:44,615 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:21:44,619 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:21:44] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:36,094 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:23:36,112 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:23:36,194 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:23:36,245 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:23:36,253 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:23:36,287 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:23:36,514 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:23:36,526 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:23:36,528 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:23:36,586 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:23:36,601 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:36,748 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:23:36,775 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:36,872 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:23:36,877 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:36] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:37,479 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:23:37,481 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:23:37,495 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:23:37,511 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:23:37,557 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:37] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:37,915 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:37] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:23:38,152 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:23:38,154 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:23:38] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:03,693 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:26:03,703 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:03] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:26:03,729 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:03] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:26:03,803 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:03] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:03,804 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:03] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:26:03,818 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:03] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:04,268 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:26:04,305 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:26:04,323 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:26:04,356 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:26:04,370 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:04] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:04,452 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:26:04,456 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:04] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:04,550 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:26:04,552 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:04] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:05,581 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:26:05,584 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:26:05,587 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:26:05,601 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:26:05,619 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:05] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:05,907 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:05] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:06,033 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:26:06,035 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:06] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:08,115 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:08] "GET / HTTP/1.1" 200 -
+2026-01-13 10:26:08,161 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:08] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:26:08,187 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:08] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:26:08,192 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:08] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:08,196 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:08] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 10:26:13,862 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:26:13,874 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:13] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:26:13,895 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:13] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:26:13,948 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:13] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:26:13,958 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:13] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:13,965 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:13] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:14,701 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:26:14,703 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:26:14,719 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:26:14,760 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:26:14,773 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:14] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:14,843 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:26:14,846 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:14] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:14,949 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:26:14,954 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:14] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:15,622 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:26:15,637 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:26:15,655 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:26:15,749 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:26:15,754 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:15] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:16,038 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:16] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:16,160 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:26:16,162 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:16] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:16,281 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:16] "GET / HTTP/1.1" 200 -
+2026-01-13 10:26:21,159 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:26:21,165 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:21] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:26:21,187 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:21] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:26:21,233 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:21] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:26:21,249 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:21] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:21,250 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:21] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:21,951 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:26:22,029 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:26:22,035 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:26:22,064 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:26:22,069 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:22] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:22,165 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:26:22,167 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:22] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:22,214 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:26:22,215 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:22] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:23,469 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:26:23,499 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:26:23,537 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:26:23,547 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:26:23,567 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:23] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:23,665 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:23] "GET / HTTP/1.1" 200 -
+2026-01-13 10:26:23,925 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:23] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:24,036 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:26:24,039 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:24] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:32,970 - __main__ - ERROR - Error en página de cambio de área: cambio_area_colaborador.html
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2141, in cambio_area_colaborador
+    return render_template("cambio_area_colaborador.html",
+        areas=areas,
+        puestos=puestos,
+        today=date.today().isoformat()
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 64, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 98, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: cambio_area_colaborador.html
+2026-01-13 10:26:32,982 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:32] "[32mGET /cambio-area-colaborador HTTP/1.1[0m" 302 -
+2026-01-13 10:26:33,002 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 10:26:33,065 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:26:33,066 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:33,072 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 10:26:33,237 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 10:26:33,238 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 10:26:33,246 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 10:26:33,330 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 10:26:33,335 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:33,412 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 10:26:33,415 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:33,477 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 10:26:33,480 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:33] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:35,001 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 10:26:35,012 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 10:26:35,022 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 10:26:35,050 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 10:26:35,055 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:35] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:35,085 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:35] "GET / HTTP/1.1" 200 -
+2026-01-13 10:26:35,273 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:35] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 10:26:35,387 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 10:26:35,389 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:26:35] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 10:27:03,844 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "GET / HTTP/1.1" 200 -
+2026-01-13 10:27:03,895 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:27:03,917 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:27:03,918 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:27:03,921 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 10:27:03,955 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:03] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:27:04,967 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:04] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 10:27:05,035 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:05] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:27:05,051 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:05] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:27:05,053 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:27:05] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:29:19,602 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:29:19] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:34:00,414 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 10:34:00,854 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:34:58,695 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:34:58,769 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:34:58,806 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:34:58,837 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 10:34:58,837 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 10:34:58,840 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:34:59,770 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:34:59,863 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:34:59,912 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:34:59,934 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 10:34:59,940 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 10:35:04,963 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:04] "GET / HTTP/1.1" 200 -
+2026-01-13 10:35:05,356 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:05] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:35:05,371 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:05] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:35:05,373 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:05] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:35:05,378 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:05] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 10:35:08,336 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:08] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 10:35:08,402 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:08] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:35:08,422 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:08] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:35:08,429 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:35:08] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:42:38,376 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 10:42:38,578 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:43:02,087 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:43:02,168 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:43:02,194 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:43:02,244 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 10:43:02,246 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 10:43:02,258 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 10:43:03,698 - __main__ - INFO - Starting application initialization...
+2026-01-13 10:43:03,771 - __main__ - INFO - Database tables verified/created
+2026-01-13 10:43:03,821 - __main__ - INFO - Application initialized successfully
+2026-01-13 10:43:03,853 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 10:43:03,858 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 10:43:07,037 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:07] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 10:43:07,375 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:07] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 10:43:07,376 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:07] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 10:43:07,387 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:07] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 10:43:07,426 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:07] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 10:43:20,737 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:20] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 10:43:20,760 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:20] "[33mGET /api/historial-cambios/9 HTTP/1.1[0m" 404 -
+2026-01-13 10:43:31,041 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:43:31] "GET /api/puestos-por-area/3 HTTP/1.1" 200 -
+2026-01-13 10:49:48,508 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:49:48] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 10:49:48,620 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:49:48] "[33mGET /api/puestos-por-area/all HTTP/1.1[0m" 404 -
+2026-01-13 10:50:11,859 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:50:11] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 10:50:11,870 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 10:50:11] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:03:11,237 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:03:11] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:11:14,269 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:14] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:11:14,373 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:14] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:11:14,374 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:14] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:11:14,472 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:14] "[33mGET /api/puestos-por-area/all HTTP/1.1[0m" 404 -
+2026-01-13 11:11:43,823 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:11:43,904 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:11:43,928 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:11:43,971 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 11:11:43,972 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 11:11:43,977 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 11:11:45,561 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:11:45,659 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:11:45,718 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:11:45,750 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 11:11:45,756 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 11:11:45,840 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:45] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:11:46,023 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:46] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:11:46,026 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:46] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:11:46,059 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:11:46] "[33mGET /api/puestos-por-area/all HTTP/1.1[0m" 404 -
+2026-01-13 11:13:17,667 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 11:13:17,838 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 11:13:18,963 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:13:19,027 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:13:19,060 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:13:19,083 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 11:13:19,089 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 11:13:20,956 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:13:20] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:13:21,249 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:13:21] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:13:21,251 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:13:21] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:13:21,303 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:13:21] "GET /api/puestos-por-area/all HTTP/1.1" 200 -
+2026-01-13 11:13:37,542 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:13:37] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:15:40,670 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:40] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:15:40,728 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:40] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:15:40,747 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:40] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:15:40,787 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:40] "GET /api/puestos-por-area/all HTTP/1.1" 200 -
+2026-01-13 11:15:47,761 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:47] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:15:50,082 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:15:50] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:16:30,281 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:16:30] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:16:30,325 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:16:30] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:16:30,339 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:16:30] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:16:30,394 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:16:30] "GET /api/puestos-por-area/all HTTP/1.1" 200 -
+2026-01-13 11:16:34,708 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:16:34] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:18:10,028 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:18:10] "GET /api/verificar-rfc?rfc=nilsonmanuel37@gmail.com HTTP/1.1" 200 -
+2026-01-13 11:18:30,940 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:18:30] "GET /api/verificar-rfc?rfc=noen000202ik3 HTTP/1.1" 200 -
+2026-01-13 11:18:30,953 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:18:30] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:18:53,584 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:18:53] "GET /api/puestos-por-area/1 HTTP/1.1" 200 -
+2026-01-13 11:18:56,678 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:18:56] "GET /api/puestos-por-area/2 HTTP/1.1" 200 -
+2026-01-13 11:19:00,892 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:19:00] "GET /api/puestos-por-area/3 HTTP/1.1" 200 -
+2026-01-13 11:21:12,736 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:12] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:21:12,768 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:12] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:21:12,776 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:12] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:21:12,795 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:12] "GET /api/puestos-por-area/all HTTP/1.1" 200 -
+2026-01-13 11:21:19,125 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:19] "GET /api/verificar-rfc?rfc=noen000202ik3 HTTP/1.1" 200 -
+2026-01-13 11:21:19,134 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:19] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:21:53,303 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:21:53] "GET /api/puestos-por-area/3 HTTP/1.1" 200 -
+2026-01-13 11:22:26,902 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:26] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:22:26,971 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:26] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:22:26,980 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:26] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:22:27,085 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:27] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:22:36,371 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:36] "GET /api/verificar-rfc?rfc=noen000202ik3 HTTP/1.1" 200 -
+2026-01-13 11:22:36,390 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:36] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:22:51,317 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:51] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:22:53,572 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:22:53] "[33mGET /api/colaborador/nilsonmanuel37@gmail.com HTTP/1.1[0m" 404 -
+2026-01-13 11:23:01,221 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:23:01] "GET /api/buscar-colaboradores?q=novelo HTTP/1.1" 200 -
+2026-01-13 11:29:57,174 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 11:29:57,341 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 11:29:58,078 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:29:58,112 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:29:58,131 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:29:58,147 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 11:29:58,149 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 11:30:01,530 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:01] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:30:01,741 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:01] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:01,742 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:01] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:30:01,809 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:01] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:30:05,752 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:05] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:30:07,807 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:07] "[33mGET /api/colaborador/nilsonmanuel37@gmail.com HTTP/1.1[0m" 404 -
+2026-01-13 11:30:18,697 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:18] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 11:30:18,759 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:18] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:30:18,771 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:18] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:18,789 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:18] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:19,011 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 11:30:19,015 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 11:30:19,029 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 11:30:19,152 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 11:30:19,160 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:19] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:19,214 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 11:30:19,221 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:19] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:19,292 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 11:30:19,294 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:19] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:19,888 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 11:30:19,894 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:19] "[33mGET /api/reclutadores/comercial?year=2026 HTTP/1.1[0m" 404 -
+2026-01-13 11:30:19,914 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 11:30:20,165 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:20] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:20,332 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 11:30:20,338 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:20] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:27,154 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "GET / HTTP/1.1" 200 -
+2026-01-13 11:30:27,230 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:30:27,262 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 11:30:27,263 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:27,264 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 11:30:27,315 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:27] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 11:30:34,463 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 11:30:34,529 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:30:34,540 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:34,555 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 11:30:34,750 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 11:30:34,762 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 11:30:34,795 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 11:30:34,869 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 11:30:34,877 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:34,945 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 11:30:34,948 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:34] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:35,010 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 11:30:35,012 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:35] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:35,548 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 11:30:35,560 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:35] "[33mGET /api/reclutadores/comercial?year=2026 HTTP/1.1[0m" 404 -
+2026-01-13 11:30:35,574 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 11:30:35,867 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:35] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:35,993 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 11:30:35,996 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:35] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:30:41,051 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:41] "GET /api/buscar-reclutador?nombre=Comercial HTTP/1.1" 200 -
+2026-01-13 11:30:41,068 - __main__ - INFO - API Detalle Reclutador 5 solicitada para año: 2026
+2026-01-13 11:30:41,108 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:30:41] "GET /api/contrataciones/detalle-reclutador/5?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:29,471 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:32:29,520 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:32:29,539 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:32:29,557 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 11:32:29,558 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 11:32:29,560 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 11:32:30,237 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:32:30,325 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:32:30,377 - __main__ - INFO - Application initialized successfully
+2026-01-13 11:32:30,404 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 11:32:30,408 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 11:32:31,587 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:31] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 11:32:36,051 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 11:32:36,265 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:32:36,266 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:32:36,273 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 11:32:36,505 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 11:32:36,509 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 11:32:36,518 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 11:32:36,603 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 11:32:36,608 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:36,703 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 11:32:36,707 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:36,760 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 11:32:36,766 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:36] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:37,298 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 11:32:37,302 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 11:32:37,321 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 11:32:37,368 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 11:32:37,387 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:37] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:37,622 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:37] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:37,768 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 11:32:37,771 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:37] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:32:55,811 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "GET / HTTP/1.1" 200 -
+2026-01-13 11:32:55,889 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:32:55,901 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 11:32:55,908 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:32:55,919 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 11:32:55,955 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:55] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 11:32:57,285 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:57] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:32:57,326 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:57] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:32:57,334 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:57] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:32:57,373 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:32:57] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:33:05,315 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:33:05] "GET /api/verificar-rfc?rfc=noen000202ik3 HTTP/1.1" 200 -
+2026-01-13 11:33:05,326 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:33:05] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:33:23,773 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:33:23] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:33:39,927 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:33:39] "GET /api/buscar-colaborador?campo=correo&valor=manuel.novelo@ HTTP/1.1" 200 -
+2026-01-13 11:33:41,015 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:33:41] "GET /api/buscar-colaborador?campo=correo&valor=manuel.novelo@ HTTP/1.1" 200 -
+2026-01-13 11:34:41,529 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:34:41] "GET /api/verificar-rfc?rfc=noen000202ik3 HTTP/1.1" 200 -
+2026-01-13 11:34:41,542 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:34:41] "[33mGET /api/colaborador/9/historial HTTP/1.1[0m" 404 -
+2026-01-13 11:34:57,607 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:34:57] "GET /api/puestos-por-area/3 HTTP/1.1" 200 -
+2026-01-13 11:47:05,373 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:05] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:47:05,477 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:05] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:47:05,484 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:05] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:47:05,663 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:05] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:47:16,214 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:16] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:47:22,081 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:22] "GET /api/colaborador/2 HTTP/1.1" 200 -
+2026-01-13 11:47:33,558 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:47:33] "GET /api/puestos-por-area/3 HTTP/1.1" 200 -
+2026-01-13 11:49:50,838 - __main__ - INFO - Cambio de área procesado para colaborador ID: 2
+2026-01-13 11:49:50,844 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:50] "POST /api/procesar-cambio-area HTTP/1.1" 200 -
+2026-01-13 11:49:52,918 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:52] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 11:49:53,002 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:49:53,017 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:49:53,051 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 11:49:53,268 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 11:49:53,270 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 11:49:53,277 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 11:49:53,350 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 11:49:53,358 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:49:53,427 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 11:49:53,433 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:49:53,506 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 11:49:53,510 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:53] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:49:54,078 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 11:49:54,082 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 11:49:54,087 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 11:49:54,103 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 11:49:54,117 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:54] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:49:54,396 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:54] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 11:49:54,556 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 11:49:54,560 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:49:54] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 11:51:04,858 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:04] "GET / HTTP/1.1" 200 -
+2026-01-13 11:51:04,939 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:04] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:51:04,973 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:04] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 11:51:04,985 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:04] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:51:04,994 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:04] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 11:51:05,035 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:05] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 11:51:07,049 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:07] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:51:07,148 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:07] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:51:07,190 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:07] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:51:07,237 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:07] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:51:12,444 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:12] "[31m[1mGET /api/verificar-rfc?rfc=NOEN00202 HTTP/1.1[0m" 400 -
+2026-01-13 11:51:20,276 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:51:20] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:52:01,307 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:01] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 11:52:01,404 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:01] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 11:52:01,424 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:01] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 11:52:01,484 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:01] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 11:52:04,777 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:04] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 11:52:07,616 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 11:52:07] "GET /api/colaborador/2 HTTP/1.1" 200 -
+2026-01-13 11:55:25,658 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 11:55:26,332 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 11:55:29,223 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:55:29,284 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:55:29,300 - __main__ - ERROR - Database error: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2434, in _determine_joins
+    self.primaryjoin = join_condition(
+                       ~~~~~~~~~~~~~~^
+        self.parent_persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\util.py", line 121, in join_condition
+    return Join._join_condition(
+           ~~~~~~~~~~~~~~~~~~~~^
+        a,
+        ^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1441, in _join_condition
+    cls._joincond_trim_constraints(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        a, b, constraints, consider_as_foreign_keys
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1586, in _joincond_trim_constraints
+    raise exc.AmbiguousForeignKeysError(
+    ...<5 lines>...
+    )
+sqlalchemy.exc.AmbiguousForeignKeysError: Can't determine join between 'colaboradores' and 'areas'; tables have more than one foreign key constraint relationship between them. Please specify the 'onclause' of this join explicitly.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 127, in get_db
+    yield db
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2154, in create_initial_data
+    if db.query(Area).count() == 0:
+       ~~~~~~~~^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2941, in query
+    return self._query_cls(entities, self, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 276, in __init__
+    self._set_entities(entities)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 289, in _set_entities
+    coercions.expect(
+    ~~~~~~~~~~~~~~~~^
+        roles.ColumnsClauseRole,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        post_inspect=True,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\coercions.py", line 389, in expect
+    insp._post_inspect
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 1338, in __get__
+    obj.__dict__[self.__name__] = result = self.fget(obj)
+                                           ~~~~~~~~~^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2733, in _post_inspect
+    self._check_configure()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2410, in _check_configure
+    _configure_registries({self.registry}, cascade=True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4227, in _configure_registries
+    _do_configure_registries(registries, cascade)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4268, in _do_configure_registries
+    mapper._post_configure_properties()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2427, in _post_configure_properties
+    prop.init()
+    ~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\interfaces.py", line 595, in init
+    self.do_init()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1657, in do_init
+    self._setup_join_conditions()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1895, in _setup_join_conditions
+    self._join_condition = jc = JoinCondition(
+                                ~~~~~~~~~~~~~^
+        parent_persist_selectable=self.parent.persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<14 lines>...
+        can_be_synced_fn=self._columns_are_mapped,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2321, in __init__
+    self._determine_joins()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2478, in _determine_joins
+    raise sa_exc.AmbiguousForeignKeysError(
+    ...<7 lines>...
+    ) from afe
+sqlalchemy.exc.AmbiguousForeignKeysError: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+2026-01-13 11:57:25,241 - __main__ - INFO - Starting application initialization...
+2026-01-13 11:57:25,302 - __main__ - INFO - Database tables verified/created
+2026-01-13 11:57:25,313 - __main__ - ERROR - Database error: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2434, in _determine_joins
+    self.primaryjoin = join_condition(
+                       ~~~~~~~~~~~~~~^
+        self.parent_persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\util.py", line 121, in join_condition
+    return Join._join_condition(
+           ~~~~~~~~~~~~~~~~~~~~^
+        a,
+        ^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1441, in _join_condition
+    cls._joincond_trim_constraints(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        a, b, constraints, consider_as_foreign_keys
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1586, in _joincond_trim_constraints
+    raise exc.AmbiguousForeignKeysError(
+    ...<5 lines>...
+    )
+sqlalchemy.exc.AmbiguousForeignKeysError: Can't determine join between 'colaboradores' and 'areas'; tables have more than one foreign key constraint relationship between them. Please specify the 'onclause' of this join explicitly.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 127, in get_db
+    yield db
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2167, in create_initial_data
+    if db.query(Area).count() == 0:
+       ~~~~~~~~^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2941, in query
+    return self._query_cls(entities, self, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 276, in __init__
+    self._set_entities(entities)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 289, in _set_entities
+    coercions.expect(
+    ~~~~~~~~~~~~~~~~^
+        roles.ColumnsClauseRole,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        post_inspect=True,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\coercions.py", line 389, in expect
+    insp._post_inspect
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 1338, in __get__
+    obj.__dict__[self.__name__] = result = self.fget(obj)
+                                           ~~~~~~~~~^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2733, in _post_inspect
+    self._check_configure()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2410, in _check_configure
+    _configure_registries({self.registry}, cascade=True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4227, in _configure_registries
+    _do_configure_registries(registries, cascade)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4268, in _do_configure_registries
+    mapper._post_configure_properties()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2427, in _post_configure_properties
+    prop.init()
+    ~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\interfaces.py", line 595, in init
+    self.do_init()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1657, in do_init
+    self._setup_join_conditions()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1895, in _setup_join_conditions
+    self._join_condition = jc = JoinCondition(
+                                ~~~~~~~~~~~~~^
+        parent_persist_selectable=self.parent.persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<14 lines>...
+        can_be_synced_fn=self._columns_are_mapped,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2321, in __init__
+    self._determine_joins()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2478, in _determine_joins
+    raise sa_exc.AmbiguousForeignKeysError(
+    ...<7 lines>...
+    ) from afe
+sqlalchemy.exc.AmbiguousForeignKeysError: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+2026-01-13 12:00:08,080 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:00:08,117 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:00:08,129 - __main__ - ERROR - Database error: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2434, in _determine_joins
+    self.primaryjoin = join_condition(
+                       ~~~~~~~~~~~~~~^
+        self.parent_persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\util.py", line 121, in join_condition
+    return Join._join_condition(
+           ~~~~~~~~~~~~~~~~~~~~^
+        a,
+        ^^
+    ...<2 lines>...
+        consider_as_foreign_keys=consider_as_foreign_keys,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1441, in _join_condition
+    cls._joincond_trim_constraints(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        a, b, constraints, consider_as_foreign_keys
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\selectable.py", line 1586, in _joincond_trim_constraints
+    raise exc.AmbiguousForeignKeysError(
+    ...<5 lines>...
+    )
+sqlalchemy.exc.AmbiguousForeignKeysError: Can't determine join between 'colaboradores' and 'areas'; tables have more than one foreign key constraint relationship between them. Please specify the 'onclause' of this join explicitly.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 127, in get_db
+    yield db
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 2264, in create_initial_data
+    if db.query(Area).count() == 0:
+       ~~~~~~~~^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2941, in query
+    return self._query_cls(entities, self, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 276, in __init__
+    self._set_entities(entities)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 289, in _set_entities
+    coercions.expect(
+    ~~~~~~~~~~~~~~~~^
+        roles.ColumnsClauseRole,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        post_inspect=True,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\coercions.py", line 389, in expect
+    insp._post_inspect
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 1338, in __get__
+    obj.__dict__[self.__name__] = result = self.fget(obj)
+                                           ~~~~~~~~~^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2733, in _post_inspect
+    self._check_configure()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2410, in _check_configure
+    _configure_registries({self.registry}, cascade=True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4227, in _configure_registries
+    _do_configure_registries(registries, cascade)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4268, in _do_configure_registries
+    mapper._post_configure_properties()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2427, in _post_configure_properties
+    prop.init()
+    ~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\interfaces.py", line 595, in init
+    self.do_init()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1657, in do_init
+    self._setup_join_conditions()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1895, in _setup_join_conditions
+    self._join_condition = jc = JoinCondition(
+                                ~~~~~~~~~~~~~^
+        parent_persist_selectable=self.parent.persist_selectable,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<14 lines>...
+        can_be_synced_fn=self._columns_are_mapped,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2321, in __init__
+    self._determine_joins()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\relationships.py", line 2478, in _determine_joins
+    raise sa_exc.AmbiguousForeignKeysError(
+    ...<7 lines>...
+    ) from afe
+sqlalchemy.exc.AmbiguousForeignKeysError: Could not determine join condition between parent/child tables on relationship Colaborador.area - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument, providing a list of those columns which should be counted as containing a foreign key reference to the parent table.
+2026-01-13 12:02:05,450 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:02:05,513 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:02:05,551 - __main__ - INFO - Application initialized successfully
+2026-01-13 12:02:05,585 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 12:02:05,586 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 12:02:05,591 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 12:02:06,740 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:02:06,794 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:02:06,841 - __main__ - INFO - Application initialized successfully
+2026-01-13 12:02:06,861 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 12:02:06,865 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 12:02:09,995 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:09] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 12:02:10,240 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:10] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:02:10,265 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:10] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:02:10,450 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:10] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 12:02:16,803 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:17,200 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:17] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:02:22,314 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson}%', 'apellido_1': '%nilson}%', 'correo_1': '%nilson}%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson}%', 'apellido_1': '%nilson}%', 'correo_1': '%nilson}%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:22,332 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:22] "GET /api/buscar-colaboradores?q=nilson} HTTP/1.1" 200 -
+2026-01-13 12:02:23,101 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:23,123 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:23] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:02:23,786 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:23,806 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:23] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:02:24,043 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:24,060 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:24] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:02:24,536 - __main__ - ERROR - Error buscando colaboradores: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 1392, in api_buscar_colaboradores
+    .all()
+     ~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE lower(colaboradores.nombre) LIKE lower(%(nombre_1)s) OR lower(colaboradores.apellido) LIKE lower(%(apellido_1)s) OR lower(colaboradores.correo) LIKE lower(%(correo_1)s) 
+ LIMIT %(param_1)s]
+[parameters: {'nombre_1': '%nilson%', 'apellido_1': '%nilson%', 'correo_1': '%nilson%', 'param_1': 10}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:24,555 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:24] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:02:34,092 - __main__ - ERROR - Error verificando RFC: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE colaboradores.rfc = %(rfc_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'rfc_1': 'NOEN000202IK3', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\nilson.novelo\OneDrive - MarnezMX\Documentos\Proyecto Alta de colaboradores\app.py", line 835, in api_verificar_rfc
+    colaborador = db.query(Colaborador).filter_by(rfc=rfc).first()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2759, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 558, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 822, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1200, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\nilson.novelo\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'colaboradores.fecha_ultimo_cambio_area' in 'field list'")
+[SQL: SELECT colaboradores.id AS colaboradores_id, colaboradores.nombre AS colaboradores_nombre, colaboradores.apellido AS colaboradores_apellido, colaboradores.correo AS colaboradores_correo, colaboradores.edad AS colaboradores_edad, colaboradores.estado_civil AS colaboradores_estado_civil, colaboradores.domicilio AS colaboradores_domicilio, colaboradores.telefono AS colaboradores_telefono, colaboradores.rfc AS colaboradores_rfc, colaboradores.curp AS colaboradores_curp, colaboradores.nss AS colaboradores_nss, colaboradores.fecha_alta AS colaboradores_fecha_alta, colaboradores.sueldo AS colaboradores_sueldo, colaboradores.comentarios AS colaboradores_comentarios, colaboradores.baja AS colaboradores_baja, colaboradores.fecha_baja AS colaboradores_fecha_baja, colaboradores.motivo_baja AS colaboradores_motivo_baja, colaboradores.rol_comercial AS colaboradores_rol_comercial, colaboradores.comisionista AS colaboradores_comisionista, colaboradores.metodo_pago AS colaboradores_metodo_pago, colaboradores.banco AS colaboradores_banco, colaboradores.numero_cuenta AS colaboradores_numero_cuenta, colaboradores.numero_comisiones AS colaboradores_numero_comisiones, colaboradores.reclutador AS colaboradores_reclutador, colaboradores.tiene_infonavit AS colaboradores_tiene_infonavit, colaboradores.infonavit_credito AS colaboradores_infonavit_credito, colaboradores.tiene_fonacot AS colaboradores_tiene_fonacot, colaboradores.fonacot_credito AS colaboradores_fonacot_credito, colaboradores.area_id AS colaboradores_area_id, colaboradores.puesto_id AS colaboradores_puesto_id, colaboradores.fecha_ultimo_cambio_area AS colaboradores_fecha_ultimo_cambio_area, colaboradores.motivo_ultimo_cambio_area AS colaboradores_motivo_ultimo_cambio_area, colaboradores.area_anterior_id AS colaboradores_area_anterior_id, colaboradores.metodo_pago_id AS colaboradores_metodo_pago_id, colaboradores.banco_id AS colaboradores_banco_id, colaboradores.reclutador_id AS colaboradores_reclutador_id 
+FROM colaboradores 
+WHERE colaboradores.rfc = %(rfc_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'rfc_1': 'NOEN000202IK3', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-13 12:02:34,108 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:02:34] "[35m[1mGET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1[0m" 500 -
+2026-01-13 12:04:40,037 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:40] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 12:04:40,099 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:40] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:04:40,132 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:40] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:04:40,225 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:40] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 12:04:45,337 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:45] "GET /api/buscar-colaboradores?q=nilson} HTTP/1.1" 200 -
+2026-01-13 12:04:48,168 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:48] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:04:53,220 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:04:53] "GET /api/colaborador/2 HTTP/1.1" 200 -
+2026-01-13 12:05:01,426 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:01] "GET /api/puestos-por-area/1 HTTP/1.1" 200 -
+2026-01-13 12:05:22,757 - __main__ - INFO - Cambio de área procesado para colaborador ID: 2
+2026-01-13 12:05:22,763 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:22] "POST /api/procesar-cambio-area HTTP/1.1" 200 -
+2026-01-13 12:05:24,854 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:24] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 12:05:24,931 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:24] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:05:24,955 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:24] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:05:24,975 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:24] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 12:05:25,218 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 12:05:25,220 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 12:05:25,232 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 12:05:25,341 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 12:05:25,355 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:25] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:05:25,451 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 12:05:25,455 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:25] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:05:25,529 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 12:05:25,532 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:25] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:05:26,094 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 12:05:26,100 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 12:05:26,120 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 12:05:26,151 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 12:05:26,182 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:26] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:05:26,654 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:26] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 12:05:27,015 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 12:05:27,020 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:05:27] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:06:26,756 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "GET / HTTP/1.1" 200 -
+2026-01-13 12:06:26,847 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:06:26,879 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 12:06:26,886 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:06:26,912 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
