@@ -22485,3 +22485,17 @@ WHERE colaboradores.rfc = %(rfc_1)s
 2026-01-13 12:06:26,879 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
 2026-01-13 12:06:26,886 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
 2026-01-13 12:06:26,912 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:06:26,999 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:26] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:06:28,257 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:28] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 12:06:28,364 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:28] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:06:28,394 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:28] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:06:28,442 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:28] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 12:06:35,795 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:35] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:06:42,838 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:42] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:06:44,837 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:06:44] "GET /api/colaborador/2 HTTP/1.1" 200 -
+2026-01-13 12:07:30,132 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "GET / HTTP/1.1" 200 -
+2026-01-13 12:07:30,233 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:07:30,250 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/css/alta.css?v=2.3 HTTP/1.1[0m" 304 -
+2026-01-13 12:07:30,263 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:07:30,266 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:07:30,298 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
