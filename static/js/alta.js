@@ -1,5 +1,5 @@
 // ============================================
-// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.1
+// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.3
 // ============================================
 
 (function() {
@@ -37,7 +37,8 @@
         puestoComercialSelect: document.getElementById('rol_comercial'),
         sueldoInput: document.getElementById('sueldo'),
         areaHidden: document.getElementById('areaHidden'),
-        correoConfirmacion: document.getElementById('correoConfirmacion')
+        correoConfirmacion: document.getElementById('correoConfirmacion'),
+        rfcInput: document.querySelector('input[name="rfc"]')
     };
     
     // =========================
@@ -50,7 +51,7 @@
         areaSeleccionada: null,
         esComercial: false,
         documentosCargados: 0,
-        totalDocumentos: 9, // Documentos fijos
+        totalDocumentos: 9,
         camposDuplicados: {
             correo: false,
             rfc: false,
@@ -58,7 +59,10 @@
             nss: false
         },
         verificacionesPendientes: new Set(),
-        documentos: new Map() // Para almacenar documentos cargados
+        documentos: new Map(),
+        usuarioRegistrado: false,
+        modalUsuarioRegistrado: null,
+        previewModal: null
     };
     
     // =========================
@@ -71,16 +75,16 @@
         ) : null,
         preview: null,
         baja: null,
-        cambioArea: null
+        cambioArea: null,
+        usuarioRegistrado: null
     };
     
     // =========================
     // INICIALIZACIÓN DE COMPONENTES
     // =========================
     function initComponents() {
-        console.log('Inicializando módulo de alta V2.1...');
+        console.log('Inicializando módulo de alta V2.3...');
         
-        // Inicializar todos los componentes
         initValidations();
         initAreaManager();
         initEmailManager();
@@ -91,29 +95,160 @@
         initFormEnhancements();
         initDuplicateChecker();
         initBotonesEspeciales();
+        initRFCValidation();
+        initVerificacionRFC();
         
-        // Inicializar contador de documentos
         updateDocumentCounter();
         
-        console.log('Módulo de alta V2.1 inicializado correctamente');
+        console.log('Módulo de alta V2.3 inicializado correctamente');
     }
     
     // =========================
-    // MANEJADOR DE DOCUMENTOS - COMPLETAMENTE CORREGIDO
+    // VERIFICACIÓN DE RFC AL BOTÓN "COLABORADOR"
+    // =========================
+    function initVerificacionRFC() {
+        const btnColaborador = document.getElementById('btnColaborador');
+        if (!btnColaborador) return;
+        
+        btnColaborador.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+            
+            if (!rfc || rfc.length < 12) {
+                showToast('Error', 'Ingresa un RFC válido (12-13 caracteres)', 'warning');
+                DOM.rfcInput?.focus();
+                return;
+            }
+            
+            await verificarRFC(rfc);
+        });
+    }
+    
+    // =========================
+    // VERIFICAR RFC EN SERVIDOR
+    // =========================
+    async function verificarRFC(rfc) {
+        try {
+            // Mostrar carga
+            if (DOM.rfcInput) {
+                DOM.rfcInput.classList.add('is-validating');
+            }
+            
+            // Simular llamada al servidor (en producción sería fetch)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Datos de ejemplo
+            const usuarioExistente = Math.random() > 0.5;
+            
+            if (usuarioExistente) {
+                mostrarInfoColaboradorExistente({
+                    nombre: 'Juan Pérez González',
+                    rfc: rfc,
+                    correo: 'juan.perez@marnezdesarrollos.com',
+                    area: 'Ventas',
+                    estado: 'Activo',
+                    fecha_alta: '2023-05-15',
+                    puesto: 'Asesor Comercial'
+                });
+            } else {
+                showToast('RFC disponible', 'No se encontró un colaborador con este RFC', 'success');
+            }
+            
+        } catch (error) {
+            console.error('Error verificando RFC:', error);
+            showToast('Error', 'No se pudo verificar el RFC', 'danger');
+        } finally {
+            if (DOM.rfcInput) {
+                DOM.rfcInput.classList.remove('is-validating');
+            }
+        }
+    }
+    
+    // =========================
+    // MOSTRAR INFORMACIÓN DE COLABORADOR EXISTENTE
+    // =========================
+    function mostrarInfoColaboradorExistente(datos) {
+        const modalElement = document.getElementById('modalUsuarioRegistrado');
+        if (!modalElement) return;
+        
+        // Actualizar datos en el modal
+        document.getElementById('dupNombre').textContent = datos.nombre;
+        document.getElementById('dupRFC').textContent = datos.rfc;
+        document.getElementById('dupCorreo').textContent = datos.correo;
+        document.getElementById('dupArea').textContent = datos.area;
+        document.getElementById('dupEstado').textContent = datos.estado;
+        
+        // Configurar botón de continuar
+        const btnContinuar = document.getElementById('btnContinuarRegistro');
+        if (btnContinuar) {
+            btnContinuar.addEventListener('click', function() {
+                const confirmado = document.getElementById('confirmarNuevoRegistro').checked;
+                
+                if (!confirmado) {
+                    showToast('Atención', 'Debes confirmar que es un nuevo registro', 'warning');
+                    return;
+                }
+                
+                MODALS.usuarioRegistrado.hide();
+                showToast('Procediendo', 'Puedes continuar con el alta del colaborador', 'info');
+            }, { once: true });
+        }
+        
+        // Mostrar modal
+        MODALS.usuarioRegistrado = MODALS.usuarioRegistrado || new bootstrap.Modal(modalElement);
+        MODALS.usuarioRegistrado.show();
+    }
+    
+    // =========================
+    // VALIDACIÓN RFC (13 caracteres)
+    // =========================
+    function initRFCValidation() {
+        if (!DOM.rfcInput) return;
+        
+        DOM.rfcInput.maxLength = 13;
+        
+        DOM.rfcInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase();
+            
+            if (value.length > 13) {
+                value = value.substring(0, 13);
+            }
+            
+            value = value.replace(/[^A-Z0-9-]/g, '');
+            
+            e.target.value = value;
+            
+            if (value.length >= 12 && value.length <= 13) {
+                e.target.classList.remove('is-invalid');
+                e.target.classList.add('is-valid');
+            } else if (value.length > 0 && value.length < 12) {
+                e.target.classList.remove('is-valid');
+                e.target.classList.add('is-invalid');
+            } else {
+                e.target.classList.remove('is-valid', 'is-invalid');
+            }
+        });
+        
+        DOM.rfcInput.addEventListener('blur', function() {
+            if (this.value.length > 0 && (this.value.length < 12 || this.value.length > 13)) {
+                this.classList.add('is-invalid');
+                showToast('RFC inválido', 'El RFC debe tener entre 12 y 13 caracteres', 'warning');
+            }
+        });
+    }
+    
+    // =========================
+    // MANEJADOR DE DOCUMENTOS - CON PREVISUALIZACIÓN
     // =========================
     function initDocumentManager() {
         console.log('Inicializando gestor de documentos...');
         
-        // Inicializar eventos de carga de archivos
         document.querySelectorAll('.doc-card input[type="file"]').forEach(input => {
             input.addEventListener('change', handleFileUpload);
         });
         
-        // Inicializar drag and drop
         initDragAndDrop();
-        
-        // Mostrar progreso inicial
-        updateUploadProgress();
     }
     
     function handleFileUpload(e) {
@@ -137,7 +272,6 @@
         
         console.log(`Validando documento: ${fileName}`);
         
-        // Validar tamaño
         if (file.size > maxSize) {
             showToast('Error', `El archivo excede el tamaño máximo de ${maxSize / 1024 / 1024}MB`, 'danger');
             input.value = '';
@@ -145,7 +279,6 @@
             return;
         }
         
-        // Validar tipo
         if (!file.type.match(/(pdf|image\/jpeg|image\/jpg|image\/png)/)) {
             showToast('Error', 'Solo se permiten archivos PDF, JPG o PNG', 'danger');
             input.value = '';
@@ -153,37 +286,160 @@
             return;
         }
         
-        // Verificar si es un documento nuevo (no reemplazo)
-        if (!card.classList.contains('uploaded')) {
+        if (!card.classList.contains('flipped')) {
             STATE.documentosCargados++;
         }
         
-        // Almacenar documento
         STATE.documentos.set(fileName, file);
         
-        // Actualizar UI
-        updateDocumentCard(card, true);
-        updateUploadProgress();
+        card.classList.add('flipped');
         
-        // Mostrar preview si es imagen
+        setTimeout(() => {
+            updateUploadProgress();
+        }, 300);
+        
         if (file.type.startsWith('image/')) {
             previewImage(file, card);
+        }
+        
+        // Actualizar nombre de archivo en la tarjeta
+        const fileNameElement = card.querySelector('.doc-file-name');
+        if (fileNameElement) {
+            fileNameElement.textContent = file.name;
         }
         
         console.log(`Documento cargado: ${fileName} (${STATE.documentosCargados}/${STATE.totalDocumentos})`);
         showToast('✅ Documento cargado', `${fileName} cargado correctamente`, 'success');
     }
     
-    function updateDocumentCard(card, uploaded) {
-        if (uploaded) {
-            card.classList.add('uploaded');
-        } else {
-            card.classList.remove('uploaded');
+    // =========================
+    // PREVISUALIZACIÓN DE DOCUMENTOS
+    // =========================
+    function initPreviewModal() {
+        const modalElement = document.getElementById('modalPreview');
+        if (!modalElement) return;
+        
+        MODALS.preview = new bootstrap.Modal(modalElement);
+        
+        // Configurar descarga
+        const downloadBtn = document.getElementById('downloadPreview');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const currentFile = STATE.currentPreviewFile;
+                if (currentFile) {
+                    const url = URL.createObjectURL(currentFile);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = currentFile.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            });
         }
     }
     
+    // =========================
+    // FUNCIÓN GLOBAL PARA PREVISUALIZAR
+    // =========================
+    window.previsualizarDocumento = function(btn) {
+        const card = btn.closest('.doc-card');
+        if (!card) return;
+        
+        const fileName = card.querySelector('.doc-title').textContent;
+        const file = STATE.documentos.get(fileName);
+        
+        if (!file) {
+            showToast('Error', 'No hay documento para previsualizar', 'warning');
+            return;
+        }
+        
+        mostrarPrevisualizacion(file);
+    };
+    
+    function mostrarPrevisualizacion(file) {
+        if (!MODALS.preview) {
+            initPreviewModal();
+        }
+        
+        const iframe = document.getElementById('previewFrame');
+        const img = document.getElementById('previewImg');
+        const unsupported = document.getElementById('previewUnsupported');
+        const downloadBtn = document.getElementById('downloadPreview');
+        
+        // Resetear displays
+        iframe.style.display = 'none';
+        img.style.display = 'none';
+        unsupported.classList.add('d-none');
+        
+        // Guardar archivo actual para descarga
+        STATE.currentPreviewFile = file;
+        
+        // Configurar descarga
+        if (downloadBtn) {
+            downloadBtn.href = '#';
+        }
+        
+        if (file.type.includes('pdf')) {
+            const url = URL.createObjectURL(file);
+            iframe.src = url;
+            iframe.style.display = 'block';
+        } else if (file.type.includes('image')) {
+            const url = URL.createObjectURL(file);
+            img.src = url;
+            img.style.display = 'block';
+        } else {
+            unsupported.classList.remove('d-none');
+        }
+        
+        // Mostrar modal
+        MODALS.preview.show();
+        
+        // Liberar URL cuando se cierre el modal
+        const modalElement = document.getElementById('modalPreview');
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            if (iframe.src) URL.revokeObjectURL(iframe.src);
+            if (img.src) URL.revokeObjectURL(img.src);
+        }, { once: true });
+    }
+    
+    // =========================
+    // FUNCIÓN GLOBAL PARA CAMBIAR DOCUMENTO
+    // =========================
+    window.cambiarDocumento = function(btn) {
+        const card = btn.closest('.doc-card');
+        if (!card) return;
+        
+        const input = card.querySelector('input[type="file"]');
+        if (!input) return;
+        
+        const fileName = card.querySelector('.doc-title').textContent;
+        
+        if (card.classList.contains('flipped')) {
+            STATE.documentosCargados = Math.max(0, STATE.documentosCargados - 1);
+            STATE.documentos.delete(fileName);
+        }
+        
+        card.classList.remove('flipped');
+        input.value = '';
+        
+        // Limpiar nombre de archivo
+        const fileNameElement = card.querySelector('.doc-file-name');
+        if (fileNameElement) {
+            fileNameElement.textContent = '';
+        }
+        
+        setTimeout(() => {
+            updateUploadProgress();
+        }, 300);
+        
+        setTimeout(() => input.click(), 100);
+    };
+    
     function updateDocumentCounter() {
-        STATE.documentosCargados = document.querySelectorAll('.doc-card.uploaded').length;
+        STATE.documentosCargados = document.querySelectorAll('.doc-card.flipped').length;
         console.log(`Documentos cargados: ${STATE.documentosCargados}/${STATE.totalDocumentos}`);
     }
     
@@ -192,10 +448,7 @@
         const progressBar = document.getElementById('uploadProgress');
         const status = document.getElementById('uploadStatus');
         
-        if (!progressContainer || !progressBar || !status) {
-            console.error('Elementos de progreso no encontrados');
-            return;
-        }
+        if (!progressContainer || !progressBar || !status) return;
         
         const percentage = STATE.totalDocumentos > 0 
             ? (STATE.documentosCargados / STATE.totalDocumentos) * 100 
@@ -203,7 +456,6 @@
         
         console.log(`Actualizando progreso: ${percentage}% (${STATE.documentosCargados}/${STATE.totalDocumentos})`);
         
-        // Mostrar/ocultar contenedor
         if (STATE.documentosCargados > 0) {
             progressContainer.style.display = 'block';
             progressContainer.classList.add('visible');
@@ -211,21 +463,20 @@
             progressContainer.style.display = 'none';
         }
         
-        // Actualizar barra
         progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${Math.round(percentage)}%`;
         
-        // Actualizar texto
+        const percentageElement = document.getElementById('progressPercentage');
+        if (percentageElement) {
+            percentageElement.textContent = `${Math.round(percentage)}%`;
+        }
+        
         status.textContent = `${STATE.documentosCargados} de ${STATE.totalDocumentos} documentos cargados`;
         
-        // Cambiar color según progreso
         if (STATE.documentosCargados === STATE.totalDocumentos) {
-            progressBar.classList.remove('bg-info');
-            progressBar.classList.add('bg-success');
-            progressBar.textContent = '¡Completado!';
-        } else if (STATE.documentosCargados > 0) {
-            progressBar.classList.remove('bg-success');
-            progressBar.classList.add('bg-info');
+            progressBar.classList.add('progress-complete');
+            status.innerHTML = '<strong>¡Todos los documentos cargados!</strong>';
+        } else {
+            progressBar.classList.remove('progress-complete');
         }
     }
     
@@ -234,13 +485,12 @@
             return card.querySelector('.doc-title').textContent === fileName;
         });
         
-        if (card && card.classList.contains('uploaded')) {
-            card.classList.remove('uploaded');
+        if (card && card.classList.contains('flipped')) {
+            card.classList.remove('flipped');
             STATE.documentosCargados = Math.max(0, STATE.documentosCargados - 1);
             STATE.documentos.delete(fileName);
             updateUploadProgress();
             
-            // Resetear input file
             const input = card.querySelector('input[type="file"]');
             if (input) input.value = '';
         }
@@ -256,7 +506,6 @@
                     style="width:40px;height:40px;object-fit:cover;border-radius:8px;" 
                     alt="Vista previa">`;
                 
-                // Restaurar icono original al hacer clic
                 card.querySelector('input[type="file"]').addEventListener('click', () => {
                     icon.innerHTML = originalHTML;
                 }, { once: true });
@@ -306,7 +555,7 @@
     }
     
     // =========================
-    // MANEJADOR DE CORREO - CORREGIDO (sin undefined)
+    // MANEJADOR DE CORREO
     // =========================
     function initEmailManager() {
         if (!DOM.nombreInput || !DOM.apellidoInput) return;
@@ -343,7 +592,6 @@
     function generateEmail(nombre, apellido) {
         if (STATE.correoConfirmado) return;
         
-        // Limpiar y formatear nombres
         const nombreFormateado = nombre.split(' ')[0]
             .toLowerCase()
             .normalize("NFD")
@@ -360,7 +608,6 @@
             .replace(/Ñ/g, 'N')
             .replace(/[^a-z]/g, '');
         
-        // Validar que no estén vacíos
         if (!nombreFormateado || !apellidoFormateado) {
             DOM.correoInput.value = '';
             return;
@@ -369,45 +616,36 @@
         const email = `${nombreFormateado}.${apellidoFormateado}${CONFIG.dominioCorreo}`;
         DOM.correoInput.value = email.toLowerCase();
         
-        // Mostrar botón de confirmación
         if (DOM.btnConfirmarCorreo) {
             DOM.btnConfirmarCorreo.classList.remove('d-none');
             DOM.btnConfirmarCorreo.classList.add('pulse');
         }
         
-        // Auto-confirmación después de 5 segundos
         clearTimeout(STATE.timerCorreo);
         STATE.timerCorreo = setTimeout(() => {
-            if (!STATE.correoConfirmado && !STATE.modalMostrado && DOM.correoInput.value) {
+            if (!STATE.correoConfirmado && !STATE.modalMostrado && DOM.correoInput.value && !STATE.usuarioRegistrado) {
                 requestEmailConfirmation();
             }
         }, 5000);
     }
     
     function requestEmailConfirmation() {
-        if (STATE.correoConfirmado || STATE.modalMostrado || !DOM.correoInput.value.trim()) {
+        if (STATE.correoConfirmado || STATE.modalMostrado || !DOM.correoInput.value.trim() || STATE.usuarioRegistrado) {
             return;
         }
         
         const email = DOM.correoInput.value.trim();
         
-        // Verificar formato básico
         if (!VALIDATION.email.test(email)) {
             showToast('Error', 'Formato de correo inválido', 'danger');
             return;
         }
         
-        // Verificar duplicado antes de mostrar modal
-        verificarCampoDuplicadoMejorado(
-            { selector: 'input[name="correo"]', key: 'correo', nombre: 'Correo', icono: '📧' },
-            email
-        ).then(esDuplicado => {
-            if (esDuplicado) {
-                showToast('Correo duplicado', 'Por favor ingrese un correo diferente', 'warning');
+        verificarUsuarioRegistrado().then(estaRegistrado => {
+            if (estaRegistrado) {
                 return;
             }
             
-            // Mostrar correo en modal
             if (DOM.correoConfirmacion) {
                 DOM.correoConfirmacion.textContent = email;
             }
@@ -424,29 +662,24 @@
         STATE.modalMostrado = false;
         
         if (confirmed) {
-            // Bloquear correo
             DOM.correoInput.readOnly = true;
             DOM.correoInput.classList.add('is-valid');
             DOM.correoInput.classList.remove('is-invalid');
             
-            // Actualizar estado
             if (DOM.estadoCorreo) {
                 DOM.estadoCorreo.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Correo confirmado';
                 DOM.estadoCorreo.className = 'text-success fw-semibold mt-1';
             }
             
-            // Ocultar botón de confirmación
             if (DOM.btnConfirmarCorreo) {
                 DOM.btnConfirmarCorreo.classList.add('d-none');
                 DOM.btnConfirmarCorreo.classList.remove('pulse');
             }
             
-            // Desbloquear formulario
             unlockForm();
             
             showToast('✅ Correo confirmado', 'Correo institucional confirmado correctamente', 'success');
         } else {
-            // Permitir corrección
             DOM.correoInput.readOnly = false;
             DOM.correoInput.focus();
             DOM.correoInput.select();
@@ -468,7 +701,139 @@
     }
     
     // =========================
-    // VERIFICACIÓN DE DUPLICADOS - CORREGIDA
+    // VERIFICACIÓN DE USUARIO REGISTRADO
+    // =========================
+    async function verificarUsuarioRegistrado() {
+        const nombre = DOM.nombreInput ? DOM.nombreInput.value.trim() : '';
+        const apellido = DOM.apellidoInput ? DOM.apellidoInput.value.trim() : '';
+        const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+        const curp = document.querySelector('input[name="curp"]') ? document.querySelector('input[name="curp"]').value.trim() : '';
+        const nss = document.querySelector('input[name="nss"]') ? document.querySelector('input[name="nss"]').value.trim() : '';
+        
+        if (!nombre && !apellido && !rfc && !curp && !nss) {
+            return false;
+        }
+        
+        try {
+            if (DOM.correoInput) {
+                DOM.correoInput.classList.add('is-validating');
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const usuarioYaRegistrado = Math.random() > 0.5;
+            
+            if (usuarioYaRegistrado) {
+                STATE.usuarioRegistrado = true;
+                
+                let campoDuplicado = '';
+                let valorDuplicado = '';
+                
+                if (rfc && Math.random() > 0.5) {
+                    campoDuplicado = 'rfc';
+                    valorDuplicado = rfc;
+                } else if (curp && Math.random() > 0.5) {
+                    campoDuplicado = 'curp';
+                    valorDuplicado = curp;
+                } else if (nss && Math.random() > 0.5) {
+                    campoDuplicado = 'nss';
+                    valorDuplicado = nss;
+                } else {
+                    campoDuplicado = 'nombre';
+                    valorDuplicado = `${nombre} ${apellido}`;
+                }
+                
+                mostrarModalUsuarioRegistrado(campoDuplicado, valorDuplicado);
+                return true;
+            }
+            
+            STATE.usuarioRegistrado = false;
+            return false;
+            
+        } catch (error) {
+            console.error('Error verificando usuario registrado:', error);
+            return false;
+        } finally {
+            if (DOM.correoInput) {
+                DOM.correoInput.classList.remove('is-validating');
+            }
+        }
+    }
+    
+    // =========================
+    // MODAL DE USUARIO REGISTRADO
+    // =========================
+    function mostrarModalUsuarioRegistrado(campo, valor) {
+        let modalElement = document.getElementById('modalUsuarioRegistrado');
+        
+        if (!modalElement) {
+            modalElement = document.createElement('div');
+            modalElement.id = 'modalUsuarioRegistrado';
+            modalElement.className = 'modal fade modal-duplicate';
+            modalElement.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                Usuario Ya Registrado
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-person-x-fill text-danger" style="font-size: 3rem;"></i>
+                            </div>
+                            <p class="text-center mb-3">
+                                <strong>El colaborador ya se encuentra registrado en el sistema.</strong>
+                            </p>
+                            <div class="duplicate-details">
+                                <p class="mb-2"><strong>Campo duplicado:</strong> <span id="duplicateField"></span></p>
+                                <p class="mb-0"><strong>Valor:</strong> <code id="duplicateValue"></code></p>
+                            </div>
+                            <div class="alert alert-warning mt-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Importante:</strong> Puedes corregir los datos en los campos correspondientes.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-arrow-left me-1"></i>Entendido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalElement);
+        }
+        
+        const fieldNames = {
+            'nombre': 'Nombre Completo',
+            'correo': 'Correo Electrónico',
+            'rfc': 'RFC',
+            'curp': 'CURP',
+            'nss': 'Número de Seguro Social'
+        };
+        
+        document.getElementById('duplicateField').textContent = fieldNames[campo] || campo;
+        document.getElementById('duplicateValue').textContent = valor;
+        
+        STATE.modalUsuarioRegistrado = new bootstrap.Modal(modalElement);
+        STATE.modalUsuarioRegistrado.show();
+        
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            const input = document.querySelector(`input[name="${campo}"]`);
+            if (input) {
+                input.focus();
+                input.select();
+            }
+            
+            STATE.usuarioRegistrado = false;
+        }, { once: true });
+    }
+    
+    // =========================
+    // VERIFICACIÓN DE DUPLICADOS
     // =========================
     function initDuplicateChecker() {
         const campos = [
@@ -496,15 +861,15 @@
                 input.addEventListener('input', function() {
                     clearTimeout(timeout);
                     
-                    // Limpiar feedback anterior
                     const feedbackExistente = this.nextElementSibling;
                     if (feedbackExistente && feedbackExistente.classList.contains('duplicate-feedback')) {
                         feedbackExistente.remove();
                     }
                     
-                    // Limpiar clases de error
                     this.classList.remove('is-duplicate', 'is-invalid');
                     STATE.camposDuplicados[campo.key] = false;
+                    
+                    STATE.usuarioRegistrado = false;
                 });
             }
         });
@@ -516,16 +881,13 @@
         const input = document.querySelector(campo.selector);
         if (!input) return false;
         
-        // Limpiar feedback anterior
         const feedbackExistente = input.nextElementSibling;
         if (feedbackExistente && feedbackExistente.classList.contains('duplicate-feedback')) {
             feedbackExistente.remove();
         }
         
-        // Mostrar estado de verificación
         input.classList.add('is-validating');
         
-        // Evitar verificaciones simultáneas
         if (STATE.verificacionesPendientes.has(campo.key)) {
             return false;
         }
@@ -533,19 +895,18 @@
         STATE.verificacionesPendientes.add(campo.key);
         
         try {
-            // Simular verificación (en producción aquí iría la llamada a la API)
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            const esDuplicado = Math.random() > 0.7; // Simulación
+            const esDuplicado = Math.random() > 0.7;
             
             input.classList.remove('is-validating');
             
             if (esDuplicado) {
-                mostrarErrorDuplicadoMejorado(campo, valor, input);
+                mostrarModalUsuarioRegistrado(campo.key, valor);
+                input.classList.add('is-duplicate', 'is-invalid');
                 STATE.camposDuplicados[campo.key] = true;
                 return true;
             } else {
-                // Marcar como válido
                 input.classList.add('is-valid');
                 input.classList.remove('is-invalid');
                 STATE.camposDuplicados[campo.key] = false;
@@ -560,69 +921,24 @@
         }
     }
     
-    function mostrarErrorDuplicadoMejorado(campo, valor, input) {
-        // Crear elemento de feedback
-        const feedback = document.createElement('div');
-        feedback.className = 'duplicate-feedback mt-2';
-        feedback.innerHTML = `
-            <div class="alert alert-warning py-2 mb-0" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
-                    <div class="flex-grow-1">
-                        <div class="fw-bold">${campo.icono} ${campo.nombre} duplicado</div>
-                        <div class="small">El valor "<strong>${valor}</strong>" ya existe en el sistema.</div>
-                        <div class="small mt-1">
-                            <button type="button" class="btn btn-sm btn-outline-secondary btn-limpiar">
-                                <i class="bi bi-x-circle me-1"></i>Limpiar campo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Insertar después del input
-        input.parentNode.insertBefore(feedback, input.nextSibling);
-        
-        // Aplicar clases de error
-        input.classList.add('is-duplicate', 'is-invalid');
-        input.classList.remove('is-valid');
-        
-        // Enfocar el campo
-        input.focus();
-        
-        // Agregar evento al botón de limpiar
-        feedback.querySelector('.btn-limpiar').addEventListener('click', function() {
-            input.value = '';
-            input.classList.remove('is-duplicate', 'is-invalid');
-            feedback.remove();
-            STATE.camposDuplicados[campo.key] = false;
-            input.focus();
-        });
-    }
-    
     // =========================
     // FUNCIONES DE VALIDACIÓN BÁSICA
     // =========================
     function initValidations() {
-        // CURP Validation
         const curpInput = document.querySelector('input[name="curp"]');
         if (curpInput) {
             curpInput.addEventListener('blur', validateCURP);
         }
         
-        // Email Validation
         if (DOM.correoInput) {
             DOM.correoInput.addEventListener('blur', validateEmail);
         }
         
-        // Phone Validation
         const phoneInput = document.querySelector('input[name="telefono"]');
         if (phoneInput) {
             phoneInput.addEventListener('input', formatPhone);
         }
         
-        // Account Number Validation
         const accountInput = document.getElementById('numero_cuenta');
         if (accountInput) {
             accountInput.addEventListener('input', formatAccountNumber);
@@ -740,12 +1056,10 @@
             DOM.puestoSelect.disabled = true;
             DOM.puestoSelect.innerHTML = '<option value="">Cargando puestos...</option>';
             
-            // Simular carga de puestos
             await new Promise(resolve => setTimeout(resolve, 500));
             
             DOM.puestoSelect.innerHTML = '<option value="">Seleccione un puesto</option>';
             
-            // Datos de ejemplo
             const puestos = [
                 { id: 1, nombre: 'Gerente' },
                 { id: 2, nombre: 'Supervisor' },
@@ -855,12 +1169,32 @@
         submitBtn.disabled = true;
         
         try {
+            // Crear FormData
+            const formData = new FormData(DOM.formulario);
+            
+            // Agregar documentos
+            STATE.documentos.forEach((file, docName) => {
+                formData.append('documentos_nombres[]', docName);
+                formData.append('documentos_archivos[]', file);
+            });
+            
             // Simular envío
             await new Promise(resolve => setTimeout(resolve, 2000));
             
+            // En producción, descomentar esto:
+            /*
+            const response = await fetch('/api/alta-colaborador', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('Error en el servidor');
+            }
+            */
+            
             showToast('✅ Éxito', 'Colaborador guardado correctamente', 'success');
             
-            // Redirigir después de 1.5 segundos
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 1500);
@@ -948,7 +1282,6 @@
             }
         }, 300);
         
-        // Auto-validación al perder foco
         document.querySelectorAll('[required]').forEach(field => {
             field.addEventListener('blur', function() {
                 if (this.value.trim()) {
@@ -958,7 +1291,6 @@
             });
         });
         
-        // Fecha actual como fecha de alta
         const fechaInput = document.querySelector('input[name="fecha_alta"]');
         if (fechaInput && CONFIG.today) {
             fechaInput.max = CONFIG.today;
@@ -993,7 +1325,6 @@
             el.disabled = false;
         });
         
-        // El correo sigue siendo de solo lectura si está confirmado
         if (DOM.correoInput && STATE.correoConfirmado) {
             DOM.correoInput.readOnly = true;
         }
@@ -1003,7 +1334,6 @@
     // BOTONES ESPECIALES
     // =========================
     function initBotonesEspeciales() {
-        // Botón de Baja
         const btnBaja = document.getElementById('btnBajaColaborador');
         if (btnBaja) {
             btnBaja.addEventListener('click', function(e) {
@@ -1012,13 +1342,25 @@
             });
         }
         
-        // Botón de Cambio de Área
         const btnCambioArea = document.getElementById('btnCambioArea');
         if (btnCambioArea) {
             btnCambioArea.addEventListener('click', function(e) {
                 e.preventDefault();
                 mostrarModalCambioArea();
             });
+        }
+        
+        // Añadir botón colaborador si no existe
+        if (!document.getElementById('btnColaborador')) {
+            const btnColaborador = document.createElement('button');
+            btnColaborador.id = 'btnColaborador';
+            btnColaborador.className = 'btn btn-info';
+            btnColaborador.innerHTML = '<i class="bi bi-person-check me-1"></i>Verificar Colaborador';
+            
+            const areaGroup = DOM.areaSelect?.parentNode;
+            if (areaGroup) {
+                areaGroup.parentNode.insertBefore(btnColaborador, areaGroup.nextSibling);
+            }
         }
     }
     
@@ -1031,10 +1373,9 @@
     }
     
     // =========================
-    // FUNCIÓN DE TOAST
+    // FUNCIÓN DE TOAST - MEJORADA
     // =========================
     function showToast(title, message, type = 'info') {
-        // Crear contenedor si no existe
         let toastContainer = document.getElementById('toastContainer');
         if (!toastContainer) {
             toastContainer = document.createElement('div');
@@ -1095,12 +1436,12 @@
     // INICIALIZACIÓN
     // =========================
     function init() {
-        console.log('Inicializando módulo de alta de colaboradores V2.1...');
+        console.log('Inicializando módulo de alta de colaboradores V2.3...');
         
         initComponents();
         lockForm();
         
-        console.log('Módulo de alta V2.1 inicializado correctamente');
+        console.log('Módulo de alta V2.3 inicializado correctamente');
     }
     
     // =========================
@@ -1118,82 +1459,6 @@
     window.documentoCargado = function(input) {
         const event = new Event('change');
         input.dispatchEvent(event);
-    };
-    
-    window.previsualizarDocumento = function(btn) {
-        const card = btn.closest('.doc-card');
-        if (!card) return;
-        
-        const fileName = card.querySelector('.doc-title').textContent;
-        const file = STATE.documentos.get(fileName);
-        
-        if (!file) {
-            showToast('Error', 'No hay documento para previsualizar', 'warning');
-            return;
-        }
-        
-        const url = URL.createObjectURL(file);
-        const iframe = document.getElementById('previewFrame');
-        const img = document.getElementById('previewImg');
-        
-        // Resetear displays
-        iframe.style.display = 'none';
-        img.style.display = 'none';
-        
-        // Configurar según el tipo de archivo
-        if (file.type.includes('pdf')) {
-            iframe.src = url;
-            iframe.style.display = 'block';
-        } else if (file.type.includes('image')) {
-            img.src = url;
-            img.style.display = 'block';
-        } else {
-            showToast('Error', 'Tipo de archivo no soportado para previsualización', 'warning');
-            return;
-        }
-        
-        // Mostrar modal
-        const modalElement = document.getElementById('modalPreview');
-        const modal = MODALS.preview || new bootstrap.Modal(modalElement);
-        MODALS.preview = modal;
-        
-        // Liberar URL cuando se cierre el modal
-        modalElement.addEventListener('hidden.bs.modal', () => {
-            URL.revokeObjectURL(url);
-        }, { once: true });
-        
-        modal.show();
-    };
-    
-    window.cambiarDocumento = function(btn) {
-        const card = btn.closest('.doc-card');
-        if (!card) return;
-        
-        const input = card.querySelector('input[type="file"]');
-        if (!input) return;
-        
-        // Obtener nombre del documento
-        const fileName = card.querySelector('.doc-title').textContent;
-        
-        // Remover del estado
-        if (card.classList.contains('uploaded')) {
-            STATE.documentosCargados = Math.max(0, STATE.documentosCargados - 1);
-            STATE.documentos.delete(fileName);
-        }
-        
-        // Resetear UI
-        input.value = '';
-        card.classList.remove('uploaded');
-        
-        // Actualizar progreso
-        updateUploadProgress();
-        
-        // Efecto visual
-        card.classList.add('shake');
-        setTimeout(() => card.classList.remove('shake'), 400);
-        
-        // Abrir selector de archivos
-        setTimeout(() => input.click(), 100);
     };
     
     window.toggleCredito = function(tipo) {

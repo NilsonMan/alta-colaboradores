@@ -20182,3 +20182,78 @@ jinja2.exceptions.UndefinedError: 'STATE' is undefined
 2026-01-12 17:44:14,848 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:44:14] "GET /static/css/alta.css?v=2.1 HTTP/1.1" 200 -
 2026-01-12 17:44:14,894 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:44:14] "GET /static/js/alta.js?v=2.1 HTTP/1.1" 200 -
 2026-01-12 17:44:14,915 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:44:14] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-12 17:49:14,232 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "GET /dashboard HTTP/1.1" 200 -
+2026-01-12 17:49:14,318 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-12 17:49:14,339 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-12 17:49:14,353 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-12 17:49:14,594 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-12 17:49:14,598 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-12 17:49:14,629 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-12 17:49:14,707 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-12 17:49:14,716 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:14,794 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-12 17:49:14,797 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:14,848 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-12 17:49:14,849 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:14] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:15,410 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-12 17:49:15,440 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-12 17:49:15,460 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-12 17:49:15,469 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-12 17:49:15,488 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:15] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:15,744 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:15] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:15,886 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-12 17:49:15,890 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:15] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:49:29,507 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "GET / HTTP/1.1" 200 -
+2026-01-12 17:49:29,558 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-12 17:49:29,574 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "[36mGET /static/css/alta.css?v=2.1 HTTP/1.1[0m" 304 -
+2026-01-12 17:49:29,575 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-12 17:49:29,578 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "[36mGET /static/js/alta.js?v=2.1 HTTP/1.1[0m" 304 -
+2026-01-12 17:49:29,617 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:49:29] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-12 17:50:01,901 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:01] "GET /dashboard HTTP/1.1" 200 -
+2026-01-12 17:50:01,975 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:01] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-12 17:50:01,978 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:01] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-12 17:50:01,988 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:01] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-12 17:50:02,149 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-12 17:50:02,158 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-12 17:50:02,161 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-12 17:50:02,214 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-12 17:50:02,221 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:02] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:02,278 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-12 17:50:02,282 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:02] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:02,327 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-12 17:50:02,329 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:02] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:02,884 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-12 17:50:02,890 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-12 17:50:02,911 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-12 17:50:02,925 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-12 17:50:02,937 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:02] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:03,167 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:03] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:03,331 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-12 17:50:03,333 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:03] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-12 17:50:24,677 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "GET / HTTP/1.1" 200 -
+2026-01-12 17:50:24,737 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-12 17:50:24,746 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "[36mGET /static/css/alta.css?v=2.1 HTTP/1.1[0m" 304 -
+2026-01-12 17:50:24,753 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-12 17:50:24,758 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "[36mGET /static/js/alta.js?v=2.1 HTTP/1.1[0m" 304 -
+2026-01-12 17:50:24,783 - werkzeug - INFO - 127.0.0.1 - - [12/Jan/2026 17:50:24] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 09:15:35,316 - __main__ - INFO - Starting application initialization...
+2026-01-13 09:15:35,589 - __main__ - INFO - Database tables verified/created
+2026-01-13 09:15:35,618 - __main__ - INFO - Application initialized successfully
+2026-01-13 09:15:35,679 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 09:15:35,679 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 09:15:35,685 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 09:15:36,652 - __main__ - INFO - Starting application initialization...
+2026-01-13 09:15:36,728 - __main__ - INFO - Database tables verified/created
+2026-01-13 09:15:36,768 - __main__ - INFO - Application initialized successfully
+2026-01-13 09:15:36,795 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 09:15:36,801 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 09:15:40,421 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "GET / HTTP/1.1" 200 -
+2026-01-13 09:15:40,730 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 09:15:40,785 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "GET /static/css/alta.css?v=2.1 HTTP/1.1" 200 -
+2026-01-13 09:15:40,794 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 09:15:40,807 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "GET /static/js/alta.js?v=2.1 HTTP/1.1" 200 -
+2026-01-13 09:15:40,825 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:40] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 09:15:41,151 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 09:15:41] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
