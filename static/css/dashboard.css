@@ -1653,3 +1653,85 @@ body.dark .navbar .btn-outline-light:hover {
     background-color: rgba(255, 255, 255, 0.1);
     border-color: #6c757d;
 }
+/* Estilos para WebSocket */
+.connection-status {
+    position: relative;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    font-size: 12px;
+    user-select: none;
+}
+
+.connection-status-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-connected {
+    background-color: #28a745;
+    animation: pulse 2s infinite;
+}
+
+.status-disconnected {
+    background-color: #dc3545;
+}
+
+.status-warning {
+    background-color: #ffc107;
+    color: #856404;
+}
+
+.status-text {
+    font-weight: 500;
+}
+
+.realtime-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Animación para KPIs actualizados */
+.kpi-value.updated {
+    animation: kpiUpdate 1s ease;
+}
+
+@keyframes kpiUpdate {
+    0% {
+        transform: scale(1);
+        color: inherit;
+    }
+    50% {
+        transform: scale(1.1);
+        color: #28a745;
+    }
+    100% {
+        transform: scale(1);
+        color: inherit;
+    }
+}

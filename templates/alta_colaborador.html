@@ -160,9 +160,12 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-end gap-3">
-                <button class="btn btn-baja" id="btnBajaColaborador">
-                    <i class="bi bi-person-dash me-1"></i>Baja de Colaboradores
-                </button>
+                <button class="btn btn-baja" id="btnBajaColaborador" 
+        data-bs-toggle="tooltip" data-bs-placement="top" 
+        title="Dar de baja colaboradores del sistema"
+        onclick="window.location.href='/baja-colaborador'">
+    <i class="bi bi-person-dash me-1"></i>Baja de Colaboradores
+</button>
                 <button class="btn btn-cambio-area" id="btnCambioArea">
                     <i class="bi bi-arrow-left-right me-1"></i>Cambio de Área
                 </button>

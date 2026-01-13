@@ -1,5 +1,5 @@
 // ============================================
-// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.4
+// MÓDULO PRINCIPAL - ALTA COLABORADOR V2.5 (CORREGIDO)
 // ============================================
 
 (function() {
@@ -68,7 +68,8 @@
         modalUsuarioRegistrado: null,
         previewModal: null,
         rfcVerificado: false,
-        currentPreviewFile: null
+        currentPreviewFile: null,
+        rfcVerificationMode: 'strict' // 'strict' o 'warning' - CAMBIO IMPORTANTE
     };
     
     // =========================
@@ -89,7 +90,7 @@
     // INICIALIZACIÓN DE COMPONENTES
     // =========================
     function initComponents() {
-        console.log('Inicializando módulo de alta V2.4...');
+        console.log('Inicializando módulo de alta V2.5 (corregido)...');
         
         initValidations();
         initAreaManager();
@@ -110,7 +111,7 @@
         updateRFCStatus('not-verified');
         updateSubmitButton();
         
-        console.log('Módulo de alta V2.4 inicializado correctamente');
+        console.log('Módulo de alta V2.5 inicializado correctamente');
     }
     
     // =========================
@@ -195,7 +196,7 @@
     }
     
     // =========================
-    // VERIFICAR RFC EN SERVIDOR (ACTUALIZADA)
+    // VERIFICAR RFC EN SERVIDOR (CORREGIDA)
     // =========================
     async function verificarRFC(rfc) {
         try {
@@ -222,12 +223,17 @@
                 throw new Error(data.error);
             }
             
+            // CAMBIO IMPORTANTE: Manejar lógica duplicada de forma diferente
             if (data.existe) {
                 // Mostrar modal de colaborador existente
                 mostrarInfoColaboradorExistente(data.colaborador);
                 
-                updateRFCStatus('error', 'RFC ya registrado');
-                STATE.rfcVerificado = false;
+                // IMPORTANTE: Cambiamos la lógica - NO establecer rfcVerificado en false
+                // En su lugar, usamos un modo especial
+                STATE.rfcVerificado = false; // Temporalmente false para bloquear el envío
+                updateRFCStatus('duplicated', 'RFC duplicado encontrado');
+                
+                // El modal dará opción al usuario de continuar o no
             } else {
                 showToast('RFC disponible', 'No se encontró un colaborador con este RFC', 'success');
                 updateRFCStatus('verified', 'RFC verificado y disponible');
@@ -260,7 +266,7 @@
     }
     
     // =========================
-    // ACTUALIZAR ESTADO DEL RFC
+    // ACTUALIZAR ESTADO DEL RFC (ACTUALIZADA)
     // =========================
     function updateRFCStatus(status, message = '') {
         if (!DOM.rfcStatus) return;
@@ -279,6 +285,13 @@
                 color: 'secondary',
                 badgeClass: 'not-verified',
                 badgeText: '⏱️ Pendiente'
+            },
+            'duplicated': {
+                icon: 'exclamation-triangle-fill',
+                text: 'RFC duplicado',
+                color: 'warning',
+                badgeClass: 'duplicated',
+                badgeText: '⚠️ Duplicado'
             },
             'error': {
                 icon: 'exclamation-triangle-fill',
@@ -303,24 +316,40 @@
     }
     
     // =========================
-    // ACTUALIZAR BOTÓN DE ENVÍO
+    // ACTUALIZAR BOTÓN DE ENVÍO (ACTUALIZADA)
     // =========================
     function updateSubmitButton() {
         if (!DOM.btnSubmitForm) return;
         
-        if (STATE.rfcVerificado && STATE.correoConfirmado) {
+        console.log("DEBUG: updateSubmitButton llamado");
+        console.log("STATE.rfcVerificado:", STATE.rfcVerificado);
+        console.log("STATE.correoConfirmado:", STATE.correoConfirmado);
+        
+        // Verificar si estamos en modo de RFC duplicado pero con permiso especial
+        const rfcDuplicadoPermitido = localStorage.getItem('rfcDuplicadoPermitido') === 'true';
+        const rfcActual = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+        const rfcPermitido = localStorage.getItem('rfcPermitido') || '';
+        
+        // Si hay un RFC duplicado que el usuario decidió ignorar
+        const puedeEnviarDuplicado = rfcDuplicadoPermitido && rfcActual === rfcPermitido;
+        
+        console.log("puedeEnviarDuplicado:", puedeEnviarDuplicado);
+        
+        if ((STATE.rfcVerificado || puedeEnviarDuplicado) && STATE.correoConfirmado) {
             DOM.btnSubmitForm.disabled = false;
             DOM.btnSubmitForm.title = '';
+            console.log("BOTÓN HABILITADO");
         } else {
             DOM.btnSubmitForm.disabled = true;
             
             if (!STATE.rfcVerificado && !STATE.correoConfirmado) {
                 DOM.btnSubmitForm.title = 'Debes verificar el RFC y confirmar el correo';
-            } else if (!STATE.rfcVerificado) {
+            } else if (!STATE.rfcVerificado && !puedeEnviarDuplicado) {
                 DOM.btnSubmitForm.title = 'Debes verificar el RFC antes de continuar';
             } else if (!STATE.correoConfirmado) {
                 DOM.btnSubmitForm.title = 'Debes confirmar el correo antes de continuar';
             }
+            console.log("BOTÓN DESHABILITADO");
         }
     }
     
@@ -343,7 +372,9 @@
         const btnCambiarArea = document.getElementById('btnCambiarAreaModal');
         if (btnCambiarArea) {
             btnCambiarArea.addEventListener('click', function() {
-                MODALS.usuarioRegistrado.hide();
+                if (MODALS.usuarioRegistrado) {
+                    MODALS.usuarioRegistrado.hide();
+                }
                 
                 // Redirigir a la página de cambio de área
                 setTimeout(() => {
@@ -352,11 +383,58 @@
             }, { once: true });
         }
         
+        // AGREGAR BOTÓN PARA CONTINUAR DE TODOS MODOS
+        const modalFooter = modalElement.querySelector('.modal-footer');
+        if (modalFooter) {
+            // Verificar si ya existe el botón
+            let btnContinuar = modalFooter.querySelector('#btnContinuarDuplicado');
+            if (!btnContinuar) {
+                btnContinuar = document.createElement('button');
+                btnContinuar.id = 'btnContinuarDuplicado';
+                btnContinuar.className = 'btn btn-warning';
+                btnContinuar.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Continuar de todos modos';
+                btnContinuar.type = 'button';
+                
+                modalFooter.insertBefore(btnContinuar, btnCambiarArea);
+                
+                btnContinuar.addEventListener('click', function() {
+                    console.log("Usuario decidió continuar con RFC duplicado");
+                    
+                    // Guardar en localStorage que este RFC está permitido
+                    const rfc = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+                    localStorage.setItem('rfcDuplicadoPermitido', 'true');
+                    localStorage.setItem('rfcPermitido', rfc);
+                    
+                    // Cerrar modal
+                    if (MODALS.usuarioRegistrado) {
+                        MODALS.usuarioRegistrado.hide();
+                    }
+                    
+                    // Desbloquear formulario
+                    unlockForm();
+                    
+                    // Mostrar advertencia
+                    showToast('Advertencia', 
+                        '⚠️ Estás continuando con un RFC duplicado. Esta acción podría generar problemas.', 
+                        'warning');
+                    
+                    // Actualizar estado del RFC
+                    updateRFCStatus('duplicated', 'RFC duplicado - Continuando');
+                    
+                    // Actualizar botón de envío
+                    setTimeout(() => {
+                        updateSubmitButton();
+                    }, 100);
+                    
+                }, { once: true });
+            }
+        }
+        
         // Mostrar modal
         MODALS.usuarioRegistrado = MODALS.usuarioRegistrado || new bootstrap.Modal(modalElement);
         MODALS.usuarioRegistrado.show();
         
-        // Bloquear formulario
+        // Bloquear formulario temporalmente
         lockForm();
     }
     
@@ -461,6 +539,9 @@
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 <i class="bi bi-x-circle me-1"></i>Cerrar
                             </button>
+                            <button type="button" class="btn btn-warning" id="btnContinuarDuplicado">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Continuar de todos modos
+                            </button>
                             <button type="button" class="btn btn-primary" id="btnCambiarAreaFromModal">
                                 <i class="bi bi-arrow-left-right me-1"></i>Cambiar de Área
                             </button>
@@ -484,6 +565,29 @@
         
         STATE.modalUsuarioRegistrado = new bootstrap.Modal(modalElement);
         STATE.modalUsuarioRegistrado.show();
+        
+        // Configurar botón de continuar de todos modos
+        const btnContinuar = document.getElementById('btnContinuarDuplicado');
+        if (btnContinuar) {
+            btnContinuar.addEventListener('click', function() {
+                console.log("Continuando con registro duplicado para campo:", campo);
+                
+                // Permitir este campo específico
+                STATE.camposDuplicados[campo] = false;
+                
+                // Cerrar modal
+                STATE.modalUsuarioRegistrado.hide();
+                
+                // Desbloquear formulario
+                unlockForm();
+                
+                // Mostrar advertencia
+                showToast('Advertencia', 
+                    `Estás continuando con un ${campo} duplicado. Verifica que esta sea la acción correcta.`, 
+                    'warning');
+                
+            }, { once: true });
+        }
         
         // Configurar botón de cambiar área
         const btnCambiarArea = document.getElementById('btnCambiarAreaFromModal');
@@ -562,7 +666,7 @@
     }
     
     // =========================
-    // ENVÍO DE FORMULARIO (ACTUALIZADO)
+    // ENVÍO DE FORMULARIO (ACTUALIZADO - CORREGIDO)
     // =========================
     function initFormSubmitter() {
         if (!DOM.formulario) return;
@@ -570,8 +674,17 @@
         DOM.formulario.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validar que el RFC esté verificado
-            if (!STATE.rfcVerificado) {
+            console.log("=== INICIANDO ENVÍO DE FORMULARIO ===");
+            
+            // Verificar si hay RFC duplicado permitido
+            const rfcDuplicadoPermitido = localStorage.getItem('rfcDuplicadoPermitido') === 'true';
+            const rfcActual = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+            const rfcPermitido = localStorage.getItem('rfcPermitido') || '';
+            const puedeEnviarDuplicado = rfcDuplicadoPermitido && rfcActual === rfcPermitido;
+            
+            // Validar que el RFC esté verificado O esté permitido como duplicado
+            if (!STATE.rfcVerificado && !puedeEnviarDuplicado) {
+                console.error("RFC no verificado ni permitido como duplicado");
                 showToast('Error', 'Debes verificar el RFC antes de enviar el formulario', 'danger');
                 DOM.rfcInput?.focus();
                 DOM.rfcInput?.classList.add('shake');
@@ -581,18 +694,21 @@
             
             // Validar que el correo esté confirmado
             if (!STATE.correoConfirmado) {
+                console.error("Correo no confirmado");
                 showToast('Atención', 'Debes confirmar el correo antes de enviar', 'warning');
                 requestEmailConfirmation();
                 return;
             }
             
             if (!validateForm()) {
+                console.error("Formulario no válido");
                 scrollToFirstError();
                 return;
             }
             
             const hayDuplicados = Object.values(STATE.camposDuplicados).some(v => v === true);
-            if (hayDuplicados) {
+            if (hayDuplicados && !puedeEnviarDuplicado) {
+                console.error("Hay campos duplicados");
                 showToast('Error', 'Hay campos duplicados. Por favor corrija antes de enviar.', 'danger');
                 scrollToFirstDuplicate();
                 return;
@@ -600,9 +716,26 @@
             
             if (STATE.documentosCargados === 0) {
                 const confirmed = confirm('No has cargado ningún documento. ¿Deseas continuar de todas formas?');
-                if (!confirmed) return;
+                if (!confirmed) {
+                    console.log("Usuario canceló por falta de documentos");
+                    return;
+                }
             }
             
+            // ADVERTENCIA FINAL SI HAY RFC DUPLICADO
+            if (puedeEnviarDuplicado) {
+                const confirmacion = confirm(
+                    '⚠️ ADVERTENCIA: Estás registrando un colaborador con un RFC que ya existe en el sistema.\n\n' +
+                    'Esto podría crear problemas de duplicidad. ¿Estás seguro de que quieres continuar?'
+                );
+                
+                if (!confirmacion) {
+                    console.log("Usuario canceló por RFC duplicado");
+                    return;
+                }
+            }
+            
+            console.log("Enviando formulario...");
             await submitForm();
         });
     }
@@ -1214,12 +1347,10 @@
                 formData.append('documentos_archivos[]', file);
             });
             
-            // Simular envío
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            console.log("Enviando datos al servidor...");
             
-            // En producción, descomentar esto:
-            /*
-            const response = await fetch('/api/alta-colaborador', {
+            // Envío real al servidor
+            const response = await fetch('/alta-colaborador', {
                 method: 'POST',
                 body: formData
             });
@@ -1227,17 +1358,34 @@
             if (!response.ok) {
                 throw new Error('Error en el servidor');
             }
-            */
             
+            // Procesar respuesta
+            const responseText = await response.text();
+            console.log("Respuesta del servidor:", responseText);
+            
+            // Verificar si hay mensajes flash en la respuesta
+            if (responseText.includes('flash-message') || responseText.includes('alert-')) {
+                // El servidor redirigió de vuelta con un mensaje de error
+                // Recargar la página para mostrar el mensaje
+                window.location.reload();
+                return;
+            }
+            
+            // Éxito - mostrar mensaje y redirigir
             showToast('✅ Éxito', 'Colaborador guardado correctamente', 'success');
             
+            // Limpiar localStorage si había RFC duplicado permitido
+            localStorage.removeItem('rfcDuplicadoPermitido');
+            localStorage.removeItem('rfcPermitido');
+            
+            // Redirigir después de un breve retraso
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 1500);
             
         } catch (error) {
-            console.error('Error:', error);
-            showToast('❌ Error', 'Error al guardar el colaborador', 'danger');
+            console.error('Error al enviar formulario:', error);
+            showToast('❌ Error', 'Error al guardar el colaborador. Intenta nuevamente.', 'danger');
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
@@ -1392,7 +1540,7 @@
     }
     
     function mostrarModalBaja() {
-        showToast('Funcionalidad', 'Módulo de baja de colaboradores - En desarrollo', 'info');
+        showToast('Funcionalidad', 'Ir a baja colaboradores', 'info');
     }
     
     // =========================
@@ -1569,15 +1717,41 @@
     };
     
     // =========================
+    // FUNCIONES DE DEPURACIÓN
+    // =========================
+    window.debugFormState = function() {
+        console.log("=== DEBUG FORM STATE ===");
+        console.log("STATE.rfcVerificado:", STATE.rfcVerificado);
+        console.log("STATE.correoConfirmado:", STATE.correoConfirmado);
+        console.log("Botón Submit disabled:", DOM.btnSubmitForm ? DOM.btnSubmitForm.disabled : "N/A");
+        console.log("RFC Input:", DOM.rfcInput ? DOM.rfcInput.value : "N/A");
+        console.log("Correo Input:", DOM.correoInput ? DOM.correoInput.value : "N/A");
+        console.log("Form bloqueado:", DOM.formulario ? DOM.formulario.dataset.bloqueado : "N/A");
+        
+        const rfcDuplicadoPermitido = localStorage.getItem('rfcDuplicadoPermitido') === 'true';
+        const rfcActual = DOM.rfcInput ? DOM.rfcInput.value.trim() : '';
+        const rfcPermitido = localStorage.getItem('rfcPermitido') || '';
+        const puedeEnviarDuplicado = rfcDuplicadoPermitido && rfcActual === rfcPermitido;
+        
+        console.log("RFC duplicado permitido:", puedeEnviarDuplicado);
+        console.log("localStorage.rfcDuplicadoPermitido:", localStorage.getItem('rfcDuplicadoPermitido'));
+        console.log("localStorage.rfcPermitido:", localStorage.getItem('rfcPermitido'));
+    };
+    
+    // =========================
     // INICIALIZACIÓN
     // =========================
     function init() {
-        console.log('Inicializando módulo de alta de colaboradores V2.4...');
+        console.log('Inicializando módulo de alta de colaboradores V2.5 (corregido)...');
         
         initComponents();
         lockForm();
         
-        console.log('Módulo de alta V2.4 inicializado correctamente');
+        // Limpiar localStorage al cargar la página
+        localStorage.removeItem('rfcDuplicadoPermitido');
+        localStorage.removeItem('rfcPermitido');
+        
+        console.log('Módulo de alta V2.5 inicializado correctamente');
     }
     
     // =========================

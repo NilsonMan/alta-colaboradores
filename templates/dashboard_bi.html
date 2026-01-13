@@ -5,7 +5,8 @@
 {% block head %}
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<!-- Socket.IO -->
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <!-- Dashboard CSS -->
 <link rel="stylesheet" href="/static/css/dashboard.css">
 
@@ -17,7 +18,7 @@
 <!-- Configuración global -->
 <script>
 const DASHBOARD_CONFIG = {
-    AREA_COMERCIAL_ID: 5,
+    AREA_COMERCIAL_ID: 2,
     CURRENT_YEAR: parseInt('{{ current_year }}'),
     AVAILABLE_YEARS: [{% for year in available_years %}{{ year }}{% if not loop.last %}, {% endif %}{% endfor %}],
     API_ENDPOINTS: {

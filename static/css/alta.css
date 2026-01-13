@@ -1046,3 +1046,71 @@ h2.fw-bold {
         width: 100%;
     }
 }
+/* =========================
+   CORRECCIONES ESPECÍFICAS PARA DOCUMENTOS
+========================= */
+
+/* Asegurar que ambas caras sean visibles cuando corresponda */
+.doc-face {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Cuando la tarjeta está volteada, mostrar el frente */
+.doc-card:not(.flipped) .doc-front {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: rotateY(0deg) !important;
+}
+
+.doc-card:not(.flipped) .doc-back {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transform: rotateY(180deg) !important;
+}
+
+/* Cuando la tarjeta está volteada, mostrar el reverso */
+.doc-card.flipped .doc-front {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transform: rotateY(180deg) !important;
+}
+
+.doc-card.flipped .doc-back {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: rotateY(0deg) !important;
+}
+
+/* Asegurar que el input de archivo no interfiera con la visibilidad */
+.doc-input {
+    opacity: 0.01;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.doc-input:hover {
+    opacity: 0.02;
+}
+
+/* Mejorar visibilidad del texto en modo oscuro */
+body.dark .doc-front {
+    background: rgba(255, 217, 57, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark .doc-back {
+    background: rgba(40, 167, 69, 0.1) !important;
+    border-color: rgba(40, 167, 69, 0.3) !important;
+    color: #81c995 !important;
+}
+
+/* Contenedor de documentos visible */
+.documentos-container {
+    background: var(--card-bg) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.5rem !important;
+    margin: 1.5rem 0 !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow) !important;
+}

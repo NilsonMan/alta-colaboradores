@@ -44,7 +44,7 @@ class DashboardBI {
     
     getDefaultConfig() {
         return {
-            AREA_COMERCIAL_ID: 5,
+            AREA_COMERCIAL_ID: 2,
             CURRENT_YEAR: new Date().getFullYear(),
             AVAILABLE_YEARS: [],
             API_ENDPOINTS: {
@@ -378,28 +378,27 @@ class DashboardBI {
     // ACTUALIZACIÓN DE UI
     // =========================
     updateKPIs(kpisData) {
-        if (!kpisData) return;
-        
-        const total = kpisData.total || 0;
-        const gestion = kpisData.gestion || 0;
-        const comercial = kpisData.comercial || 0;
-        const bajasGestion = kpisData.bajas_gestion || 0;
-        const bajasComercial = kpisData.bajas_comercial || 0;
-        
-        this.updateKPI(this.dom.kpiTotal, total);
-        this.updateKPI(this.dom.kpiBajasGestion, bajasGestion);
-        this.updateKPI(this.dom.kpiBajasComercial, bajasComercial);
-        
-        if (this.dom.kpiTotalSubtitle) {
-            this.dom.kpiTotalSubtitle.textContent = `Total: ${total} | Gestión: ${gestion} | Comercial: ${comercial}`;
-        }
-        
-        const gestionActivos = kpisData.gestion_activos || 0;
-        const comercialActivos = kpisData.comercial_activos || 0;
-        const totalActivos = gestionActivos + comercialActivos;
-        const retencion = total > 0 ? ((totalActivos) / total * 100).toFixed(1) : 0;
-        this.updateKPI(this.dom.kpiRetencion, `${retencion}%`);
+    if (!kpisData) return;
+    
+    const total = kpisData.total || 0;
+    const gestion = kpisData.gestion || 0;
+    const comercial = kpisData.comercial || 0;
+    const bajasGestion = kpisData.bajas_gestion || 0;
+    const bajasComercial = kpisData.bajas_comercial || 0;
+    const activos = kpisData.activos || 0; // <-- Esto sí viene de la API
+    
+    this.updateKPI(this.dom.kpiTotal, total);
+    this.updateKPI(this.dom.kpiBajasGestion, bajasGestion);
+    this.updateKPI(this.dom.kpiBajasComercial, bajasComercial);
+    
+    if (this.dom.kpiTotalSubtitle) {
+        this.dom.kpiTotalSubtitle.textContent = `Total: ${total} | Gestión: ${gestion} | Comercial: ${comercial}`;
     }
+    
+    // Calcular retención usando "activos" que viene de la API
+    const retencion = total > 0 ? ((activos) / total * 100).toFixed(1) : 0;
+    this.updateKPI(this.dom.kpiRetencion, `${retencion}%`);
+}
     
     updateChartAltas(contratacionesData) {
         if (!this.state.charts.altas || !contratacionesData) return;
@@ -596,92 +595,182 @@ class DashboardBI {
     }
     
     updateTableDetalle(contratacionesData, bajasData) {
-        const tableBody = document.getElementById('tableDetalleBody');
-        if (!tableBody) return;
+    const tableBody = document.getElementById('tableDetalleBody');
+    if (!tableBody) return;
+    
+    tableBody.innerHTML = '';
+    
+    if (!Array.isArray(contratacionesData)) {
+        contratacionesData = [contratacionesData];
+    }
+    if (!Array.isArray(bajasData)) {
+        bajasData = [bajasData];
+    }
+    
+    let totalGestionAnual = 0;
+    let totalComercialAnual = 0;
+    let totalBajasGestionAnual = 0;
+    let totalBajasComercialAnual = 0;
+    let totalContratacionesActivasAnual = 0;
+    
+    this.config.MESES_CORTOS.forEach((mes, index) => {
+        const mesNum = index + 1;
+        const altaItem = contratacionesData.find(c => c.mes_num === mesNum) || 
+                        contratacionesData[index] || {};
+        const bajaItem = bajasData.find(b => b.mes_num === mesNum) || 
+                        bajasData[index] || {};
         
-        tableBody.innerHTML = '';
+        const gestion = altaItem.gestion || 0;                    // Total gestión (incluye bajas)
+        const comercial = altaItem.comercial || 0;                // Total comercial (incluye bajas)
+        const gestionActivos = altaItem.gestion_activos || 0;     // Gestión activos (sin baja)
+        const comercialActivos = altaItem.comercial_activos || 0; // Comercial activos (sin baja)
+        const bajasGestion = bajaItem.gestion || 0;
+        const bajasComercial = bajaItem.comercial || 0;
         
-        if (!Array.isArray(contratacionesData)) {
-            contratacionesData = [contratacionesData];
+        const totalContrataciones = gestion + comercial;          // Total contrataciones del mes (incluye bajas)
+        const totalContratacionesActivas = gestionActivos + comercialActivos; // Solo activos
+        const totalBajas = bajasGestion + bajasComercial;
+        
+        totalGestionAnual += gestion;
+        totalComercialAnual += comercial;
+        totalBajasGestionAnual += bajasGestion;
+        totalBajasComercialAnual += bajasComercial;
+        totalContratacionesActivasAnual += totalContratacionesActivas;
+        
+        const retencion = totalContrataciones > 0 ? 
+            (totalContratacionesActivas / totalContrataciones * 100).toFixed(1) : 0;
+        
+        let retencionClass = 'bg-secondary';
+        let retencionIcon = '';
+        if (retencion >= 80) {
+            retencionClass = 'bg-success';
+            retencionIcon = '<i class="bi bi-arrow-up-circle"></i>';
+        } else if (retencion >= 60) {
+            retencionClass = 'bg-warning';
+            retencionIcon = '<i class="bi bi-dash-circle"></i>';
+        } else {
+            retencionClass = 'bg-danger';
+            retencionIcon = '<i class="bi bi-arrow-down-circle"></i>';
         }
-        if (!Array.isArray(bajasData)) {
-            bajasData = [bajasData];
-        }
         
-        let totalGestionAnual = 0;
-        let totalComercialAnual = 0;
-        let totalBajasGestionAnual = 0;
-        let totalBajasComercialAnual = 0;
-        
-        this.config.MESES_CORTOS.forEach((mes, index) => {
-            const mesNum = index + 1;
-            const altaItem = contratacionesData.find(c => c.mes_num === mesNum) || 
-                            contratacionesData[index] || {};
-            const bajaItem = bajasData.find(b => b.mes_num === mesNum) || 
-                            bajasData[index] || {};
-            
-            const gestion = altaItem.gestion || 0;
-            const comercial = altaItem.comercial || 0;
-            const bajasGestion = bajaItem.gestion || 0;
-            const bajasComercial = bajaItem.comercial || 0;
-            
-            const totalContrataciones = gestion + comercial;
-            const totalBajas = bajasGestion + bajasComercial;
-            
-            totalGestionAnual += gestion;
-            totalComercialAnual += comercial;
-            totalBajasGestionAnual += bajasGestion;
-            totalBajasComercialAnual += bajasComercial;
-            
-            const gestionActivos = altaItem.gestion_activos || 0;
-            const comercialActivos = altaItem.comercial_activos || 0;
-            const totalContratacionesActivas = gestionActivos + comercialActivos;
-            
-            const retencion = totalContrataciones > 0 ? 
-                (totalContratacionesActivas / totalContrataciones * 100).toFixed(1) : 0;
-            const retencionClass = retencion >= 80 ? 'bg-success' : 
-                                  retencion >= 60 ? 'bg-warning' : 'bg-danger';
-            
-            const template = document.getElementById('templateRowDetalle');
-            if (!template) return;
-            
+        const template = document.getElementById('templateRowDetalle');
+        if (!template) {
+            // Si no hay template, crear la fila directamente
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="fw-medium">${mes}</td>
+                <td class="text-center">
+                    <span class="badge bg-warning fs-6" title="Total: ${gestion} | Activos: ${gestionActivos}">${gestion}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-info fs-6" title="Total: ${comercial} | Activos: ${comercialActivos}">${comercial}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-secondary">${bajasGestion}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-secondary">${bajasComercial}</span>
+                </td>
+                <td class="text-center">
+                    <strong>${totalContrataciones}</strong>
+                    <br>
+                    <small class="text-muted">Activos: ${totalContratacionesActivas}</small>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-danger">${totalBajas}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge ${retencionClass}">
+                        ${retencionIcon} ${retencion}%
+                    </span>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary" onclick="showReclutadoresPorMes(${mesNum})" title="Ver detalle del mes">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        } else {
+            // Usar el template si existe
             const rowHTML = template.innerHTML
                 .replace(/{mes}/g, mes)
                 .replace(/{gestion}/g, gestion)
+                .replace(/{gestion_activos}/g, gestionActivos)
                 .replace(/{comercial}/g, comercial)
+                .replace(/{comercial_activos}/g, comercialActivos)
                 .replace(/{bajas_gestion}/g, bajasGestion)
                 .replace(/{bajas_comercial}/g, bajasComercial)
                 .replace(/{total_contrataciones}/g, totalContrataciones)
+                .replace(/{total_contrataciones_activas}/g, totalContratacionesActivas)
                 .replace(/{total_bajas}/g, totalBajas)
                 .replace(/{retencion}/g, retencion)
                 .replace(/{retencion_class}/g, retencionClass)
+                .replace(/{retencion_icon}/g, retencionIcon)
                 .replace(/{mes_num}/g, mesNum);
             
             const row = document.createElement('tr');
             row.innerHTML = rowHTML;
             tableBody.appendChild(row);
-        });
-        
-        // Agregar fila de total anual
-        const totalContratacionesAnual = totalGestionAnual + totalComercialAnual;
-        const totalBajasAnual = totalBajasGestionAnual + totalBajasComercialAnual;
-        
-        const totalRow = document.createElement('tr');
-        totalRow.className = 'table-primary fw-bold';
-        totalRow.innerHTML = `
-            <td><strong>TOTAL ANUAL</strong></td>
-            <td class="text-center"><span class="badge bg-warning fs-6">${totalGestionAnual}</span></td>
-            <td class="text-center"><span class="badge bg-info fs-6">${totalComercialAnual}</span></td>
-            <td class="text-center">${totalBajasGestionAnual}</td>
-            <td class="text-center">${totalBajasComercialAnual}</td>
-            <td class="text-center"><strong>${totalContratacionesAnual}</strong></td>
-            <td class="text-center"><span class="badge bg-danger">${totalBajasAnual}</span></td>
-            <td></td>
-            <td></td>
-        `;
-        tableBody.appendChild(totalRow);
-    }
+        }
+    });
     
+    // Agregar fila de total anual
+    const totalContratacionesAnual = totalGestionAnual + totalComercialAnual;
+    const totalBajasAnual = totalBajasGestionAnual + totalBajasComercialAnual;
+    const retencionAnual = totalContratacionesAnual > 0 ? 
+        (totalContratacionesActivasAnual / totalContratacionesAnual * 100).toFixed(1) : 0;
+    
+    let retencionAnualClass = 'bg-secondary';
+    if (retencionAnual >= 80) retencionAnualClass = 'bg-success';
+    else if (retencionAnual >= 60) retencionAnualClass = 'bg-warning';
+    else retencionAnualClass = 'bg-danger';
+    
+    const totalRow = document.createElement('tr');
+    totalRow.className = 'table-primary fw-bold';
+    totalRow.innerHTML = `
+        <td><strong>TOTAL ANUAL</strong></td>
+        <td class="text-center">
+            <span class="badge bg-warning fs-6" title="Total contrataciones de gestión">${totalGestionAnual}</span>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-info fs-6" title="Total contrataciones comerciales">${totalComercialAnual}</span>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-secondary" title="Bajas de gestión">${totalBajasGestionAnual}</span>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-secondary" title="Bajas comerciales">${totalBajasComercialAnual}</span>
+        </td>
+        <td class="text-center">
+            <strong>${totalContratacionesAnual}</strong>
+            <br>
+            <small class="text-muted">Activos: ${totalContratacionesActivasAnual}</small>
+        </td>
+        <td class="text-center">
+            <span class="badge bg-danger" title="Total bajas">${totalBajasAnual}</span>
+        </td>
+        <td class="text-center">
+            <span class="badge ${retencionAnualClass}">
+                ${retencionAnual}%
+            </span>
+        </td>
+        <td class="text-center">
+            <button class="btn btn-sm btn-outline-info" onclick="dashboardBI.showModalDetalleReclutadores()" title="Ver todos los reclutadores">
+                <i class="bi bi-people-fill"></i>
+            </button>
+        </td>
+    `;
+    tableBody.appendChild(totalRow);
+    
+    // Actualizar tooltips
+    setTimeout(() => {
+        const tooltipTriggerList = [].slice.call(tableBody.querySelectorAll('[title]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }, 100);
+}
     // =========================
     // CHART INITIALIZATION
     // =========================

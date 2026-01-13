@@ -1,4 +1,4 @@
-import os
+import os  # <-- AGREGAR ESTO AL INICIO
 import sys
 import time
 import hashlib
@@ -426,7 +426,7 @@ def alta():
         return render_template("alta_colaborador.html", today=date.today().isoformat())
 
 def handle_alta_post(db):
-    """Maneja el POST del formulario de alta CON VALIDACIÓN RFC."""
+    """Maneja el POST del formulario de alta CON VALIDACIÓN RFC y redirige al dashboard."""
     try:
         # NUEVA VALIDACIÓN: Verificar RFC antes de procesar
         rfc = request.form.get("rfc", "").upper().strip()
@@ -475,18 +475,19 @@ def handle_alta_post(db):
             flash(f"❌ Datos duplicados encontrados: {', '.join(duplicados)}", "error")
             return redirect(url_for('alta'))
         
-        # Crear colaborador
+        # Crear colaborador - MODIFICADO para obtener solo el ID
         area_id = int(request.form.get("area"))
-        col = crear_colaborador(db, area_id)
+        colaborador_id = crear_colaborador(db, area_id)  # <-- Ahora retorna solo el ID
         
-        # Guardar documentos
-        try:
-            guardar_documentos(db, col.id)
-        except Exception as e:
-            logger.warning(f"Error guardando documentos: {e}")
+        # Obtener datos del colaborador para el mensaje flash
+        colaborador = db.query(Colaborador).get(colaborador_id)
         
-        flash(f"✅ Colaborador <strong>{col.nombre} {col.apellido}</strong> registrado exitosamente", "success")
-        return redirect(url_for('alta'))
+        flash(f"✅ Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> registrado exitosamente", "success")
+        
+        # REDIRIGIR AL DASHBOARD en lugar de volver al formulario
+        return redirect(url_for('dashboard'))
+        # Si quieres llevar el ID como parámetro (opcional):
+        # return redirect(url_for('dashboard', nuevo_colaborador_id=colaborador_id))
         
     except Exception as e:
         db.rollback()
@@ -494,8 +495,10 @@ def handle_alta_post(db):
         flash(f"❌ Error al registrar colaborador: {str(e)}", "error")
         return redirect(url_for('alta'))
 
+
+
 def crear_colaborador(db, area_id):
-    """Crea un nuevo colaborador."""
+    """Crea un nuevo colaborador y retorna su ID."""
     fecha_alta_str = request.form.get("fecha_alta")
     try:
         fecha_alta = datetime.strptime(fecha_alta_str, "%Y-%m-%d").date() if fecha_alta_str else date.today()
@@ -550,12 +553,21 @@ def crear_colaborador(db, area_id):
     )
     
     db.add(col)
-    db.flush()
+    db.flush()  # Obtiene el ID sin hacer commit
     
     agregar_relaciones(db, col)
     
-    db.commit()
-    return col
+    # Guardar documentos
+    try:
+        guardar_documentos(db, col.id)
+    except Exception as e:
+        logger.warning(f"Error guardando documentos para colaborador {col.id}: {e}")
+    
+    db.commit()  # Ahora sí hacemos commit de TODO
+    
+    logger.info(f"✅ Colaborador creado: {col.nombre} {col.apellido} (ID: {col.id})")
+    return col.id  # <-- Retorna el ID del colaborador creado
+
 
 def agregar_relaciones(db, colaborador):
     """Agrega recursos y programas al colaborador."""
@@ -862,57 +874,6 @@ def api_verificar_rfc():
                     "telefono": colaborador.telefono or "N/A",
                     "sueldo": float(colaborador.sueldo) if colaborador.sueldo else 0.00,
                     "baja": bool(colaborador.baja)
-                }
-            })
-        else:
-            return jsonify({
-                "existe": False,
-                "message": "RFC no encontrado en el sistema"
-            })
-            
-    except Exception as e:
-        logger.error(f"Error verificando RFC: {e}", exc_info=True)
-        return jsonify({"error": "Error al verificar el RFC"}), 500
-    """API para verificar si un RFC ya está registrado."""
-    try:
-        rfc = request.args.get('rfc', '').strip().upper()
-        
-        if not rfc or len(rfc) < 12:
-            return jsonify({
-                "error": "RFC inválido (debe tener al menos 12 caracteres)"
-            }), 400
-        
-        db = g.db
-        
-        # Buscar colaborador por RFC
-        colaborador = db.query(Colaborador).filter_by(rfc=rfc).first()
-        
-        if colaborador:
-            # Obtener datos del área
-            area_nombre = "N/A"
-            if colaborador.area:
-                area_nombre = colaborador.area.nombre
-            
-            # Obtener datos del puesto
-            puesto_nombre = "N/A"
-            if colaborador.puesto:
-                puesto_nombre = colaborador.puesto.nombre
-            
-            return jsonify({
-                "existe": True,
-                "colaborador": {
-                    "id": colaborador.id,
-                    "nombre": f"{colaborador.nombre} {colaborador.apellido}",
-                    "correo": colaborador.correo,
-                    "rfc": colaborador.rfc,
-                    "curp": colaborador.curp or "N/A",  # <-- AGREGADO CURP
-                    "area": area_nombre,
-                    "puesto": puesto_nombre,
-                    "estado": "Activo" if not colaborador.baja else "Baja",
-                    "fecha_alta": colaborador.fecha_alta.strftime("%Y-%m-%d") if colaborador.fecha_alta else "N/A",
-                    "telefono": colaborador.telefono or "N/A",
-                    "sueldo": float(colaborador.sueldo) if colaborador.sueldo else 0.00,  # <-- AGREGADO SUELDO
-                    "baja": bool(colaborador.baja)  # <-- Convertir a booleano explícito
                 }
             })
         else:
@@ -1403,6 +1364,7 @@ def api_procesar_cambio_area():
         logger.error(f"Error procesando cambio de área: {e}", exc_info=True)
         db.rollback()
         return jsonify({"error": f"Error al procesar el cambio de área: {str(e)}"}), 500
+
 # ======================================
 # API PARA BUSCAR COLABORADOR POR TEXTO
 # ======================================
@@ -1488,27 +1450,18 @@ def api_kpis():
             Colaborador.baja == False
         ]
         
-        # Filtro para COMERCIAL: area_id = 2 O reclutador_id = 5
-        filters_comercial = or_(
-            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
-            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
-        )
+        # Filtro para COMERCIAL: area_id = 2
+        filters_comercial = Colaborador.area_id == app.config['AREA_COMERCIAL_ID']
         
-        # Filtro para GESTIÓN: NO comercial
-        filters_gestion = and_(
-            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
-            or_(
-                Colaborador.reclutador_id.is_(None),
-                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
-            )
-        )
+        # Filtro para GESTIÓN: NO comercial (area_id != 2)
+        filters_gestion = Colaborador.area_id != app.config['AREA_COMERCIAL_ID']
         
         # Agregar filtro de mes si se especifica
         if month:
             filters_total.append(extract("month", Colaborador.fecha_alta) == month)
             filters_activos.append(extract("month", Colaborador.fecha_alta) == month)
         
-        # TOTAL de contrataciones (incluyendo bajas)
+        # TOTAL de contrataciones (INCLUYENDO BAJAS)
         total_contrataciones = db.query(func.count(Colaborador.id))\
             .filter(*filters_total)\
             .scalar() or 0
@@ -1518,10 +1471,10 @@ def api_kpis():
             .filter(*filters_activos)\
             .scalar() or 0
         
-        # Contrataciones COMERCIALES (area_id = 2 O reclutador_id = 5) - TOTAL (INCLUYENDO BAJAS)
+        # Contrataciones COMERCIALES (area_id = 2) - TOTAL (INCLUYENDO BAJAS)
         total_comercial = db.query(func.count(Colaborador.id))\
             .filter(
-                extract("year", Colaborador.fecha_alta) == year,
+                *filters_total,
                 filters_comercial
             )\
             .scalar() or 0
@@ -1529,46 +1482,29 @@ def api_kpis():
         # Contrataciones GESTIÓN (no comercial) - TOTAL (INCLUYENDO BAJAS)
         total_gestion = db.query(func.count(Colaborador.id))\
             .filter(
-                extract("year", Colaborador.fecha_alta) == year,
+                *filters_total,
                 filters_gestion
             )\
             .scalar() or 0
         
-        # Contrataciones COMERCIALES ACTIVAS (sin baja)
-        total_comercial_activos = db.query(func.count(Colaborador.id))\
-            .filter(
-                *filters_activos,
-                filters_comercial
-            )\
-            .scalar() or 0
-        
-        # Contrataciones GESTIÓN ACTIVAS (sin baja)
-        total_gestion_activos = db.query(func.count(Colaborador.id))\
-            .filter(
-                *filters_activos,
-                filters_gestion
-            )\
-            .scalar() or 0
-        
-        # Bajas comerciales
+        # Bajas comerciales - MODIFICADO: Contar por año de alta
         filters_baja_comercial = [
             Colaborador.baja == True,
-            Colaborador.fecha_baja.isnot(None),
-            extract("year", Colaborador.fecha_baja) == year,
+            extract("year", Colaborador.fecha_alta) == year,  # Cambiado: usar fecha_alta
             filters_comercial
         ]
         
-        # Bajas gestión
+        # Bajas gestión - MODIFICADO: Contar por año de alta
         filters_baja_gestion = [
             Colaborador.baja == True,
-            Colaborador.fecha_baja.isnot(None),
-            extract("year", Colaborador.fecha_baja) == year,
+            extract("year", Colaborador.fecha_alta) == year,  # Cambiado: usar fecha_alta
             filters_gestion
         ]
         
         if month:
-            filters_baja_comercial.append(extract("month", Colaborador.fecha_baja) == month)
-            filters_baja_gestion.append(extract("month", Colaborador.fecha_baja) == month)
+            # También filtrar por mes de alta para bajas
+            filters_baja_comercial.append(extract("month", Colaborador.fecha_alta) == month)
+            filters_baja_gestion.append(extract("month", Colaborador.fecha_alta) == month)
         
         # Bajas comerciales
         bajas_comercial = db.query(func.count(Colaborador.id))\
@@ -1586,14 +1522,13 @@ def api_kpis():
             retencion = round(total_activos / total_contrataciones * 100, 1)
         
         logger.info(f"KPIs calculados: total={total_contrataciones}, activos={total_activos}, comercial={total_comercial}, gestion={total_gestion}")
+        logger.info(f"Bajas: comercial={bajas_comercial}, gestion={bajas_gestion}")
         
         return jsonify({
             "total": total_contrataciones,          # Incluye bajas
             "activos": total_activos,               # Solo activos
             "comercial": total_comercial,           # Comercial TOTAL (incluye bajas)
             "gestion": total_gestion,               # Gestión TOTAL (incluye bajas)
-            "comercial_activos": total_comercial_activos,  # Comercial solo activos
-            "gestion_activos": total_gestion_activos,      # Gestión solo activos
             "bajas_comercial": bajas_comercial,
             "bajas_gestion": bajas_gestion,
             "retencion": retencion,
@@ -1605,9 +1540,216 @@ def api_kpis():
         logger.error(f"Error in KPIs API: {e}", exc_info=True)
         return jsonify({"error": "Error al obtener KPIs"}), 500
 
+
 @app.route("/api/contrataciones")
 @require_db
 def api_contrataciones():
+    """API para obtener contrataciones por mes."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API Contrataciones solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        resultados = []
+        
+        # Si se especifica un mes, solo devolver ese mes
+        if month:
+            mes_range = [month]
+        else:
+            mes_range = range(1, 13)
+        
+        # Definir filtros para comercial y gestión
+        filtro_comercial = Colaborador.area_id == app.config['AREA_COMERCIAL_ID']
+        filtro_gestion = Colaborador.area_id != app.config['AREA_COMERCIAL_ID']
+        
+        for mes_num in mes_range:
+            # Filtros para TOTAL de contrataciones (INCLUYENDO BAJAS)
+            filters_total = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num
+            ]
+            
+            # Filtros para contrataciones ACTIVAS (sin baja)
+            filters_activos = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num,
+                Colaborador.baja == False
+            ]
+            
+            # Contrataciones de GESTIÓN - TOTAL (incluye bajas)
+            gestion_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - TOTAL (incluye bajas)
+            comercial_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de GESTIÓN - ACTIVAS (sin baja)
+            gestion_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - ACTIVAS (sin baja)
+            comercial_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Total de contrataciones para este mes (TODAS, incluyendo bajas)
+            total_mes_con_bajas = gestion_total + comercial_total
+            
+            # Total de contrataciones ACTIVAS para este mes
+            total_mes_activos = gestion_activos + comercial_activos
+            
+            resultados.append({
+                "mes": meses[mes_num - 1],
+                "gestion": gestion_total,          # Total gestión (incluye bajas)
+                "gestion_activos": gestion_activos, # Gestión activos
+                "comercial": comercial_total,       # Total comercial (incluye bajas)
+                "comercial_activos": comercial_activos, # Comercial activos
+                "total_activos": total_mes_activos,
+                "total_con_bajas": total_mes_con_bajas,
+                "mes_num": mes_num
+            })
+        
+        logger.info(f"Contrataciones para {year}: {len(resultados)} registros")
+        
+        # Si se filtró por un mes específico, devolver solo ese mes
+        if month and len(resultados) > 0:
+            return jsonify(resultados[0])
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in contrataciones API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener contrataciones"}), 500
+
+
+
+
+    """API para obtener contrataciones por mes."""
+    year = request.args.get("year", type=int, default=date.today().year)
+    month = request.args.get("month", type=int)
+    
+    logger.info(f"API Contrataciones solicitada para año: {year}, mes: {month}")
+    
+    try:
+        db = g.db
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        resultados = []
+        
+        if month:
+            mes_range = [month]
+        else:
+            mes_range = range(1, 13)
+        
+        filtro_comercial = or_(
+            Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
+            Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+        )
+        
+        filtro_gestion = and_(
+            Colaborador.area_id != app.config['AREA_COMERCIAL_ID'],
+            or_(
+                Colaborador.reclutador_id.is_(None),
+                ~Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
+            )
+        )
+        
+        for mes_num in mes_range:
+            # Filtros para TOTAL de contrataciones (INCLUYENDO BAJAS) - REMOVIENDO EL FILTRO "baja == False"
+            filters_total = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num
+            ]
+            
+            # Filtros para contrataciones ACTIVAS (sin baja)
+            filters_activos = [
+                extract("year", Colaborador.fecha_alta) == year,
+                extract("month", Colaborador.fecha_alta) == mes_num,
+                Colaborador.baja == False
+            ]
+            
+            # Contrataciones de GESTIÓN - TOTAL (incluye bajas)
+            gestion_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,  # SIN FILTRO DE BAJA
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - TOTAL (incluye bajas)
+            comercial_total = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_total,  # SIN FILTRO DE BAJA
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de GESTIÓN - ACTIVAS (sin baja)
+            gestion_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_gestion
+                )\
+                .scalar() or 0
+            
+            # Contrataciones de COMERCIAL - ACTIVAS (sin baja)
+            comercial_activos = db.query(func.count(Colaborador.id))\
+                .filter(
+                    *filters_activos,
+                    filtro_comercial
+                )\
+                .scalar() or 0
+            
+            total_mes_con_bajas = gestion_total + comercial_total
+            total_mes_activos = gestion_activos + comercial_activos
+            
+            resultados.append({
+                "mes": meses[mes_num - 1],
+                "gestion": gestion_total,          # Total gestión (INCLUYE BAJAS)
+                "gestion_activos": gestion_activos, # Gestión solo activos
+                "comercial": comercial_total,       # Total comercial (INCLUYE BAJAS)
+                "comercial_activos": comercial_activos, # Comercial solo activos
+                "total_activos": total_mes_activos,
+                "total_con_bajas": total_mes_con_bajas,
+                "mes_num": mes_num
+            })
+        
+        logger.info(f"Contrataciones para {year}: {len(resultados)} registros")
+        
+        if month and len(resultados) > 0:
+            return jsonify(resultados[0])
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error in contrataciones API: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener contrataciones"}), 500
+
+
     """API para obtener contrataciones por mes."""
     year = request.args.get("year", type=int, default=date.today().year)
     month = request.args.get("month", type=int)
@@ -1816,7 +1958,6 @@ def api_contrataciones_comparativa():
         meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
                 "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
         
-        # Filtros para comercial y gestión
         filtro_comercial = or_(
             Colaborador.area_id == app.config['AREA_COMERCIAL_ID'],
             Colaborador.reclutador_id.in_(app.config['RECLUTADOR_COMERCIAL_IDS'])
@@ -1836,40 +1977,40 @@ def api_contrataciones_comparativa():
             datos_year = []
             
             for mes_num in range(1, 13):
-                # Total de contrataciones (ACTIVOS)
+                # Total de contrataciones (INCLUYENDO BAJAS) - REMOVIENDO "baja == False"
                 total = db.query(func.count(Colaborador.id))\
                     .filter(
                         extract("year", Colaborador.fecha_alta) == year,
-                        extract("month", Colaborador.fecha_alta) == mes_num,
-                        Colaborador.baja == False
+                        extract("month", Colaborador.fecha_alta) == mes_num
+                        # REMOVED: Colaborador.baja == False
                     )\
                     .scalar() or 0
                 
-                # Contrataciones comerciales - ACTIVOS
+                # Contrataciones comerciales - TOTAL (INCLUYENDO BAJAS)
                 comercial = db.query(func.count(Colaborador.id))\
                     .filter(
                         extract("year", Colaborador.fecha_alta) == year,
                         extract("month", Colaborador.fecha_alta) == mes_num,
-                        Colaborador.baja == False,
+                        # REMOVED: Colaborador.baja == False,
                         filtro_comercial
                     )\
                     .scalar() or 0
                 
-                # Contrataciones gestión - ACTIVOS
+                # Contrataciones gestión - TOTAL (INCLUYENDO BAJAS)
                 gestion = db.query(func.count(Colaborador.id))\
                     .filter(
                         extract("year", Colaborador.fecha_alta) == year,
                         extract("month", Colaborador.fecha_alta) == mes_num,
-                        Colaborador.baja == False,
+                        # REMOVED: Colaborador.baja == False,
                         filtro_gestion
                     )\
                     .scalar() or 0
                 
                 datos_year.append({
                     "mes": meses[mes_num - 1],
-                    "total": total,
-                    "comercial": comercial,
-                    "gestion": gestion,
+                    "total": total,        # TOTAL incluyendo bajas
+                    "comercial": comercial, # Comercial incluyendo bajas
+                    "gestion": gestion,    # Gestión incluyendo bajas
                     "mes_num": mes_num
                 })
             
@@ -1880,7 +2021,6 @@ def api_contrataciones_comparativa():
     except Exception as e:
         logger.error(f"Error in comparativa API: {e}", exc_info=True)
         return jsonify({"error": "Error al obtener comparativa"}), 500
-
 @app.route("/api/contrataciones/reclutador")
 @require_db
 def api_contrataciones_reclutador():
@@ -2287,8 +2427,92 @@ def create_initial_data():
             db.commit()
             logger.info("Initial data created")
 
+# ======================================
+# RUTA PARA BAJA COLABORADOR
+# ======================================
+@app.route("/baja-colaborador", methods=["GET"])
+@require_db
+def baja_colaborador():
+    """Página para dar de baja colaboradores."""
+    return render_template("baja_colaborador.html")
 
-
+# ======================================
+# RUTA ALTERNATIVA PARA POST DE ALTA
+# ======================================
+@app.route("/alta-colaborador", methods=["POST"])
+@require_db
+def alta_colaborador_post():
+    """Ruta para POST del formulario de alta que redirige al dashboard."""
+    try:
+        db = g.db
+        
+        # NUEVA VALIDACIÓN: Verificar RFC antes de procesar
+        rfc = request.form.get("rfc", "").upper().strip()
+        
+        if rfc:
+            # Verificar si RFC ya existe
+            existe_rfc = db.query(Colaborador).filter_by(rfc=rfc).first()
+            if existe_rfc:
+                flash(f"❌ El RFC <strong>{rfc}</strong> ya está registrado para el colaborador: {existe_rfc.nombre} {existe_rfc.apellido}", "error")
+                return redirect(url_for('alta'))
+        
+        # Validar campos requeridos
+        required_fields = ['area', 'nombre', 'apellido', 'correo', 'rfc', 'curp', 'nss', 'fecha_alta']
+        missing_fields = []
+        
+        for field in required_fields:
+            if not request.form.get(field):
+                missing_fields.append(field)
+        
+        if missing_fields:
+            flash(f"❌ Campos requeridos faltantes: {', '.join(missing_fields)}", "error")
+            return redirect(url_for('alta'))
+        
+        # Validar datos únicos
+        rfc = request.form.get("rfc", "").upper()
+        curp = request.form.get("curp", "").upper()
+        nss = request.form.get("nss", "")
+        correo = request.form.get("correo", "")
+        
+        # Verificar duplicados
+        duplicados = []
+        
+        if db.query(Colaborador).filter_by(rfc=rfc).first():
+            duplicados.append(f"RFC: {rfc}")
+        
+        if db.query(Colaborador).filter_by(curp=curp).first():
+            duplicados.append(f"CURP: {curp}")
+        
+        if db.query(Colaborador).filter_by(nss=nss).first():
+            duplicados.append(f"NSS: {nss}")
+        
+        if db.query(Colaborador).filter_by(correo=correo).first():
+            duplicados.append(f"Correo: {correo}")
+        
+        if duplicados:
+            flash(f"❌ Datos duplicados encontrados: {', '.join(duplicados)}", "error")
+            return redirect(url_for('alta'))
+        
+        # Crear colaborador - MODIFICADO para obtener solo el ID
+        area_id = int(request.form.get("area"))
+        colaborador_id = crear_colaborador(db, area_id)  # <-- Ahora retorna solo el ID
+        
+        # Obtener datos del colaborador para el mensaje flash
+        colaborador = db.query(Colaborador).get(colaborador_id)
+        
+        # Mensaje de éxito con el nombre del colaborador
+        flash(f"✅ Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> registrado exitosamente", "success")
+        
+        # REDIRIGIR AL DASHBOARD en lugar de volver al formulario
+        return redirect(url_for('dashboard'))
+        # Si quieres llevar el ID como parámetro (opcional):
+        # return redirect(url_for('dashboard', nuevo_colaborador_id=colaborador_id))
+        
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error en alta POST: {e}", exc_info=True)
+        flash(f"❌ Error al registrar colaborador: {str(e)}", "error")
+        return redirect(url_for('alta'))
 # ======================================
 # MAIN
 # ======================================
