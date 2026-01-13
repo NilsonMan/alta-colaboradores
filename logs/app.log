@@ -24976,3 +24976,19 @@ sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown 
 2026-01-13 17:49:31,664 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:31] "GET /static/js/dashboard_bi.js HTTP/1.1" 200 -
 2026-01-13 17:49:31,817 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
 2026-01-13 17:49:31,819 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 17:49:31,822 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 17:49:31,857 - __main__ - INFO - KPIs calculados: total=13, activos=11, comercial=4, gestion=9
+2026-01-13 17:49:31,861 - __main__ - INFO - Bajas: comercial=1, gestion=1
+2026-01-13 17:49:31,868 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:31] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 17:49:31,919 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 17:49:31,924 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:31] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 17:49:31,964 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 17:49:31,965 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:31] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 17:49:32,628 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 17:49:32,630 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 17:49:32,631 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 17:49:32,638 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 17:49:32,642 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:32] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 17:49:32,807 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:32] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 17:49:32,937 - __main__ - INFO - Reclutadores encontrados: 6
+2026-01-13 17:49:32,939 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 17:49:32] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
