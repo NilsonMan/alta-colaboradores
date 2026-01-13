@@ -118,31 +118,27 @@
                         
                         <div class="alert alert-warning">
                             <i class="bi bi-info-circle me-2"></i>
-                            <strong>¿Deseas continuar con el alta?</strong>
-                            <p class="mb-0 mt-1">Si es una nueva contratación, puedes proceder con el registro.</p>
+                            <strong>No puedes continuar con el alta</strong>
+                            <p class="mb-0 mt-1">No puedes continar con el alta debido a que ya tiene un alta pasada</p>
                         </div>
                         
                         <div class="duplicate-details mt-3">
                             <h6 class="mb-2">Información del colaborador existente:</h6>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="mb-1"><strong>Nombre:</strong> <span id="dupNombre">Juan Pérez</span></p>
-                                    <p class="mb-1"><strong>RFC:</strong> <code id="dupRFC">PERJ800101ABC</code></p>
+                                    <p class="mb-1"><strong>Nombre:</strong> <span id="dupNombre">Cargando...</span></p>
+                                    <p class="mb-1"><strong>RFC:</strong> <code id="dupRFC">Cargando...</code></p>
+                                    <p class="mb-1"><strong>Correo:</strong> <span id="dupCorreo">Cargando...</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="mb-1"><strong>Correo:</strong> <span id="dupCorreo">juan.perez@marnezdesarrollos.com</span></p>
-                                    <p class="mb-1"><strong>Área:</strong> <span id="dupArea">Ventas</span></p>
+                                    <p class="mb-1"><strong>Área:</strong> <span id="dupArea">Cargando...</span></p>
+                                    <p class="mb-1"><strong>Puesto:</strong> <span id="dupPuesto">Cargando...</span></p>
+                                    <p class="mb-1"><strong>Estado:</strong> <span class="badge bg-success" id="dupEstado">Cargando...</span></p>
                                 </div>
                             </div>
-                            <p class="mt-2 mb-0"><strong>Estado:</strong> <span class="badge bg-success" id="dupEstado">Activo</span></p>
                         </div>
                         
-                        <div class="form-check mt-3">
-                            <input class="form-check-input" type="checkbox" id="confirmarNuevoRegistro">
-                            <label class="form-check-label" for="confirmarNuevoRegistro">
-                                Confirmo que este es un nuevo registro para el mismo colaborador
-                            </label>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -150,8 +146,9 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancelar
                 </button>
-                <button type="button" class="btn btn-primary" id="btnContinuarRegistro">
-                    <i class="bi bi-check-circle me-1"></i>Continuar con el Alta
+                 </button>
+                <button type="button" class="btn btn-primary" id="btnCambiarAreaModal">
+                    <i class="bi bi-arrow-left-right me-1"></i>Cambiar de Área
                 </button>
             </div>
         </div>
@@ -295,13 +292,27 @@
                                                placeholder="10 dígitos" required autocomplete="tel">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">RFC *</label>
-                                        <input name="rfc" class="form-control text-uppercase" maxlength="13"
-                                               placeholder="RFC (13 caracteres)"
-                                               required autocomplete="off">
-                                        <div class="form-text">Máximo 13 caracteres</div>
-                                    </div>
-                                </div>
+    <label class="form-label fw-semibold">RFC *</label>
+    <div class="rfc-verification-wrapper">
+        <div class="rfc-verification-container">
+            <div class="rfc-input-group">
+                <input id="rfcInput" name="rfc" class="form-control text-uppercase" 
+                       maxlength="13" placeholder="RFC (12-13 caracteres)" required 
+                       autocomplete="off">
+            </div>
+            <button type="button" id="btnVerificarRFC" class="btn btn-primary rfc-verify-btn">
+                <i class="bi bi-search me-1"></i>Verificar
+            </button>
+        </div>
+        <div id="rfcStatus" class="verification-status">
+            <span class="text-warning d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history"></i>
+                <span>No verificado</span>
+                <span class="verification-badge not-verified">⏱️ Pendiente</span>
+            </span>
+        </div>
+    </div>
+</div>  
 
                                 <div class="row g-3 mt-2">
                                     <div class="col-md-6">
@@ -413,7 +424,7 @@
                                 </h4>
                                 <i class="bi bi-chevron-down toggle-icon"></i>
                             </div>
-                            <div id="creditosData" class="section-content">
+                            <div id="creditoData" class="section-content">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">¿Tiene Infonavit?</label>
@@ -566,7 +577,7 @@
 
                         <!-- BOTÓN DE ENVÍO -->
                         <div class="text-center mt-4 pt-3 border-top">
-                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold">
+                            <button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg px-5 py-3 fw-bold">
                                 <i class="bi bi-save me-2"></i>Guardar Colaborador
                             </button>
                             <div class="mt-2">
@@ -583,7 +594,7 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/js/alta.js?v=2.3"></script>
+<script src="/static/js/alta.js?v=2.4"></script>
 
 <script>
 // Configuración global
@@ -596,7 +607,8 @@ window.APP_CONFIG = {
 
 window.VALIDATION_REGEX = {
     curp: /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$/,
-    email: /^[^\s@]+@marnezdesarrollos\.com$/i
+    email: /^[^\s@]+@marnezdesarrollos\.com$/i,
+    rfc: /^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$/
 };
 
 // Auto-eliminar mensajes flash

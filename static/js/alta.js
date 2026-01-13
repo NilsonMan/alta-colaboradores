@@ -106,6 +106,10 @@
         
         updateDocumentCounter();
         
+        // Inicializar estado del RFC
+        updateRFCStatus('not-verified');
+        updateSubmitButton();
+        
         console.log('Módulo de alta V2.4 inicializado correctamente');
     }
     
@@ -124,9 +128,12 @@
                 value = value.substring(0, 13);
             }
             
-            value = value.replace(/[^A-Z0-9-]/g, '');
-            
-            e.target.value = value;
+            value = value.replace(/[^A-ZÑ0-9]/g, '');
+        
+            // Solo actualizar si hay cambio real (evitar loop infinito)
+            if (e.target.value !== value) {
+                e.target.value = value;
+            }
             
             // Resetear estado de verificación si cambia el RFC
             STATE.rfcVerificado = false;
@@ -166,6 +173,8 @@
             if (!rfc || rfc.length < 12) {
                 showToast('Error', 'Ingresa un RFC válido (12-13 caracteres)', 'warning');
                 DOM.rfcInput?.focus();
+                DOM.rfcInput?.classList.add('shake');
+                setTimeout(() => DOM.rfcInput?.classList.remove('shake'), 500);
                 return;
             }
             
@@ -200,23 +209,22 @@
                 DOM.btnVerificarRFC.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Verificando...';
             }
             
-            // Simular llamada al servidor (en producción sería fetch)
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Llamada al servidor
+            const response = await fetch(`/api/verificar-rfc?rfc=${encodeURIComponent(rfc)}`);
             
-            // Datos de ejemplo - cambiar por lógica real
-            const usuarioExistente = Math.random() > 0.5;
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
             
-            if (usuarioExistente) {
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            if (data.existe) {
                 // Mostrar modal de colaborador existente
-                mostrarInfoColaboradorExistente({
-                    nombre: 'Juan Pérez González',
-                    rfc: rfc,
-                    correo: 'juan.perez@marnezdesarrollos.com',
-                    area: 'Ventas',
-                    estado: 'Activo',
-                    fecha_alta: '2023-05-15',
-                    puesto: 'Asesor Comercial'
-                });
+                mostrarInfoColaboradorExistente(data.colaborador);
                 
                 updateRFCStatus('error', 'RFC ya registrado');
                 STATE.rfcVerificado = false;
@@ -235,7 +243,7 @@
             
         } catch (error) {
             console.error('Error verificando RFC:', error);
-            showToast('Error', 'No se pudo verificar el RFC', 'danger');
+            showToast('Error', error.message || 'No se pudo verificar el RFC', 'danger');
             updateRFCStatus('error', 'Error en verificación');
             STATE.rfcVerificado = false;
             updateSubmitButton();
@@ -339,7 +347,7 @@
                 
                 // Redirigir a la página de cambio de área
                 setTimeout(() => {
-                    window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
+                    window.location.href = '/cambio-area-colaborador';
                 }, 500);
             }, { once: true });
         }
@@ -485,7 +493,7 @@
                 
                 // Redirigir a la página de cambio de área
                 setTimeout(() => {
-                    window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
+                    window.location.href = '/cambio-area-colaborador';
                 }, 500);
             }, { once: true });
         }
@@ -600,7 +608,7 @@
     }
     
     // =========================
-    // MANEJADOR DE DOCUMENTOS (SE MANTIENE IGUAL)
+    // MANEJADOR DE DOCUMENTOS
     // =========================
     function initDocumentManager() {
         console.log('Inicializando gestor de documentos...');
@@ -674,7 +682,7 @@
     }
     
     // =========================
-    // FUNCIONES AUXILIARES (SE MANTIENEN IGUAL)
+    // FUNCIONES AUXILIARES
     // =========================
     
     function updateDocumentCounter() {
@@ -794,7 +802,7 @@
     }
     
     // =========================
-    // MANEJADOR DE CORREO (SE MANTIENE IGUAL)
+    // MANEJADOR DE CORREO
     // =========================
     function initEmailManager() {
         if (!DOM.nombreInput || !DOM.apellidoInput) return;
@@ -897,7 +905,7 @@
     }
     
     // =========================
-    // VERIFICACIÓN DE DUPLICADOS (SE MANTIENE IGUAL)
+    // VERIFICACIÓN DE DUPLICADOS
     // =========================
     function initDuplicateChecker() {
         const campos = [
@@ -986,7 +994,7 @@
     }
     
     // =========================
-    // FUNCIONES DE VALIDACIÓN BÁSICA (SE MANTIENEN IGUAL)
+    // FUNCIONES DE VALIDACIÓN BÁSICA
     // =========================
     function initValidations() {
         const curpInput = document.querySelector('input[name="curp"]');
@@ -1057,7 +1065,7 @@
     }
     
     // =========================
-    // MANEJADOR DE ÁREAS (SE MANTIENE IGUAL)
+    // MANEJADOR DE ÁREAS
     // =========================
     function initAreaManager() {
         if (!DOM.areaSelect) return;
@@ -1236,7 +1244,7 @@
     }
     
     // =========================
-    // TOGGLES DE SECCIONES (SE MANTIENE IGUAL)
+    // TOGGLES DE SECCIONES
     // =========================
     function initSectionToggles() {
         document.querySelectorAll('.section-toggle').forEach(toggle => {
@@ -1273,7 +1281,7 @@
     }
     
     // =========================
-    // CONTADOR DE CARACTERES (SE MANTIENE IGUAL)
+    // CONTADOR DE CARACTERES
     // =========================
     function initCharacterCounter() {
         const textarea = document.querySelector('textarea[name="comentarios"]');
@@ -1301,7 +1309,7 @@
     }
     
     // =========================
-    // MEJORAS DE FORMULARIO (SE MANTIENE IGUAL)
+    // MEJORAS DE FORMULARIO
     // =========================
     function initFormEnhancements() {
         setTimeout(() => {
@@ -1327,7 +1335,7 @@
     }
     
     // =========================
-    // BLOQUEO/DESBLOQUEO DE FORMULARIO (ACTUALIZADA)
+    // BLOQUEO/DESBLOQUEO DE FORMULARIO
     // =========================
     function lockForm() {
         if (!DOM.formulario) return;
@@ -1363,7 +1371,7 @@
     }
     
     // =========================
-    // BOTONES ESPECIALES (ACTUALIZADA)
+    // BOTONES ESPECIALES
     // =========================
     function initBotonesEspeciales() {
         const btnBaja = document.getElementById('btnBajaColaborador');
@@ -1378,7 +1386,7 @@
         if (btnCambioArea) {
             btnCambioArea.addEventListener('click', function(e) {
                 e.preventDefault();
-                window.location.href = '/cambio-area-colaborador'; // Cambia esta URL
+                window.location.href = '/cambio-area-colaborador';
             });
         }
     }
@@ -1448,7 +1456,7 @@
     }
     
     // =========================
-    // PREVISUALIZACIÓN DE DOCUMENTOS (SE MANTIENE IGUAL)
+    // PREVISUALIZACIÓN DE DOCUMENTOS
     // =========================
     function initPreviewModal() {
         const modalElement = document.getElementById('modalPreview');
@@ -1568,10 +1576,6 @@
         
         initComponents();
         lockForm();
-        
-        // Inicializar estado del RFC
-        updateRFCStatus('not-verified');
-        updateSubmitButton();
         
         console.log('Módulo de alta V2.4 inicializado correctamente');
     }

@@ -22499,3 +22499,139 @@ WHERE colaboradores.rfc = %(rfc_1)s
 2026-01-13 12:07:30,263 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
 2026-01-13 12:07:30,266 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
 2026-01-13 12:07:30,298 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:07:30] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:14:50,176 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "GET / HTTP/1.1" 200 -
+2026-01-13 12:14:50,261 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:14:50,305 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:14:50,308 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "GET /static/css/alta.css?v=2.2 HTTP/1.1" 200 -
+2026-01-13 12:14:50,389 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:14:50,448 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:14:50] "GET /static/js/alta.js?v=2.3 HTTP/1.1" 200 -
+2026-01-13 12:15:30,740 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:30] "GET / HTTP/1.1" 200 -
+2026-01-13 12:15:30,812 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:30] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:15:30,827 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:30] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:15:30,856 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:30] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:15:30,930 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:30] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:15:31,001 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:31] "GET /static/js/alta.js?v=2.3 HTTP/1.1" 200 -
+2026-01-13 12:15:59,096 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:59] "GET / HTTP/1.1" 200 -
+2026-01-13 12:15:59,175 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:59] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:15:59,203 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:59] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:15:59,217 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:59] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:15:59,315 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:15:59] "GET /static/js/alta.js?v=2.3 HTTP/1.1" 200 -
+2026-01-13 12:19:03,323 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:19:03,402 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:19:03,425 - __main__ - INFO - Application initialized successfully
+2026-01-13 12:19:03,457 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.127:5000
+2026-01-13 12:19:03,458 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-13 12:19:03,461 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 12:19:04,913 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:19:04,981 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:19:05,027 - __main__ - INFO - Application initialized successfully
+2026-01-13 12:19:05,055 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 12:19:05,057 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 12:19:07,498 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:07] "GET / HTTP/1.1" 200 -
+2026-01-13 12:19:07,917 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:07] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:19:07,924 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:07] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:19:07,925 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:07] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:19:08,013 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:08] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:19:08,065 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:19:08] "GET /static/js/alta.js?v=2.3 HTTP/1.1" 200 -
+2026-01-13 12:23:20,835 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:23:20] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 12:23:20,912 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:23:20] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:23:20,919 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:23:20] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:23:20,978 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:23:20] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 12:33:37,210 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "GET /dashboard HTTP/1.1" 200 -
+2026-01-13 12:33:37,302 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:33:37,311 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:33:37,340 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "[36mGET /static/js/dashboard_bi.js HTTP/1.1[0m" 304 -
+2026-01-13 12:33:37,644 - __main__ - INFO - API Contrataciones solicitada para año: 2026, mes: None
+2026-01-13 12:33:37,645 - __main__ - INFO - API KPIs solicitada para año: 2026, mes: None
+2026-01-13 12:33:37,646 - __main__ - INFO - API Bajas solicitada para año: 2026, mes: None
+2026-01-13 12:33:37,750 - __main__ - INFO - KPIs calculados: total=10, activos=9, comercial=4, gestion=6
+2026-01-13 12:33:37,756 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "GET /api/kpis?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:33:37,795 - __main__ - INFO - Bajas para 2026: 12 registros
+2026-01-13 12:33:37,799 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "GET /api/bajas?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:33:37,802 - __main__ - INFO - Contrataciones para 2026: 12 registros
+2026-01-13 12:33:37,807 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:37] "GET /api/contrataciones?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:33:38,374 - __main__ - INFO - API Reclutadores solicitada para año: 2026
+2026-01-13 12:33:38,378 - __main__ - INFO - API Reclutadores Comercial solicitada para año: 2026
+2026-01-13 12:33:38,399 - __main__ - INFO - API Comparativa solicitada para años: [2025, 2026]
+2026-01-13 12:33:38,431 - __main__ - INFO - Reclutadores comerciales encontrados: 1
+2026-01-13 12:33:38,444 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:38] "GET /api/reclutadores/comercial?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:33:38,602 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:38] "GET /api/contrataciones/comparativa?years[]=2025&years[]=2026 HTTP/1.1" 200 -
+2026-01-13 12:33:38,712 - __main__ - INFO - Reclutadores encontrados: 5
+2026-01-13 12:33:38,713 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:33:38] "GET /api/contrataciones/reclutador?year=2026 HTTP/1.1" 200 -
+2026-01-13 12:34:42,870 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:42] "GET / HTTP/1.1" 200 -
+2026-01-13 12:34:42,928 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:42] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:34:42,950 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:42] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:34:42,971 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:42] "GET /static/css/alta.css?v=2.2 HTTP/1.1" 200 -
+2026-01-13 12:34:42,994 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:42] "GET /static/js/alta.js?v=2.3 HTTP/1.1" 200 -
+2026-01-13 12:34:43,036 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:34:43] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:37:55,524 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "GET / HTTP/1.1" 200 -
+2026-01-13 12:37:55,594 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:37:55,603 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:37:55,608 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:37:55,611 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "GET /static/js/alta.js?v=2.4 HTTP/1.1" 200 -
+2026-01-13 12:37:55,632 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:37:55] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:38:43,011 - werkzeug - INFO -  * Detected change in 'C:\\Users\\nilson.novelo\\OneDrive - MarnezMX\\Documentos\\Proyecto Alta de colaboradores\\app.py', reloading
+2026-01-13 12:38:43,358 - werkzeug - INFO -  * Restarting with stat
+2026-01-13 12:38:44,980 - __main__ - INFO - Starting application initialization...
+2026-01-13 12:38:45,052 - __main__ - INFO - Database tables verified/created
+2026-01-13 12:38:45,085 - __main__ - INFO - Application initialized successfully
+2026-01-13 12:38:45,102 - werkzeug - WARNING -  * Debugger is active!
+2026-01-13 12:38:45,106 - werkzeug - INFO -  * Debugger PIN: 182-568-951
+2026-01-13 12:39:00,697 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:00] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:39:42,377 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "GET / HTTP/1.1" 200 -
+2026-01-13 12:39:42,605 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:39:42,609 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:39:42,610 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:39:42,610 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:39:42,628 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:39:42] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:42:34,930 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:34] "GET / HTTP/1.1" 200 -
+2026-01-13 12:42:34,986 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:34] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:42:34,995 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:34] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:42:35,006 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:35] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:42:35,014 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:35] "GET /static/css/alta.css?v=2.2 HTTP/1.1" 200 -
+2026-01-13 12:42:35,033 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:42:35] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:44:29,400 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "GET / HTTP/1.1" 200 -
+2026-01-13 12:44:29,476 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:44:29,490 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:44:29,493 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:44:29,495 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:44:29,508 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:29] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:44:52,678 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "GET / HTTP/1.1" 200 -
+2026-01-13 12:44:52,724 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:44:52,737 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:44:52,741 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:44:52,757 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "GET /static/css/alta.css?v=2.2 HTTP/1.1" 200 -
+2026-01-13 12:44:52,788 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:44:52] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:45:21,185 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "GET / HTTP/1.1" 200 -
+2026-01-13 12:45:21,243 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:45:21,254 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:45:21,255 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:45:21,256 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:45:21,284 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:21] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:45:51,761 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:45:51] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:49:06,244 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "GET / HTTP/1.1" 200 -
+2026-01-13 12:49:06,292 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:49:06,308 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:49:06,311 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:49:06,314 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:49:06,346 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:06] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:49:27,979 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:49:27] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:52:07,163 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:07] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:52:17,258 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "GET / HTTP/1.1" 200 -
+2026-01-13 12:52:17,330 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:52:17,334 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "[36mGET /static/css/alta.css?v=2.2 HTTP/1.1[0m" 304 -
+2026-01-13 12:52:17,337 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:52:17,347 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "[36mGET /static/js/alta.js?v=2.4 HTTP/1.1[0m" 304 -
+2026-01-13 12:52:17,364 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:17] "[36mGET /static/img/Marnez_Logotipo-03-v2.png HTTP/1.1[0m" 304 -
+2026-01-13 12:52:24,761 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:24] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:52:28,125 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:28] "GET /cambio-area-colaborador HTTP/1.1" 200 -
+2026-01-13 12:52:28,183 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:28] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2026-01-13 12:52:28,190 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:28] "[36mGET /static/js/dark-mode-manager.js HTTP/1.1[0m" 304 -
+2026-01-13 12:52:28,228 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:28] "GET /api/areas HTTP/1.1" 200 -
+2026-01-13 12:52:37,925 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:37] "GET /api/verificar-rfc?rfc=NOEN000202IK3 HTTP/1.1" 200 -
+2026-01-13 12:52:50,507 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:50] "GET /api/buscar-colaboradores?q=nilson HTTP/1.1" 200 -
+2026-01-13 12:52:54,763 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:52:54] "GET /api/colaborador/2 HTTP/1.1" 200 -
+2026-01-13 12:53:00,483 - werkzeug - INFO - 127.0.0.1 - - [13/Jan/2026 12:53:00] "GET /api/buscar-colaborador?campo=correo&valor=ilsonmanuel37@gmail.com HTTP/1.1" 200 -

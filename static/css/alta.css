@@ -907,30 +907,74 @@ h2.fw-bold {
 }
 
 /* =========================
-   ESTILOS PARA VERIFICACIÓN DE RFC
+   ESTILOS PARA VERIFICACIÓN DE RFC (COMPLETAMENTE CORREGIDO)
 ========================= */
+.rfc-verification-wrapper {
+    margin-bottom: 0.5rem;
+}
+
 .rfc-verification-container {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.25rem; /* Espacio antes del hint */
 }
 
 .rfc-input-group {
     flex: 1;
 }
 
-.rfc-verify-btn {
-    margin-top: 1px;
+.rfc-input-group .form-control {
+    width: 100%;
     height: 42px;
-    min-width: 100px;
+}
+
+.rfc-verify-btn {
+    height: 42px !important;
+    min-width: 100px !important;
+    white-space: nowrap;
+    padding: 0.5rem 1rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent), #e6c200) !important;
+    border: none !important;
+    color: #1c2a35 !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0; /* Evita que se encoja */
+    margin: 0 !important; /* Asegurar que no haya márgenes */
+}
+
+.rfc-verify-btn:hover {
+    background: linear-gradient(135deg, #ffed99, var(--accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 217, 57, 0.3) !important;
+    color: #000 !important;
+}
+
+.rfc-verify-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.rfc-hint {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
 }
 
 .verification-status {
     font-size: 0.875rem;
-    margin-top: 0.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 24px;
+    margin-top: 0.25rem;
 }
 
 .verification-badge {
@@ -990,14 +1034,15 @@ h2.fw-bold {
     to { background-position: 20px 0; }
 }
 
-/* Botón submit deshabilitado */
-#btnSubmitForm:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: linear-gradient(135deg, #6c757d, #495057) !important;
-}
-
-#btnSubmitForm:disabled:hover {
-    transform: none !important;
-    box-shadow: none !important;
+/* RESPONSIVE: Para pantallas pequeñas */
+@media (max-width: 768px) {
+    .rfc-verification-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .rfc-verify-btn {
+        width: 100%;
+    }
 }

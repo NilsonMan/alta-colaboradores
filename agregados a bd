@@ -1,0 +1,16 @@
+USE alta_colaboradores;
+
+-- Agregar las nuevas columnas
+ALTER TABLE colaboradores 
+ADD COLUMN fecha_ultimo_cambio_area DATE NULL,
+ADD COLUMN motivo_ultimo_cambio_area VARCHAR(200) NULL,
+ADD COLUMN area_anterior_id INT NULL;
+
+-- Agregar la foreign key para area_anterior_id
+ALTER TABLE colaboradores 
+ADD CONSTRAINT fk_colaboradores_area_anterior
+FOREIGN KEY (area_anterior_id) REFERENCES areas(id)
+ON DELETE SET NULL;
+
+-- Verificar que se agregaron
+DESCRIBE colaboradores;

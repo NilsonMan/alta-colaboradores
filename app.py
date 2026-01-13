@@ -817,9 +817,62 @@ def api_todas_areas():
 # ======================================
 # API PARA VERIFICACIÓN RFC (NUEVA)
 # ======================================
+# En tu archivo app.py (solo la ruta de verificación RFC)
+
 @app.route("/api/verificar-rfc", methods=["GET"])
 @require_db
 def api_verificar_rfc():
+    """API para verificar si un RFC ya está registrado."""
+    try:
+        rfc = request.args.get('rfc', '').strip().upper()
+        
+        if not rfc or len(rfc) < 12:
+            return jsonify({
+                "error": "RFC inválido (debe tener al menos 12 caracteres)"
+            }), 400
+        
+        db = g.db
+        
+        # Buscar colaborador por RFC
+        colaborador = db.query(Colaborador).filter_by(rfc=rfc).first()
+        
+        if colaborador:
+            # Obtener datos del área
+            area_nombre = "N/A"
+            if colaborador.area:
+                area_nombre = colaborador.area.nombre
+            
+            # Obtener datos del puesto
+            puesto_nombre = "N/A"
+            if colaborador.puesto:
+                puesto_nombre = colaborador.puesto.nombre
+            
+            return jsonify({
+                "existe": True,
+                "colaborador": {
+                    "id": colaborador.id,
+                    "nombre": f"{colaborador.nombre} {colaborador.apellido}",
+                    "correo": colaborador.correo,
+                    "rfc": colaborador.rfc,
+                    "curp": colaborador.curp or "N/A",
+                    "area": area_nombre,
+                    "puesto": puesto_nombre,
+                    "estado": "Activo" if not colaborador.baja else "Baja",
+                    "fecha_alta": colaborador.fecha_alta.strftime("%Y-%m-%d") if colaborador.fecha_alta else "N/A",
+                    "telefono": colaborador.telefono or "N/A",
+                    "sueldo": float(colaborador.sueldo) if colaborador.sueldo else 0.00,
+                    "baja": bool(colaborador.baja)
+                }
+            })
+        else:
+            return jsonify({
+                "existe": False,
+                "message": "RFC no encontrado en el sistema"
+            })
+            
+    except Exception as e:
+        logger.error(f"Error verificando RFC: {e}", exc_info=True)
+        return jsonify({"error": "Error al verificar el RFC"}), 500
     """API para verificar si un RFC ya está registrado."""
     try:
         rfc = request.args.get('rfc', '').strip().upper()
