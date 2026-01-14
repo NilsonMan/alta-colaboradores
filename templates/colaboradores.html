@@ -31,6 +31,21 @@
             overflow-x: hidden;
         }
 
+        /* FIX PARA SCROLL BLOQUEADO */
+        body.modal-open {
+            overflow: auto !important;
+            padding-right: 0 !important;
+        }
+
+        /* FIX PARA MODAL EN PANTALLAS PEQUEÑAS */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 10px;
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+            }
+        }
+
         /* ENCABEZADO MEJORADO */
         .page-header {
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.05));
@@ -321,6 +336,24 @@
             background-color: rgba(67, 97, 238, 0.1) !important;
         }
 
+        /* FIX PARA RESPONSIVE TABLE - ACCIONES VISIBLES */
+        .dt-responsive.table-responsive .dtr-hidden {
+            display: table-cell !important;
+        }
+        
+        /* FIX PARA COLUMNA DE ACCIONES EN MÓVIL */
+        @media (max-width: 768px) {
+            #colaboradoresTable th:nth-child(11),
+            #colaboradoresTable td:nth-child(11) {
+                display: table-cell !important;
+            }
+            
+            .action-buttons-group {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+            }
+        }
+
         /* AVATAR MEJORADO */
         .avatar {
             width: 40px;
@@ -388,6 +421,7 @@
             display: flex;
             gap: 0.5rem;
             justify-content: center;
+            min-width: 140px;
         }
 
         .action-btn {
@@ -468,6 +502,12 @@
             #colaboradoresTable {
                 min-width: 1200px;
             }
+            
+            /* FIX PARA ACCIONES EN MÓVIL */
+            .action-buttons-group {
+                flex-direction: row;
+                flex-wrap: nowrap;
+            }
         }
 
         /* ANIMACIONES */
@@ -544,11 +584,18 @@
             color: #e2e8f0 !important;
         }
 
-        /* MODAL MEJORADO */
+        /* MODAL MEJORADO - FIX PARA SCROLL */
+        .modal {
+            overflow-y: auto !important;
+            padding-right: 0 !important;
+        }
+
         .modal-content {
             border-radius: var(--border-radius-lg);
             border: none;
             box-shadow: var(--shadow-medium);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -556,6 +603,9 @@
             border-bottom: 1px solid #e2e8f0;
             border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
             padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .dark-mode .modal-header {
@@ -570,10 +620,15 @@
         .modal-footer {
             border-top: 1px solid #e2e8f0;
             padding: 1.25rem 1.5rem;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            z-index: 1;
         }
 
         .dark-mode .modal-footer {
             border-color: #4a5568;
+            background: #2d3748;
         }
 
         /* DETAIL CARD EN MODAL */
@@ -619,6 +674,28 @@
             color: #e2e8f0;
         }
 
+        /* FIX PARA MODAL DE DETALLES EN PANTALLA COMPACTA */
+        @media (max-width: 992px) {
+            .modal-dialog.modal-lg {
+                max-width: 95%;
+                margin: 10px auto;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-body .row {
+                flex-direction: column;
+            }
+            
+            .modal-body .col-md-4,
+            .modal-body .col-md-8 {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
         /* TOOLTIPS */
         .tooltip-inner {
             background: #2d3748;
@@ -626,6 +703,109 @@
             border-radius: var(--border-radius-sm);
             padding: 0.5rem 0.75rem;
             font-size: 0.75rem;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* FIX PARA COLORES DE AVATAR */
+        .avatar-color-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .avatar-color-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .avatar-color-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .avatar-color-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .avatar-color-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .avatar-color-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+
+        /* FIX PARA SPINNER */
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ESTILOS ESPECÍFICOS PARA PREVIEW DE DOCUMENTOS */
+        .pdf-container {
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-md);
+            background: #f8fafc;
+            padding: 1rem;
+        }
+
+        .pdf-container canvas {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .image-preview-container {
+            max-height: 70vh;
+            overflow: auto;
+        }
+
+        .image-preview-container img {
+            max-width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: var(--border-radius-md);
+        }
+
+        .document-preview-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-preview-btn:hover::after {
+            content: 'Previsualizar';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(67, 97, 238, 0.9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .document-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .document-thumbnail.pdf {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .document-thumbnail.image {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .document-item {
+            transition: all var(--transition-fast);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+        }
+
+        .document-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-light);
         }
     </style>
@@ -765,7 +945,7 @@
 </div>
 
 <!-- Modal de detalles -->
-<div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -780,62 +960,54 @@
                         <div class="status-badge mx-auto" id="modalEstado">Activo</div>
                     </div>
                     <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="detail-item">
-                                    <div class="detail-label">Correo:</div>
-                                    <div class="detail-value" id="modalCorreo">john@example.com</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">RFC:</div>
-                                    <div class="detail-value" id="modalRfc">XAXX010101000</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">CURP:</div>
-                                    <div class="detail-value" id="modalCurp">XAXX010101HDFXXX01</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">NSS:</div>
-                                    <div class="detail-value" id="modalNss">12345678901</div>
-                                </div>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Correo:</div>
+                                <div class="detail-value" id="modalCorreo">john@example.com</div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="detail-item">
-                                    <div class="detail-label">Área:</div>
-                                    <div class="detail-value" id="modalArea">Comercial</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Puesto:</div>
-                                    <div class="detail-value" id="modalPuesto">Vendedor</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Coordinador:</div>
-                                    <div class="detail-value" id="modalCoordinador">Juan Pérez</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Correo Coordinador:</div>
-                                    <div class="detail-value" id="modalCorreoCoordinador">juan@example.com</div>
-                                </div>
+                            <div class="detail-item">
+                                <div class="detail-label">RFC:</div>
+                                <div class="detail-value" id="modalRfc">XAXX010101000</div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="detail-item">
-                                    <div class="detail-label">Teléfono:</div>
-                                    <div class="detail-value" id="modalTelefono">555-1234</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Domicilio:</div>
-                                    <div class="detail-value" id="modalDomicilio">Calle Falsa 123</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Sueldo:</div>
-                                    <div class="detail-value" id="modalSueldo">$15,000 MXN</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Comentarios:</div>
-                                    <div class="detail-value" id="modalComentarios">Sin comentarios</div>
-                                </div>
+                            <div class="detail-item">
+                                <div class="detail-label">CURP:</div>
+                                <div class="detail-value" id="modalCurp">XAXX010101HDFXXX01</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">NSS:</div>
+                                <div class="detail-value" id="modalNss">12345678901</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Área:</div>
+                                <div class="detail-value" id="modalArea">Comercial</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Puesto:</div>
+                                <div class="detail-value" id="modalPuesto">Vendedor</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Coordinador:</div>
+                                <div class="detail-value" id="modalCoordinador">Juan Pérez</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Correo Coordinador:</div>
+                                <div class="detail-value" id="modalCorreoCoordinador">juan@example.com</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Teléfono:</div>
+                                <div class="detail-value" id="modalTelefono">555-1234</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Domicilio:</div>
+                                <div class="detail-value" id="modalDomicilio">Calle Falsa 123</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Sueldo:</div>
+                                <div class="detail-value" id="modalSueldo">$15,000 MXN</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Comentarios:</div>
+                                <div class="detail-value" id="modalComentarios">Sin comentarios</div>
                             </div>
                         </div>
                     </div>
@@ -855,7 +1027,7 @@
 </div>
 
 <!-- Modal de edición -->
-<div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -870,13 +1042,13 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Nombre:</label>
-                                <input type="text" class="form-control" id="editNombre" required>
+                                <input type="text" class="form-control" id="editNombre" required maxlength="100">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Apellido:</label>
-                                <input type="text" class="form-control" id="editApellido" required>
+                                <input type="text" class="form-control" id="editApellido" required maxlength="100">
                             </div>
                         </div>
                     </div>
@@ -885,7 +1057,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Correo:</label>
-                                <input type="email" class="form-control" id="editCorreo" required>
+                                <input type="email" class="form-control" id="editCorreo" required maxlength="150">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -989,7 +1161,7 @@
 </div>
 
 <!-- Modal de documentos -->
-<div class="modal fade" id="documentosModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="documentosModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -1015,6 +1187,65 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para previsualización de imágenes -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="image-preview-container text-center">
+                    <img id="previewImage" src="" class="img-fluid rounded" alt="Previsualización">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" id="downloadFromPreview">
+                    <i class="bi bi-download me-1"></i>Descargar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para previsualización de PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfPreviewTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="pdf-container" id="pdfViewer">
+                    <!-- PDF.js renderizará aquí -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-between w-100">
+                    <div>
+                        <button type="button" class="btn btn-outline-primary" id="prevPage">
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </button>
+                        <span class="mx-2">Página: <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+                        <button type="button" class="btn btn-outline-primary" id="nextPage">
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" id="downloadPdfFromPreview">
+                            <i class="bi bi-download me-1"></i>Descargar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -1029,6 +1260,7 @@
 
 <!-- PDF.js para previsualización de PDFs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js"></script>
 
 <!-- FileSaver.js para exportación -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -1042,6 +1274,12 @@
     let currentColaboradorId = null;
     let areasData = [];
     let puestosData = [];
+    
+    // Variables para PDF.js
+    let pdfDoc = null;
+    let currentPage = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
 
     // Función para esperar a que jQuery esté cargado
     function waitForjQuery() {
@@ -1061,6 +1299,9 @@
         testApi();
         initTable();
         setupEventListeners();
+        
+        // FIX PARA MODAL SCROLL
+        fixModalBackdrop();
     }
 
     // Inicializar cuando el DOM esté listo
@@ -1068,6 +1309,17 @@
         console.log('📄 DOM cargado');
         waitForjQuery();
     });
+
+    // FIX PARA SCROLL BLOQUEADO EN MODALES
+    function fixModalBackdrop() {
+        $(document).on('hidden.bs.modal', function() {
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+            $('body').css('padding-right', '');
+            $('body').css('overflow', 'auto');
+            $('body').css('pointer-events', 'auto');
+        });
+    }
 
     // Función para cargar áreas desde el backend
     async function cargarAreas() {
@@ -1205,7 +1457,20 @@
         
         // Configuración de DataTable
         colaboradoresTable = $('#colaboradoresTable').DataTable({
-            responsive: true,
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function (row) {
+                            var data = row.data();
+                            return 'Detalles de ' + data[2];
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                        tableClass: 'table'
+                    }),
+                    type: 'column'
+                }
+            },
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
                 emptyTable: "No hay colaboradores registrados",
@@ -1245,7 +1510,7 @@
                 { 
                     data: null,
                     render: function(data, type, row) {
-                        return `${row.nombre || ''} ${row.apellido || ''}`;
+                        return `<strong>${row.nombre || ''} ${row.apellido || ''}</strong>`;
                     }
                 },
                 { 
@@ -1343,7 +1608,8 @@
                         `;
                     },
                     orderable: false,
-                    className: 'text-center'
+                    className: 'text-center',
+                    responsivePriority: 1
                 }
             ],
             order: [[0, 'desc']],
@@ -1500,12 +1766,6 @@
                 return true;
             }
         );
-
-        // FIX para fondo oscuro persistente
-        $(document).on('hidden.bs.modal', '.modal', function() {
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open');
-        });
     }
 
     function updateStatisticsFromTable() {
@@ -1539,23 +1799,26 @@
         
         try {
             console.log('🔍 Obteniendo detalles para ID:', id);
-            const response = await fetch(`/api/colaborador/${id}`);
+            
+            // Usar la API que trae todos los datos
+            const response = await fetch(`/api/colaborador/detalle/${id}`);
             
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
             }
             
-            const data = await response.json();
+            const result = await response.json();
             
-            if (data.error) {
-                showAlert('Error', data.error, 'danger');
+            if (!result.success) {
+                showAlert('Error', result.error, 'danger');
                 hideLoading();
                 return;
             }
 
+            const data = result.colaborador;
             currentColaboradorId = id;
             
-            // Actualizar modal con los datos
+            // Actualizar modal con TODOS los datos
             const nombres = data.nombre || '';
             const apellidos = data.apellido || '';
             const iniciales = (nombres.charAt(0) + apellidos.charAt(0)).toUpperCase() || '??';
@@ -1568,18 +1831,33 @@
             $('#modalNombre').text(nombres + ' ' + apellidos);
             $('#modalEstado').text(data.baja ? 'Inactivo' : 'Activo');
             $('#modalEstado').attr('class', `status-badge mx-auto ${data.baja ? 'status-inactive' : 'status-active'}`);
+            
+            // ✅ TODOS LOS DATOS AHORA SE MUESTRAN CORRECTAMENTE
             $('#modalCorreo').text(data.correo || 'N/A');
             $('#modalRfc').text(data.rfc || 'N/A');
             $('#modalCurp').text(data.curp || 'N/A');
             $('#modalNss').text(data.nss || 'N/A');
-            $('#modalArea').text(data.area || 'N/A');
-            $('#modalPuesto').text(data.puesto || 'N/A');
+            $('#modalArea').text(data.area_nombre || 'N/A');
+            $('#modalPuesto').text(data.puesto_nombre || 'N/A');
             $('#modalCoordinador').text(data.nombre_coordinador || 'N/A');
             $('#modalCorreoCoordinador').text(data.correo_coordinador || 'N/A');
             $('#modalTelefono').text(data.telefono || 'N/A');
             $('#modalDomicilio').text(data.domicilio || 'N/A');
             $('#modalSueldo').text(data.sueldo ? `$${parseFloat(data.sueldo).toLocaleString('es-MX')} MXN` : 'N/A');
             $('#modalComentarios').text(data.comentarios || 'Sin comentarios');
+            
+            // Mostrar edad si está disponible
+            if (data.edad && data.edad !== 'N/A') {
+                // Agregar edad al nombre si está disponible
+                $('#modalNombre').append(`<div class="small text-muted mt-1">Edad: ${data.edad} años</div>`);
+            }
+            
+            // Mostrar estado civil si está disponible
+            if (data.estado_civil && data.estado_civil !== 'N/A') {
+                // Agregar estado civil
+                const estadoCivilDiv = $('<div class="small text-muted mt-1"></div>').text(`Estado civil: ${data.estado_civil}`);
+                $('#modalNombre').append(estadoCivilDiv);
+            }
             
             // Mostrar/ocultar botón de baja según estado
             if (data.baja) {
@@ -1604,14 +1882,22 @@
         try {
             console.log('📝 Cargando datos para edición ID:', id);
             
-            const response = await fetch(`/api/colaborador/${id}`);
+            // Usar la API que trae todos los datos
+            const response = await fetch(`/api/colaborador/detalle/${id}`);
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
             }
             
-            const data = await response.json();
+            const result = await response.json();
             
-            // Llenar el formulario
+            if (!result.success) {
+                showAlert('Error', result.error, 'danger');
+                return;
+            }
+            
+            const data = result.colaborador;
+            
+            // Llenar el formulario con TODOS los campos
             $('#editColaboradorId').val(data.id);
             $('#editNombre').val(data.nombre || '');
             $('#editApellido').val(data.apellido || '');
@@ -1638,7 +1924,13 @@
                 }, 100);
             }
             
-            // Mostrar modal
+            // Cerrar modal de detalles si está abierto
+            const detalleModal = bootstrap.Modal.getInstance(document.getElementById('detalleModal'));
+            if (detalleModal) {
+                detalleModal.hide();
+            }
+            
+            // Mostrar modal de edición
             const modal = new bootstrap.Modal(document.getElementById('editarModal'));
             modal.show();
             
@@ -1745,38 +2037,38 @@
                 
                 documentos.forEach((doc, index) => {
                     const tamañoMB = doc.tamano ? (doc.tamano / (1024 * 1024)).toFixed(2) : 'N/A';
-                    const fecha = doc.fecha_subida || 'N/A';
+                    const fecha = doc.fecha_subida ? new Date(doc.fecha_subida).toLocaleDateString('es-MX') : 'N/A';
                     const esPDF = doc.tipo && doc.tipo.toLowerCase() === 'pdf';
-                    const esImagen = doc.tipo && ['jpg', 'jpeg', 'png', 'gif'].includes(doc.tipo.toLowerCase());
+                    const esImagen = doc.tipo && ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(doc.tipo.toLowerCase());
+                    const extension = doc.nombre_archivo ? doc.nombre_archivo.split('.').pop().toLowerCase() : '';
                     
                     contenido += `
                         <div class="col-md-6">
-                            <div class="detail-card">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
+                            <div class="document-item detail-card">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="document-thumbnail ${esPDF ? 'pdf' : esImagen ? 'image' : ''}">
+                                        <i class="bi ${esPDF ? 'bi-file-pdf' : esImagen ? 'bi-image' : 'bi-file-earmark'}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
                                         <h6 class="mb-1">${doc.nombre_archivo || 'Documento sin nombre'}</h6>
                                         <div class="text-muted small">
-                                            <span class="badge bg-info">${doc.tipo || 'N/A'}</span>
+                                            <span class="badge ${esPDF ? 'bg-danger' : esImagen ? 'bg-success' : 'bg-info'}">${doc.tipo || extension || 'N/A'}</span>
                                             <span class="ms-2">${tamañoMB} MB</span>
                                             <span class="ms-2">${fecha}</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">${doc.descripcion || 'Sin descripción'}</small>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="d-flex gap-2">
-                                    ${esImagen ? `
-                                        <button class="btn btn-sm btn-outline-primary btn-preview-image" 
+                                <div class="d-flex gap-2 flex-wrap">
+                                    ${esImagen || esPDF ? `
+                                        <button class="btn btn-sm btn-outline-primary btn-preview" 
                                                 data-ruta="${doc.ruta_archivo}" 
-                                                data-nombre="${doc.nombre_archivo}">
-                                            <i class="bi bi-image me-1"></i>Ver Imagen
-                                        </button>
-                                    ` : ''}
-                                    
-                                    ${esPDF ? `
-                                        <button class="btn btn-sm btn-outline-primary btn-preview-pdf" 
-                                                data-ruta="${doc.ruta_archivo}" 
-                                                data-nombre="${doc.nombre_archivo}">
-                                            <i class="bi bi-file-pdf me-1"></i>Ver PDF
+                                                data-nombre="${doc.nombre_archivo}"
+                                                data-tipo="${esPDF ? 'pdf' : 'imagen'}">
+                                            <i class="bi ${esPDF ? 'bi-file-pdf' : 'bi-image'} me-1"></i>Previsualizar
                                         </button>
                                     ` : ''}
                                     
@@ -1795,15 +2087,17 @@
                 documentosContent.innerHTML = contenido;
                 
                 // Agregar event listeners para los botones
-                documentosContent.querySelectorAll('.btn-preview-image').forEach(btn => {
+                documentosContent.querySelectorAll('.btn-preview').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        previewImage(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
-                    });
-                });
-                
-                documentosContent.querySelectorAll('.btn-preview-pdf').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        previewPDF(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
+                        const ruta = this.getAttribute('data-ruta');
+                        const nombre = this.getAttribute('data-nombre');
+                        const tipo = this.getAttribute('data-tipo');
+                        
+                        if (tipo === 'pdf') {
+                            previewPDF(ruta, nombre);
+                        } else {
+                            previewImage(ruta, nombre);
+                        }
                     });
                 });
                 
@@ -1840,154 +2134,130 @@
     }
 
     function previewImage(ruta, nombre) {
-        const modalHTML = `
-            <div class="modal fade" id="imagePreviewModal" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">${nombre}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <img src="/api/documento/preview?ruta=${encodeURIComponent(ruta)}" 
-                                 class="img-fluid rounded" 
-                                 alt="${nombre}"
-                                 style="max-height: 70vh;">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-success btn-descargar-from-preview" 
-                                    data-ruta="${ruta}" 
-                                    data-nombre="${nombre}">
-                                <i class="bi bi-download me-1"></i>Descargar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        // Limpiar imagen anterior
+        document.getElementById('previewImage').src = '';
         
-        // Agregar modal al DOM
-        const modalContainer = document.createElement('div');
-        modalContainer.innerHTML = modalHTML;
-        document.body.appendChild(modalContainer.firstChild);
+        // Configurar título
+        document.getElementById('imagePreviewTitle').textContent = nombre;
+        
+        // Configurar imagen
+        const imageUrl = `/api/documento/preview?ruta=${encodeURIComponent(ruta)}&t=${Date.now()}`;
+        document.getElementById('previewImage').src = imageUrl;
+        
+        // Configurar botón de descarga
+        document.getElementById('downloadFromPreview').onclick = function() {
+            descargarDocumento(ruta, nombre);
+        };
         
         // Mostrar modal
         const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
         modal.show();
-        
-        // Event listener para descargar desde el modal
-        document.querySelector('.btn-descargar-from-preview').addEventListener('click', function() {
-            descargarDocumento(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
-        });
-        
-        // Remover modal cuando se cierre
-        document.getElementById('imagePreviewModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-        });
     }
 
-    async function previewPDF(ruta, nombre) {
-        const modalHTML = `
-            <div class="modal fade" id="pdfPreviewModal" tabindex="-1">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">${nombre}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="pdf-container" id="pdfViewer">
-                                <div class="text-center py-5">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Cargando PDF...</span>
-                                    </div>
-                                    <p class="mt-3 text-muted">Cargando PDF...</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-success btn-descargar-from-preview" 
-                                    data-ruta="${ruta}" 
-                                    data-nombre="${nombre}">
-                                <i class="bi bi-download me-1"></i>Descargar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+    // Funciones para PDF.js
+    async function renderPDFPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+            return;
+        }
         
-        // Agregar modal al DOM
-        const modalContainer = document.createElement('div');
-        modalContainer.innerHTML = modalHTML;
-        document.body.appendChild(modalContainer.firstChild);
+        pageRendering = true;
         
-        // Mostrar modal
-        const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
-        modal.show();
-        
-        // Cargar PDF
         try {
-            const pdfContainer = document.getElementById('pdfViewer');
-            
-            // Configurar PDF.js
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-            
-            const loadingTask = pdfjsLib.getDocument(`/api/documento/preview?ruta=${encodeURIComponent(ruta)}`);
-            const pdf = await loadingTask.promise;
-            
-            // Limpiar contenedor
-            pdfContainer.innerHTML = '';
-            
-            // Obtener primera página
-            const page = await pdf.getPage(1);
+            const page = await pdfDoc.getPage(num);
             const scale = 1.5;
             const viewport = page.getViewport({ scale });
-            
-            // Preparar canvas para renderizar
             const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d');
+            
             canvas.height = viewport.height;
             canvas.width = viewport.width;
             
-            pdfContainer.appendChild(canvas);
-            
-            // Renderizar página
-            const renderContext = {
-                canvasContext: context,
+            const renderCtx = {
+                canvasContext: ctx,
                 viewport: viewport
             };
-            await page.render(renderContext).promise;
             
-            // Añadir información del PDF
-            const infoDiv = document.createElement('div');
-            infoDiv.className = 'mt-3 text-center text-muted';
-            infoDiv.innerHTML = `Página 1 de ${pdf.numPages} | ${nombre}`;
-            pdfContainer.appendChild(infoDiv);
+            await page.render(renderCtx).promise;
+            
+            const pdfViewer = document.getElementById('pdfViewer');
+            pdfViewer.innerHTML = '';
+            pdfViewer.appendChild(canvas);
+            
+            document.getElementById('currentPage').textContent = num;
+            
+            pageRendering = false;
+            if (pageNumPending !== null) {
+                renderPDFPage(pageNumPending);
+                pageNumPending = null;
+            }
+        } catch (error) {
+            console.error('❌ Error renderizando página PDF:', error);
+            pageRendering = false;
+        }
+    }
+
+    async function previewPDF(ruta, nombre) {
+        try {
+            // Limpiar visor
+            document.getElementById('pdfViewer').innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando PDF...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Cargando PDF...</p>
+                </div>
+            `;
+            
+            // Configurar título
+            document.getElementById('pdfPreviewTitle').textContent = nombre;
+            
+            // Cargar PDF
+            const pdfUrl = `/api/documento/preview?ruta=${encodeURIComponent(ruta)}&t=${Date.now()}`;
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+            
+            pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+            currentPage = 1;
+            
+            document.getElementById('totalPages').textContent = pdfDoc.numPages;
+            
+            await renderPDFPage(currentPage);
+            
+            // Configurar botones de navegación
+            document.getElementById('prevPage').onclick = function() {
+                if (currentPage <= 1) return;
+                currentPage--;
+                renderPDFPage(currentPage);
+            };
+            
+            document.getElementById('nextPage').onclick = function() {
+                if (currentPage >= pdfDoc.numPages) return;
+                currentPage++;
+                renderPDFPage(currentPage);
+            };
+            
+            // Configurar botón de descarga
+            document.getElementById('downloadPdfFromPreview').onclick = function() {
+                descargarDocumento(ruta, nombre);
+            };
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+            modal.show();
             
         } catch (error) {
             console.error('❌ Error cargando PDF:', error);
-            const pdfContainer = document.getElementById('pdfViewer');
-            pdfContainer.innerHTML = `
+            document.getElementById('pdfViewer').innerHTML = `
                 <div class="text-center py-5">
                     <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
                     <h5 class="mt-3">Error al cargar el PDF</h5>
-                    <p class="text-muted">No se pudo cargar el documento PDF.</p>
+                    <p class="text-muted">${error.message}</p>
+                    <button class="btn btn-success mt-3" onclick="descargarDocumento('${ruta}', '${nombre}')">
+                        <i class="bi bi-download me-1"></i>Descargar PDF
+                    </button>
                 </div>
             `;
         }
-        
-        // Event listener para descargar desde el modal
-        document.querySelector('.btn-descargar-from-preview').addEventListener('click', function() {
-            descargarDocumento(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
-        });
-        
-        // Remover modal cuando se cierre
-        document.getElementById('pdfPreviewModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-        });
     }
 
     async function descargarDocumento(ruta, nombre) {
@@ -2208,7 +2478,7 @@
         }, 5000);
     }
 
-    // Estilos para spinner
+    // FIX para spinner animation
     const style = document.createElement('style');
     style.textContent = `
         .spin {
@@ -2218,12 +2488,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .avatar-color-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .avatar-color-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .avatar-color-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .avatar-color-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .avatar-color-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .avatar-color-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
     `;
     document.head.appendChild(style);
 </script>

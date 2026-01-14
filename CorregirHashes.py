@@ -1,0 +1,65 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from sqlalchemy import create_engine, text
+from werkzeug.security import generate_password_hash
+
+print("🔄 ACTUALIZANDO HASHES DE CONTRASEÑA - VERSIÓN SIMPLIFICADA")
+print("=" * 70)
+
+# Conectar a la base de datos
+engine = create_engine('mysql+pymysql://root:Manu3l21@localhost:3306/alta_colaboradores?charset=utf8mb4')
+conn = engine.connect()
+
+# Usuarios y sus contraseñas
+usuarios = [
+    ('admin@marnezdesarrollos.com', 'Admin123!'),
+    ('coordinador.ti@marnezdesarrollos.com', 'TiPassword123!'),
+    ('coordinador.rh@marnezdesarrollos.com', 'RhPassword123!')
+]
+
+for correo, password in usuarios:
+    print(f"\n📝 Procesando: {correo}")
+    
+    # Verificar si el usuario existe
+    check_sql = text("SELECT id, password_hash FROM usuarios WHERE correo = :correo")
+    result = conn.execute(check_sql, {'correo': correo})
+    usuario = result.fetchone()
+    
+    if usuario:
+        usuario_id, hash_actual = usuario
+        print(f"   Usuario ID: {usuario_id}")
+        print(f"   Hash actual (40 chars): {hash_actual[:40] if hash_actual else 'VACÍO'}...")
+        
+        # Generar NUEVO hash SIN parámetros adicionales (la versión antigua)
+        try:
+            # Intentar con método scrypt simple
+            nuevo_hash = generate_password_hash(password, method='scrypt')
+            print(f"   ✅ Hash generado con scrypt simple")
+        except Exception as e:
+            print(f"   ⚠️ Error con scrypt: {e}, usando pbkdf2 como respaldo")
+            # Usar pbkdf2 como respaldo
+            nuevo_hash = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        print(f"   Nuevo hash (40 chars): {nuevo_hash[:40]}...")
+        print(f"   Formato: {'$scrypt$' if nuevo_hash.startswith('$scrypt$') else 'pbkdf2' if nuevo_hash.startswith('pbkdf2') else 'otro'}")
+        
+        # Actualizar en BD
+        update_sql = text("UPDATE usuarios SET password_hash = :hash WHERE id = :id")
+        conn.execute(update_sql, {'hash': nuevo_hash, 'id': usuario_id})
+        print(f"   ✅ Hash actualizado en BD")
+        
+    else:
+        print(f"   ⚠️ Usuario no encontrado, saltando...")
+
+# Confirmar cambios
+conn.commit()
+conn.close()
+
+print("\n" + "=" * 70)
+print("✅ HASHES ACTUALIZADOS EXITOSAMENTE")
+print("\n🔑 Ahora puedes iniciar sesión con:")
+print("   • admin@marnezdesarrollos.com / Admin123!")
+print("   • coordinador.ti@marnezdesarrollos.com / TiPassword123!")
+print("   • coordinador.rh@marnezdesarrollos.com / RhPassword123!")

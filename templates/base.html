@@ -29,6 +29,86 @@
         body.dark {
             background: #0f172a;
         }
+        
+        /* Estilos para el botón de dark mode en modo oscuro */
+        body.dark .btn-outline-warning {
+            color: #000000; /* Letras negras */
+            border-color: #ffc107; /* Borde amarillo */
+        }
+        
+        body.dark .btn-outline-warning:hover {
+            color: #000000; /* Letras negras al hacer hover */
+            background-color: rgba(255, 193, 7, 0.1); /* Fondo amarillo muy tenue */
+        }
+        
+        /* Estilos específicos para los botones del modal en modo oscuro */
+        body.dark .modal-content .btn-primary {
+            color: #000000 !important; /* Letras negras para botón primario */
+            background-color: #ffc107 !important; /* Fondo amarillo */
+            border-color: #ffc107 !important;
+        }
+        
+        body.dark .modal-content .btn-primary:hover {
+            color: #000000 !important;
+            background-color: #e0a800 !important; /* Amarillo más oscuro al hover */
+            border-color: #d39e00 !important;
+        }
+        
+        body.dark .modal-content .btn-outline-warning {
+            color: #000000 !important; /* Letras negras */
+            border-color: #ffc107 !important; /* Borde amarillo */
+            background-color: transparent !important;
+        }
+        
+        body.dark .modal-content .btn-outline-warning:hover {
+            color: #000000 !important;
+            background-color: rgba(255, 193, 7, 0.1) !important; /* Fondo amarillo muy tenue */
+        }
+        
+        /* Estilos para el modal de autenticación */
+        .modal-auth-icon {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .auth-alert {
+            border-left: 4px solid #3498db;
+        }
+        
+        /* Estilos para el backdrop del modal en modo oscuro */
+        body.dark .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        body.dark .modal-backdrop.show {
+            opacity: 0.7;
+        }
+        
+        /* Estilos para el modal en modo oscuro */
+        body.dark .modal-content {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+        
+        body.dark .modal-header {
+            border-bottom-color: #334155;
+        }
+        
+        body.dark .modal-footer {
+            border-top-color: #334155;
+        }
+        
+        body.dark .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        
+        /* Estilos para el alert dentro del modal en modo oscuro */
+        body.dark .modal-content .alert-info {
+            background-color: rgba(13, 110, 253, 0.1);
+            border-color: #0d6efd;
+            color: #a5d8ff;
+        }
     </style>
 </head>
 
@@ -67,16 +147,56 @@
         </button>
 
         <span class="navbar-brand mx-auto">
-            <i class="bi bi-bar-chart-fill me-2"></i>Dashboard BI Profesional
+            <i class="bi bi-bar-chart-fill me-2"></i>Marnez Desarrollos
         </span>
 
-        <button class="btn btn-outline-warning" id="btnDarkMode" aria-label="Cambiar modo oscuro/claro">
-            <span id="darkModeIcon">🌙</span>
-        </button>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Botón de dark mode -->
+            <button class="btn btn-outline-warning" id="btnDarkMode" aria-label="Cambiar modo oscuro/claro">
+                <span id="darkModeIcon">🌙</span>
+            </button>
+            
+            <!-- Menú de usuario -->
+            {% if g.usuario.autenticado %}
+            <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" id="userMenu" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-1"></i>
+                    {{ g.usuario.correo }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                    <li>
+                        <span class="dropdown-item-text">
+                            <small><strong>Área ID:</strong> {{ g.usuario.area_id }}</small>
+                            <br>
+                            <small><strong>Rol:</strong> {{ g.usuario.rol }}</small>
+                        </span>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    {% if g.usuario.rol == 'admin' %}
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('admin_usuarios') }}">
+                            <i class="bi bi-people-fill me-2"></i>Gestión de Usuarios
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-outline-light">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+            </a>
+            {% endif %}
+        </div>
     </nav>
 
     <!-- =======================
-         MENÚ LATERAL
+         MENÚ LATERAL - MODIFICADO
     ======================= -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
         <div class="offcanvas-header">
@@ -94,9 +214,19 @@
                 <a href="{{ url_for('alta') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'alta' %}active{% endif %}">
                     <i class="bi bi-person-plus me-2"></i>Alta Colaborador
                 </a>
+                
+                <!-- VERIFICACIÓN CORRECTA DE PERMISOS -->
+                {% if g.usuario.autenticado and g.usuario.area_id in [3, 4] %}
                 <a href="{{ url_for('colaboradores') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'colaboradores' %}active{% endif %}">
-    <i class="bi bi-people-fill me-2"></i>Colaboradores
-</a>
+                    <i class="bi bi-people-fill me-2"></i>Colaboradores
+                </a>
+                {% else %}
+                <!-- Mostrar botón que abre modal si no tiene permisos -->
+                <a href="#" class="list-group-item list-group-item-action text-muted" data-bs-toggle="modal" data-bs-target="#authModal" id="colaboradoresLink">
+                    <i class="bi bi-people-fill me-2"></i>Colaboradores
+                    <span class="badge bg-warning float-end">Requiere permisos</span>
+                </a>
+                {% endif %}
                 
                 <a href="#" class="list-group-item list-group-item-action">
                     <i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes
@@ -112,6 +242,18 @@
                         <i class="bi bi-info-circle me-1"></i>
                         Versión 1.0.0
                     </small>
+                    {% if g.usuario.autenticado %}
+                    <br>
+                    <small class="text-success">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Autenticado como {{ g.usuario.rol }} (Área ID: {{ g.usuario.area_id }})
+                    </small>
+                    <br>
+                    <small class="text-info">
+                        <i class="bi bi-person-badge me-1"></i>
+                        {{ g.usuario.correo }}
+                    </small>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -130,16 +272,70 @@
     <footer class="text-center py-3 border-top mt-4">
         <div class="container">
             <small class="text-muted">
-                © 2024 Dashboard BI Profesional. Todos los derechos reservados.
+                © 2024 Marnez Desarollos. Todos los derechos reservados.
                 <span class="d-block mt-1">
                     <i class="bi bi-clock me-1"></i>
                     <span id="currentTime"></span>
                     •
-                    <span id="userStatus"></span>
+                    <span id="userStatus">
+                        {% if g.usuario.autenticado %}
+                        <span class="text-success">Conectado</span>
+                        {% else %}
+                        <span class="text-warning">No autenticado</span>
+                        {% endif %}
+                    </span>
                 </span>
             </small>
         </div>
     </footer>
+
+    <!-- =======================
+         MODAL DE AUTENTICACIÓN
+    ======================= -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="authModalLabel">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Acceso Restringido
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-person-lock modal-auth-icon"></i>
+                    </div>
+                    <h4 class="mb-3">Inicio de Sesión Requerido</h4>
+                    <p class="text-muted mb-4">
+                        Para acceder a la información de colaboradores, necesitas tener permisos especiales.
+                        Solo las áreas autorizadas pueden ver esta información.
+                    </p>
+                    
+                    <div class="alert alert-info auth-alert text-start">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <div>
+                            <strong>Áreas autorizadas:</strong>  TI y Capital humano
+                            <br>
+                            <small class="text-muted">Contacta al administrador para obtener credenciales de acceso.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Ir a Iniciar Sesión
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary btn-lg px-4 ms-2" 
+                                data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- =======================
          SCRIPTS
@@ -149,6 +345,9 @@
     
     <!-- Dark Mode Manager -->
     <script src="/static/js/dark-mode-manager.js"></script>
+    
+    <!-- Script de autenticación -->
+    <script src="/static/js/auth-modal.js"></script>
     
     <!-- Utilidades -->
     <script>
@@ -169,15 +368,6 @@
         updateCurrentTime();
         setInterval(updateCurrentTime, 1000);
         
-        // Indicador de usuario conectado
-        document.addEventListener('DOMContentLoaded', function() {
-            const userStatus = document.getElementById('userStatus');
-            if (userStatus) {
-                userStatus.textContent = 'Conectado';
-                userStatus.className = 'text-success';
-            }
-        });
-        
         // Manejar clicks en offcanvas links para cerrarlo automáticamente
         document.querySelectorAll('.offcanvas a').forEach(link => {
             link.addEventListener('click', function() {
@@ -189,6 +379,86 @@
                     }
                 }
             });
+        });
+        
+        // Inicializar modales y manejar correctamente el backdrop
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si hay mensajes de error de autenticación
+            const authError = document.querySelector('.alert-danger');
+            if (authError && authError.textContent.includes('sesión')) {
+                const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+                authModal.show();
+            }
+            
+            // Manejar el modal de autenticación correctamente
+            const authModalElement = document.getElementById('authModal');
+            const colaboradoresLink = document.getElementById('colaboradoresLink');
+            
+            if (authModalElement) {
+                // Inicializar el modal con opciones correctas
+                const authModalInstance = new bootstrap.Modal(authModalElement, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                
+                // Manejar el evento de cerrar el modal
+                authModalElement.addEventListener('hidden.bs.modal', function () {
+                    // Asegurar que el backdrop se elimine correctamente
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                    // Restaurar el scroll del body
+                    document.body.style.overflow = 'auto';
+                    document.body.style.paddingRight = '';
+                });
+                
+                // Manejar el clic en el botón cancelar dentro del modal
+                const cancelBtn = authModalElement.querySelector('[data-bs-dismiss="modal"]');
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', function() {
+                        authModalInstance.hide();
+                    });
+                }
+            }
+            
+            // Mostrar modal automáticamente si no está autenticado y clickea en colaboradores
+            if (colaboradoresLink && !{{ 'true' if g.usuario.autenticado else 'false' }}) {
+                colaboradoresLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const authModal = new bootstrap.Modal(document.getElementById('authModal'), {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    authModal.show();
+                });
+            }
+        });
+        
+        // Función para forzar el cierre de cualquier modal abierto
+        function closeAllModals() {
+            const modals = document.querySelectorAll('.modal.show');
+            modals.forEach(modal => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
+            // Limpiar cualquier backdrop residual
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                backdrop.parentNode.removeChild(backdrop);
+            });
+            // Restaurar el scroll del body
+            document.body.style.overflow = 'auto';
+            document.body.style.paddingRight = '';
+        }
+        
+        // Agregar botón de emergencia para cerrar modales (opcional)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
         });
     </script>
     

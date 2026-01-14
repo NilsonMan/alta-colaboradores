@@ -7,6 +7,7 @@ import re
 from datetime import datetime, date, timedelta
 from contextlib import contextmanager
 from functools import wraps
+from contextlib import contextmanager
 
 from flask import (
     Flask,
@@ -321,6 +322,239 @@ class Documento(Base):
     fecha_subida = Column(Date, default=datetime.now)
     colaborador = relationship("Colaborador", back_populates="documentos")
 # ======================================
+# MODELOS DE USUARIO/AUTENTICACIÓN
+# ======================================
+
+
+class Usuario(Base):
+    __tablename__ = "usuarios"
+    id = Column(Integer, primary_key=True)
+    correo = Column(String(150), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    area_id = Column(Integer, ForeignKey("areas.id"), nullable=False)
+    rol = Column(String(50), default="colaborador")
+    activo = Column(Boolean, default=True)
+    fecha_creacion = Column(Date, default=datetime.now)
+    ultimo_acceso = Column(Date)
+    
+    area = relationship("Area")
+def verificar_password(self, password):
+    """Verifica si la contraseña es correcta - VERSIÓN CORREGIDA."""
+    try:
+        if not self.password_hash:
+            return False
+        
+        # Si el hash está en formato Werkzeug ($scrypt$...)
+        if self.password_hash.startswith('$scrypt$'):
+            return check_password_hash(self.password_hash, password)
+        
+        # Si está en formato personalizado (scrypt:...)
+        elif self.password_hash.startswith('scrypt:'):
+            # Formato: scrypt:32768:8:1$salt$hash
+            try:
+                # Extraer las partes
+                parts = self.password_hash.split('$')
+                if len(parts) != 3:
+                    return False
+                
+                param_part = parts[0]  # scrypt:32768:8:1
+                salt = parts[1]
+                hash_value = parts[2]
+                
+                # Extraer parámetros
+                params = param_part.replace('scrypt:', '')  # 32768:8:1
+                
+                # Construir hash en formato Werkzeug
+                # Reemplazar : por $
+                werkzeug_hash = f"$scrypt${params.replace(':', '$')}${salt}${hash_value}"
+                
+                # Verificar la contraseña
+                return check_password_hash(werkzeug_hash, password)
+            except Exception as e:
+                logger.error(f"Error procesando hash personalizado: {e}")
+                return False
+        
+        # Para cualquier otro formato, usar check_password_hash directamente
+        else:
+            return check_password_hash(self.password_hash, password)
+            
+    except Exception as e:
+        logger.error(f"Error en verificar_password: {e}")
+        return False
+    @staticmethod
+    def hash_password(password):
+        """Genera hash de la contraseña usando scrypt con formato Werkzeug."""
+        from werkzeug.security import generate_password_hash
+        # Generar hash con parámetros específicos
+        return generate_password_hash(
+            password, 
+            method='scrypt', 
+            salt_length=16,
+            n=32768,
+            r=8,
+            p=1
+        )
+# ======================================
+# FUNCIONES AUXILIARES PARA USUARIOS
+# ======================================
+
+
+def crear_usuarios_con_hash_correcto():
+    """Crear o actualizar usuarios con hashes correctos."""
+    with get_db() as db:
+        # Lista de usuarios a crear/actualizar
+        usuarios_data = [
+            {
+                'correo': 'admin@marnezdesarrollos.com',
+                'password': 'Admin123!',
+                'area_id': 1,  # Área admin
+                'rol': 'admin'
+            },
+            {
+                'correo': 'coordinador.ti@marnezdesarrollos.com',
+                'password': 'TiPassword123!',
+                'area_id': 3,  # Área TI
+                'rol': 'coordinador'
+            },
+            {
+                'correo': 'coordinador.rh@marnezdesarrollos.com',
+                'password': 'RhPassword123!',
+                'area_id': 4,  # Área RH
+                'rol': 'coordinador'
+            }
+        ]
+        
+        for user_data in usuarios_data:
+            # Verificar si ya existe
+            usuario = db.query(Usuario)\
+                .filter_by(correo=user_data['correo'])\
+                .first()
+            
+            if usuario:
+                # Verificar si el hash necesita actualización
+                if usuario.password_hash and usuario.password_hash.startswith('scrypt:'):
+                    # Usar la contraseña conocida
+                    usuario.password_hash = Usuario.hash_password(user_data['password'])
+                    print(f"✓ Usuario {user_data['correo']} actualizado con nuevo hash")
+                else:
+                    print(f"✓ Usuario {user_data['correo']} ya tiene hash válido")
+                    
+                # Actualizar otros campos
+                usuario.area_id = user_data['area_id']
+                usuario.rol = user_data['rol']
+                usuario.activo = True
+            else:
+                # Crear nuevo usuario con hash correcto
+                usuario = Usuario(
+                    correo=user_data['correo'],
+                    password_hash=Usuario.hash_password(user_data['password']),
+                    area_id=user_data['area_id'],
+                    rol=user_data['rol'],
+                    activo=True,
+                    fecha_creacion=date.today()
+                )
+                db.add(usuario)
+                print(f"✓ Usuario {user_data['correo']} creado con hash correcto")
+        
+        db.commit()
+        print("\n✅ Usuarios configurados correctamente")
+
+# ======================================
+# FUNCIONES DE AUTENTICACIÓN - CORREGIDAS
+# ======================================
+from werkzeug.security import check_password_hash, generate_password_hash  # <-- AGREGAR ESTO
+
+def login_required(f):
+    """Decorador para requerir inicio de sesión."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'usuario_id' not in session:
+            flash("Debes iniciar sesión para acceder a esta página", "warning")
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def area_required(area_ids):
+    """Decorador para requerir área específica."""
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            # Primero verificar login
+            if 'usuario_id' not in session:
+                flash("Debes iniciar sesión para acceder a esta página", "warning")
+                return redirect(url_for('login'))
+            
+            # Luego verificar área
+            if session.get('usuario_area_id') not in area_ids:
+                flash("No tienes permisos para acceder a esta página", "error")
+                return redirect(url_for('dashboard'))
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+#crear usuarios 
+def crear_usuarios_con_hash_correcto():
+    """Crear o actualizar usuarios con hashes correctos."""
+    with get_db() as db:
+        # Lista de usuarios a crear/actualizar
+        usuarios_data = [
+            {
+                'correo': 'admin@marnezdesarrollos.com',
+                'password': 'Admin123!',
+                'area_id': 1,  # Área admin
+                'rol': 'admin'
+            },
+            {
+                'correo': 'coordinador.ti@marnezdesarrollos.com',
+                'password': 'TiPassword123!',
+                'area_id': 3,  # Área TI
+                'rol': 'coordinador'
+            },
+            {
+                'correo': 'coordinador.rh@marnezdesarrollos.com',
+                'password': 'RhPassword123!',
+                'area_id': 4,  # Área RH
+                'rol': 'coordinador'
+            }
+        ]
+        
+        for user_data in usuarios_data:
+            # Verificar si ya existe
+            usuario = db.query(Usuario)\
+                .filter_by(correo=user_data['correo'])\
+                .first()
+            
+            if usuario:
+                # Verificar si el hash necesita actualización
+                if usuario.password_hash and usuario.password_hash.startswith('scrypt:'):
+                    # Usar la contraseña conocida
+                    usuario.password_hash = Usuario.hash_password(user_data['password'])
+                    print(f"✓ Usuario {user_data['correo']} actualizado con nuevo hash")
+                else:
+                    print(f"✓ Usuario {user_data['correo']} ya tiene hash válido")
+                    
+                # Actualizar otros campos
+                usuario.area_id = user_data['area_id']
+                usuario.rol = user_data['rol']
+                usuario.activo = True
+            else:
+                # Crear nuevo usuario con hash correcto
+                usuario = Usuario(
+                    correo=user_data['correo'],
+                    password_hash=Usuario.hash_password(user_data['password']),
+                    area_id=user_data['area_id'],
+                    rol=user_data['rol'],
+                    activo=True,
+                    fecha_creacion=date.today()
+                )
+                db.add(usuario)
+                print(f"✓ Usuario {user_data['correo']} creado con hash correcto")
+        
+        db.commit()
+        print("\n✅ Usuarios configurados correctamente")
+
+# ======================================
 # DECORADORES
 # ======================================
 def require_db(f):
@@ -330,6 +564,212 @@ def require_db(f):
             g.db = db
             return f(*args, **kwargs)
     return decorated_function
+
+# ======================================
+# MIDDLEWARE PARA VERIFICAR SESIÓN EN TODAS LAS RUTAS
+# ======================================
+@app.before_request
+def before_request():
+    """Verificar sesión antes de cada petición."""
+    # Rutas públicas que no requieren autenticación
+    public_routes = ['login', 'static', 'alta', 'dashboard', 'cambio_area_colaborador']
+    
+    if request.endpoint not in public_routes and 'usuario_id' not in session:
+        # Si no está autenticado y no es una ruta pública
+        if request.endpoint and 'colaboradores' in request.endpoint:
+            return jsonify({"error": "Requiere autenticación"}), 401
+    
+    # Pasar información del usuario a todas las templates
+    g.usuario = {
+        'id': session.get('usuario_id'),
+        'correo': session.get('usuario_correo'),
+        'area_id': session.get('usuario_area_id'),
+        'rol': session.get('usuario_rol'),
+        'autenticado': 'usuario_id' in session
+    }
+
+
+# ======================================
+# RUTAS DE AUTENTICACIÓN
+# ======================================
+@app.route("/login", methods=["GET", "POST"])
+@require_db
+def login():
+    """Página de inicio de sesión - CORREGIDA."""
+    if 'usuario_id' in session:
+        flash("Ya tienes una sesión activa", "info")
+        return redirect(url_for('dashboard'))
+    
+    if request.method == "POST":
+        correo = request.form.get('correo', '').strip().lower()
+        password = request.form.get('password', '')
+        
+        logger.info(f"Intento de login para: {correo}")
+        
+        try:
+            db = g.db
+            
+            # Buscar usuario por correo
+            usuario = db.query(Usuario)\
+                .filter(func.lower(Usuario.correo) == correo)\
+                .first()
+            
+            if not usuario:
+                logger.warning(f"Usuario no encontrado: {correo}")
+                flash("Credenciales incorrectas", "danger")
+                time.sleep(1)
+                return render_template("login.html")
+            
+            if not usuario.activo:
+                logger.warning(f"Usuario inactivo: {correo}")
+                flash("Tu cuenta está desactivada. Contacta al administrador.", "warning")
+                return render_template("login.html")
+            
+            # Verificar contraseña
+            if not check_password_hash(usuario.password_hash, password):
+                logger.warning(f"Contraseña incorrecta para: {correo}")
+                flash("Credenciales incorrectas", "danger")
+                time.sleep(1)
+                return render_template("login.html")
+            
+            # Verificar que el área exista
+            area = db.query(Area).filter_by(id=usuario.area_id).first()
+            if not area:
+                logger.error(f"Área ID {usuario.area_id} no encontrada para usuario {usuario.id}")
+                flash("Error de configuración del usuario. Contacta al administrador.", "error")
+                return render_template("login.html")
+            
+            # Actualizar último acceso
+            usuario.ultimo_acceso = date.today()
+            db.commit()
+            
+            # Crear sesión
+            session['usuario_id'] = usuario.id
+            session['usuario_correo'] = usuario.correo
+            session['usuario_area_id'] = usuario.area_id
+            session['usuario_rol'] = usuario.rol
+            session.permanent = True
+            
+            logger.info(f"Login exitoso: {usuario.correo} (Área: {usuario.area_id}, Rol: {usuario.rol})")
+            
+            flash(f"¡Bienvenido, {usuario.correo}!", "success")
+            return redirect(url_for('colaboradores'))
+            
+        except Exception as e:
+            logger.error(f"Error en login: {e}", exc_info=True)
+            flash("Error interno del servidor. Intenta nuevamente.", "error")
+    
+    return render_template("login.html")
+
+# ======================================
+# RUTA PARA CERRAR SESIÓN
+# ======================================
+@app.route("/logout")  # <-- ¡ESTO ES LO QUE TE FALTA!
+def logout():
+    """Cerrar sesión."""
+    session.clear()
+    flash("Sesión cerrada exitosamente", "success")
+    return redirect(url_for('login'))
+# ======================================
+# RUTA PARA GESTIÓN DE USUARIOS (SOLO ADMIN)
+# ======================================
+@app.route("/admin/usuarios")
+@login_required
+@require_db
+def admin_usuarios():
+    """Página de administración de usuarios (solo admin)."""
+    # Verificar si es admin
+    if session.get('usuario_rol') != 'admin':
+        flash("No tienes permisos para acceder a esta página", "error")
+        return redirect(url_for('dashboard'))
+    
+    try:
+        db = g.db
+        
+        # Obtener todos los usuarios
+        usuarios = db.query(Usuario).join(Area).order_by(Usuario.id.desc()).all()
+        
+        # Obtener todas las áreas para el formulario
+        areas = db.query(Area).order_by(Area.nombre).all()
+        
+        return render_template("admin_usuarios.html", 
+                             usuarios=usuarios, 
+                             areas=areas)
+        
+    except Exception as e:
+        logger.error(f"Error en admin usuarios: {e}", exc_info=True)
+        flash("Error al cargar la página", "error")
+        return redirect(url_for('dashboard'))
+
+# ======================================
+# API PARA CREAR USUARIO
+# ======================================
+@app.route("/api/usuario/crear", methods=["POST"])
+@login_required
+@require_db
+def api_crear_usuario():
+    """API para crear un nuevo usuario - CORREGIDA."""
+    try:
+        # Verificar si es admin
+        if session.get('usuario_rol') != 'admin':
+            return jsonify({"error": "No autorizado"}), 403
+        
+        data = request.get_json()
+        db = g.db
+        
+        # Validar campos
+        required_fields = ['correo', 'password', 'area_id']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return jsonify({"error": f"Campo requerido faltante: {field}"}), 400
+        
+        # Verificar que el área exista
+        area = db.query(Area).filter_by(id=data['area_id']).first()
+        if not area:
+            return jsonify({"error": "Área no válida"}), 400
+        
+        # Verificar si el correo ya existe
+        existe = db.query(Usuario).filter_by(correo=data['correo']).first()
+        if existe:
+            return jsonify({"error": "El correo ya está registrado"}), 400
+        
+        # ✅ CREAR USUARIO CON HASH CORRECTO
+        usuario = Usuario(
+            correo=data['correo'],
+            password_hash=Usuario.hash_password(data['password']),  # <-- ¡CORREGIDO!
+            area_id=data['area_id'],
+            rol=data.get('rol', 'colaborador'),
+            activo=True,
+            fecha_creacion=date.today()
+        )
+        
+        db.add(usuario)
+        db.commit()
+        
+        # Log detallado del hash creado
+        logger.info(f"Usuario creado: {usuario.correo} (Área: {area.nombre})")
+        logger.info(f"Hash generado: {usuario.password_hash[:60]}...")
+        logger.info(f"Formato hash: {'$scrypt$' if usuario.password_hash.startswith('$scrypt$') else 'scrypt:'}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Usuario creado exitosamente",
+            "usuario": {
+                "id": usuario.id,
+                "correo": usuario.correo,
+                "area_id": usuario.area_id,
+                "area_nombre": area.nombre,
+                "rol": usuario.rol,
+                "hash_format": "$scrypt$" if usuario.password_hash.startswith('$scrypt$') else "scrypt:"
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error creando usuario: {e}", exc_info=True)
+        db.rollback()
+        return jsonify({"error": f"Error al crear usuario: {str(e)}"}), 500
+        
+
 
 # ======================================
 # RUTAS DE VISTAS
@@ -641,6 +1081,8 @@ def guardar_documentos(db, colaborador_id):
 # RUTA PARA PÁGINA DE CAMBIO DE ÁREA
 # ======================================
 @app.route("/cambio-area-colaborador", methods=["GET", "POST"])
+@login_required  # Primero verificar login
+@area_required([3, 4])  # Luego verificar área
 @require_db
 def cambio_area_colaborador():
     """Página para cambiar área de colaborador existente."""
@@ -925,65 +1367,6 @@ def api_verificar_rfc():
 # ======================================
 # Buscar colaborador por id 
 # ======================================
-@app.route("/api/colaborador/<int:colaborador_id>", methods=["GET"])
-@require_db
-def api_colaborador_por_id(colaborador_id):
-    """API para obtener colaborador por ID - ACTUALIZADO con campos de cambio."""
-    try:
-        db = g.db
-        
-        colaborador = db.query(Colaborador).filter_by(id=colaborador_id).first()
-        
-        if not colaborador:
-            return jsonify({"error": "Colaborador no encontrado"}), 404
-        
-        # Obtener información básica
-        area_nombre = "N/A"
-        if colaborador.area:
-            area_nombre = colaborador.area.nombre
-        
-        puesto_nombre = "N/A"
-        if colaborador.puesto:
-            puesto_nombre = colaborador.puesto.nombre
-        
-        # Obtener área anterior (nuevo campo)
-        area_anterior_nombre = "N/A"
-        if colaborador.area_anterior_id:
-            area_anterior = db.query(Area).filter_by(id=colaborador.area_anterior_id).first()
-            if area_anterior:
-                area_anterior_nombre = area_anterior.nombre
-        
-        return jsonify({
-            "id": colaborador.id,
-            "nombre": f"{colaborador.nombre} {colaborador.apellido}",
-            "correo": colaborador.correo,
-            "rfc": colaborador.rfc,
-            "curp": colaborador.curp or "N/A",
-            "area": area_nombre,
-            "area_id": colaborador.area_id,
-            "puesto": puesto_nombre,
-            "puesto_id": colaborador.puesto_id,
-            "estado": "Activo" if not colaborador.baja else "Baja",
-            "fecha_alta": colaborador.fecha_alta.strftime("%Y-%m-%d") if colaborador.fecha_alta else "N/A",
-            "telefono": colaborador.telefono or "N/A",
-            "sueldo": float(colaborador.sueldo) if colaborador.sueldo else 0.00,
-            "baja": bool(colaborador.baja),
-            
-            # NUEVOS CAMPOS DE CAMBIO DE ÁREA
-            "fecha_ultimo_cambio_area": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
-                                       if colaborador.fecha_ultimo_cambio_area else "N/A",
-            "motivo_ultimo_cambio_area": colaborador.motivo_ultimo_cambio_area or "N/A",
-            "area_anterior": area_anterior_nombre,
-            "area_anterior_id": colaborador.area_anterior_id or "N/A",
-            
-            # Para compatibilidad
-            "ultimo_cambio": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
-                           if colaborador.fecha_ultimo_cambio_area else "N/A"
-        })
-        
-    except Exception as e:
-        logger.error(f"Error obteniendo colaborador por ID: {e}", exc_info=True)
-        return jsonify({"error": "Error al obtener colaborador"}), 500
 
 
 @app.route("/api/reclutadores/comercial")
@@ -2412,6 +2795,18 @@ def api_buscar_reclutador():
         logger.error(f"Error buscando reclutador: {e}", exc_info=True)
         return jsonify({"error": "Error al buscar reclutador"}), 500
 
+
+def reparar_hash_password(hash_actual, password):
+    """Intenta reparar un hash de contraseña dañado."""
+    if not hash_actual:
+        return Usuario.hash_password(password, method='scrypt')
+    
+    # Si el hash está vacío o parece dañado
+    if hash_actual == '' or len(hash_actual) < 10:
+        return Usuario.hash_password(password, method='scrypt')
+    
+    return hash_actual
+
 # ======================================
 # INICIALIZACIÓN
 # ======================================
@@ -2483,6 +2878,8 @@ def create_initial_data():
 # RUTA PARA BAJA COLABORADOR
 # ======================================
 @app.route("/baja-colaborador", methods=["GET"])
+@login_required  # Primero verificar login
+@area_required([3, 4])  # Luego verificar área
 @require_db
 def baja_colaborador():
     """Página para dar de baja colaboradores."""
@@ -2570,13 +2967,15 @@ def alta_colaborador_post():
 # API PARA OBTENER TODOS LOS COLABORADORES (FIXED)
 # ======================================
 @app.route("/api/colaboradores/todos")
+@login_required
+@area_required([3, 4])
 @require_db
 def api_colaboradores_todos():
-    """API para obtener todos los colaboradores - CORREGIDO."""
+    """API para obtener todos los colaboradores - CORREGIDO CON TODOS LOS CAMPOS."""
     try:
         db = g.db
         
-        # Obtener todos los colaboradores con información de área y puesto
+        # Obtener todos los colaboradores con información de área y puesto - CORREGIDO
         colaboradores = db.query(
             Colaborador.id,
             Colaborador.nombre,
@@ -2587,19 +2986,21 @@ def api_colaboradores_todos():
             Colaborador.nss,
             Colaborador.fecha_alta,
             Colaborador.telefono,
-            Colaborador.domicilio,
+            Colaborador.domicilio,  # ✅ AGREGADO
             Colaborador.sueldo,
-            Colaborador.comentarios,
+            Colaborador.comentarios,  # ✅ AGREGADO
             Colaborador.baja,
             Colaborador.area_id,
             Colaborador.puesto_id,
             Colaborador.correo_coordinador,
+            Colaborador.edad,  # ✅ AGREGADO
+            Colaborador.estado_civil,  # ✅ AGREGADO
             Area.nombre.label('area_nombre'),
             Area.nombre_coordinador,
             Puesto.nombre.label('puesto_nombre')
         ).join(
-            Area, Colaborador.area_id == Area.id  # isouter=True eliminado
-        ).outerjoin(  # outerjoin ya implica outer, no necesita isouter
+            Area, Colaborador.area_id == Area.id
+        ).outerjoin(
             Puesto, Colaborador.puesto_id == Puesto.id
         ).order_by(
             Colaborador.id.desc()
@@ -2614,32 +3015,35 @@ def api_colaboradores_todos():
                 'correo': col.correo or '',
                 'rfc': col.rfc or '',
                 'curp': col.curp or '',
-                'nss': col.nss or '',
+                'nss': col.nss or '',  # ✅ AHORA SÍ VIENE
                 'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
                 'telefono': col.telefono or '',
-                'domicilio': col.domicilio or '',
+                'domicilio': col.domicilio or '',  # ✅ AHORA SÍ VIENE
                 'sueldo': float(col.sueldo) if col.sueldo else None,
-                'comentarios': col.comentarios or '',
+                'comentarios': col.comentarios or '',  # ✅ AHORA SÍ VIENE
                 'baja': bool(col.baja),
                 'area_id': col.area_id,
                 'area_nombre': col.area_nombre or 'N/A',
                 'puesto_nombre': col.puesto_nombre or 'N/A',
                 'nombre_coordinador': col.nombre_coordinador or 'N/A',
-                'correo_coordinador': col.correo_coordinador or 'N/A'
+                'correo_coordinador': col.correo_coordinador or 'N/A',
+                'edad': col.edad or None,  # ✅ AHORA SÍ VIENE
+                'estado_civil': col.estado_civil or 'N/A'  # ✅ AHORA SÍ VIENE
             })
         
-        # Retornar el array directamente para DataTables
         return jsonify(resultados)
         
     except Exception as e:
         logger.error(f"Error obteniendo colaboradores: {e}", exc_info=True)
-        return jsonify([])  # Retornar array vacío en caso de error
+        return jsonify([])
 # ======================================
 # RUTA PARA LA VISTA DE COLABORADORES
 # ======================================
 @app.route("/colaboradores")
+@login_required
+@area_required([3, 4])  # Solo áreas con ID 3 y 4 pueden acceder
 def colaboradores():
-    """Página de lista de colaboradores."""
+    """Página de lista de colaboradores - ahora protegida."""
     return render_template("colaboradores.html")
 
 # ======================================
@@ -2649,10 +3053,11 @@ def colaboradores():
 @app.route("/api/colaborador/detalle/<int:colaborador_id>")
 @require_db
 def api_colaborador_detalle(colaborador_id):
-    """API para obtener detalles completos de un colaborador."""
+    """API para obtener detalles completos de un colaborador - VERSIÓN CORREGIDA."""
     try:
         db = g.db
         
+        # Consulta que obtiene TODOS los campos necesarios - CORREGIDO SIN ISOOUTER
         colaborador = db.query(
             Colaborador,
             Area.nombre.label('area_nombre'),
@@ -2660,106 +3065,160 @@ def api_colaborador_detalle(colaborador_id):
             Area.correo_coordinador,
             Puesto.nombre.label('puesto_nombre')
         ).join(
-            Area, Colaborador.area_id == Area.id, isouter=True
+            Area, Colaborador.area_id == Area.id
         ).outerjoin(
-            Puesto, Colaborador.puesto_id == Puesto.id, isouter=True
+            Puesto, Colaborador.puesto_id == Puesto.id  # SIN ISOOUTER
         ).filter(
             Colaborador.id == colaborador_id
         ).first()
         
         if not colaborador:
-            return jsonify({"error": "Colaborador no encontrado"}), 404
+            return jsonify({"success": False, "error": "Colaborador no encontrado"}), 404
         
         col = colaborador[0]  # El objeto Colaborador
         
-        return jsonify({
+        # Preparar respuesta con TODOS los campos
+        response_data = {
             'success': True,
             'colaborador': {
+                # DATOS PERSONALES
                 'id': col.id,
                 'nombre': col.nombre or '',
                 'apellido': col.apellido or '',
                 'correo': col.correo or '',
-                'rfc': col.rfc or '',
-                'curp': col.curp or '',
-                'nss': col.nss or '',
-                'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
+                'edad': col.edad,
+                'estado_civil': col.estado_civil or '',
                 'telefono': col.telefono or '',
                 'domicilio': col.domicilio or '',
-                'sueldo': float(col.sueldo) if col.sueldo else None,
-                'comentarios': col.comentarios or '',
-                'baja': bool(col.baja),
+                
+                # DATOS OFICIALES
+                'rfc': col.rfc or '',
+                'curp': col.curp or '',
+                'nss': col.nss or '',  # ✅ NSS incluido
+                'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
+                
+                # DATOS LABORALES
                 'area_id': col.area_id,
-                'area_nombre': colaborador.area_nombre or 'N/A',
-                'puesto_nombre': colaborador.puesto_nombre or 'N/A',
-                'nombre_coordinador': colaborador.nombre_coordinador or 'N/A',
-                'correo_coordinador': colaborador.correo_coordinador or 'N/A',
-                'edad': col.edad or 'N/A',
-                'estado_civil': col.estado_civil or 'N/A',
-                'rol_comercial': col.rol_comercial or 'N/A',
-                'metodo_pago': col.metodo_pago or 'N/A',
-                'banco': col.banco or 'N/A',
-                'reclutador': col.reclutador or 'N/A',
-                'numero_cuenta': col.numero_cuenta or 'N/A',
+                'area_nombre': colaborador.area_nombre or '',
+                'puesto_id': col.puesto_id,
+                'puesto_nombre': colaborador.puesto_nombre or '',
+                'sueldo': float(col.sueldo) if col.sueldo else None,
+                'comentarios': col.comentarios or '',  # ✅ Comentarios incluidos
+                'baja': bool(col.baja),
+                'fecha_baja': col.fecha_baja.isoformat() if col.fecha_baja else None,
+                'motivo_baja': col.motivo_baja or '',
+                
+                # DATOS DE COORDINADOR
+                'nombre_coordinador': colaborador.nombre_coordinador or '',
+                'correo_coordinador': colaborador.correo_coordinador or '',
+                
+                # DATOS COMERCIALES
+                'rol_comercial': col.rol_comercial or '',
+                'comisionista': bool(col.comisionista) if col.comisionista is not None else None,
+                'metodo_pago': col.metodo_pago or '',
+                'banco': col.banco or '',
+                'reclutador': col.reclutador or '',
+                'numero_cuenta': col.numero_cuenta or '',
+                'numero_comisiones': col.numero_comisiones or '',
+                
+                # DATOS DE CRÉDITOS
                 'tiene_infonavit': bool(col.tiene_infonavit),
-                'infonavit_credito': col.infonavit_credito or 'N/A',
+                'infonavit_credito': col.infonavit_credito or '',
                 'tiene_fonacot': bool(col.tiene_fonacot),
-                'fonacot_credito': col.fonacot_credito or 'N/A'
+                'fonacot_credito': col.fonacot_credito or '',
+                
+                # DATOS DE RELACIONES (IDs)
+                'metodo_pago_id': col.metodo_pago_id,
+                'banco_id': col.banco_id,
+                'reclutador_id': col.reclutador_id,
+                
+                # DATOS DE CAMBIO DE ÁREA (si existen)
+                'fecha_ultimo_cambio_area': col.fecha_ultimo_cambio_area.isoformat() if col.fecha_ultimo_cambio_area else None,
+                'motivo_ultimo_cambio_area': col.motivo_ultimo_cambio_area or '',
+                'area_anterior_id': col.area_anterior_id
             }
-        })
+        }
+        
+        # Log para depuración
+        logger.info(f"✅ Detalles cargados para colaborador ID: {colaborador_id}")
+        logger.info(f"📋 Campos cargados: NSS={'SÍ' if col.nss else 'NO'}, "
+                   f"Domicilio={'SÍ' if col.domicilio else 'NO'}, "
+                   f"Comentarios={'SÍ' if col.comentarios else 'NO'}")
+        
+        return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"Error obteniendo detalle de colaborador: {e}", exc_info=True)
-        return jsonify({"success": False, "error": str(e)}), 500
+        logger.error(f"❌ Error obteniendo detalle de colaborador {colaborador_id}: {e}", exc_info=True)
+        return jsonify({
+            "success": False, 
+            "error": f"Error al obtener detalles del colaborador: {str(e)}"
+        }), 500
+
 
 # ======================================
 # API PARA BUSCAR COLABORADOR POR ID (SIMPLIFICADA)
 # ======================================
+# MANTÉN SOLO UNA VERSIÓN - ELIMINA LA DUPLICADA
 @app.route("/api/colaborador/<int:colaborador_id>", methods=["GET"])
 @require_db
-def api_colaborador_por_id_simple(colaborador_id):
-    """API simplificada para obtener colaborador por ID - para DataTables."""
+def api_colaborador_por_id(colaborador_id):
+    """API para obtener colaborador por ID - VERSIÓN ÚNICA."""
     try:
         db = g.db
         
-        colaborador = db.query(
-            Colaborador,
-            Area.nombre.label('area_nombre'),
-            Puesto.nombre.label('puesto_nombre')
-        ).join(
-            Area, Colaborador.area_id == Area.id, isouter=True
-        ).outerjoin(
-            Puesto, Colaborador.puesto_id == Puesto.id, isouter=True
-        ).filter(
-            Colaborador.id == colaborador_id
-        ).first()
+        colaborador = db.query(Colaborador).filter_by(id=colaborador_id).first()
         
         if not colaborador:
             return jsonify({"error": "Colaborador no encontrado"}), 404
         
-        col = colaborador[0]  # El objeto Colaborador
+        # Obtener información básica
+        area_nombre = "N/A"
+        if colaborador.area:
+            area_nombre = colaborador.area.nombre
+        
+        puesto_nombre = "N/A"
+        if colaborador.puesto:
+            puesto_nombre = colaborador.puesto.nombre
+        
+        # Obtener área anterior (nuevo campo)
+        area_anterior_nombre = "N/A"
+        if colaborador.area_anterior_id:
+            area_anterior = db.query(Area).filter_by(id=colaborador.area_anterior_id).first()
+            if area_anterior:
+                area_anterior_nombre = area_anterior.nombre
         
         return jsonify({
-            'id': col.id,
-            'nombre': col.nombre or '',
-            'apellido': col.apellido or '',
-            'correo': col.correo or '',
-            'rfc': col.rfc or '',
-            'curp': col.curp or '',
-            'nss': col.nss or '',
-            'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
-            'telefono': col.telefono or '',
-            'domicilio': col.domicilio or '',
-            'sueldo': float(col.sueldo) if col.sueldo else None,
-            'comentarios': col.comentarios or '',
-            'baja': bool(col.baja),
-            'area_id': col.area_id,
-            'area_nombre': colaborador.area_nombre or 'N/A',
-            'puesto_nombre': colaborador.puesto_nombre or 'N/A'
+            "id": colaborador.id,
+            "nombre": f"{colaborador.nombre} {colaborador.apellido}",
+            "correo": colaborador.correo,
+            "rfc": colaborador.rfc,
+            "curp": colaborador.curp or "N/A",
+            "area": area_nombre,
+            "area_id": colaborador.area_id,
+            "puesto": puesto_nombre,
+            "puesto_id": colaborador.puesto_id,
+            "estado": "Activo" if not colaborador.baja else "Baja",
+            "fecha_alta": colaborador.fecha_alta.strftime("%Y-%m-%d") if colaborador.fecha_alta else "N/A",
+            "telefono": colaborador.telefono or "N/A",
+            "sueldo": float(colaborador.sueldo) if colaborador.sueldo else 0.00,
+            "baja": bool(colaborador.baja),
+            
+            # NUEVOS CAMPOS DE CAMBIO DE ÁREA
+            "fecha_ultimo_cambio_area": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
+                                       if colaborador.fecha_ultimo_cambio_area else "N/A",
+            "motivo_ultimo_cambio_area": colaborador.motivo_ultimo_cambio_area or "N/A",
+            "area_anterior": area_anterior_nombre,
+            "area_anterior_id": colaborador.area_anterior_id or "N/A",
+            
+            # Para compatibilidad
+            "ultimo_cambio": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
+                           if colaborador.fecha_ultimo_cambio_area else "N/A"
         })
         
     except Exception as e:
         logger.error(f"Error obteniendo colaborador por ID: {e}", exc_info=True)
         return jsonify({"error": "Error al obtener colaborador"}), 500
+
 
 @app.route("/api/test/colaboradores")
 @require_db
@@ -2939,28 +3398,59 @@ def api_descargar_documento():
 @app.route("/api/documento/preview")
 @require_db
 def api_documento_preview():
-    """API para previsualizar documentos (imágenes)."""
+    """API para previsualizar documentos (imágenes y PDFs) - VERSIÓN MEJORADA."""
     try:
         ruta = request.args.get('ruta')
         
         if not ruta or not os.path.exists(ruta):
             return jsonify({"error": "Documento no encontrado"}), 404
         
-        # Verificar que sea una imagen
-        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp'}
+        # Verificar seguridad - asegurar que está dentro de uploads
+        uploads_path = os.path.abspath(app.config['UPLOAD_FOLDER'])
+        file_path = os.path.abspath(ruta)
+        
+        if not file_path.startswith(uploads_path):
+            return jsonify({"error": "Acceso no permitido"}), 403
+        
+        # Determinar tipo de archivo
         file_ext = os.path.splitext(ruta)[1].lower()
         
-        if file_ext not in allowed_extensions:
+        # Tipos MIME
+        mime_types = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg', 
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.bmp': 'image/bmp',
+            '.pdf': 'application/pdf'  # ✅ AGREGADO PARA PDFs
+        }
+        
+        if file_ext not in mime_types:
             return jsonify({"error": "Tipo de archivo no soportado para previsualización"}), 400
         
-        return send_file(
-            ruta,
-            mimetype=f'image/{file_ext[1:]}'  # Remover el punto
-        )
+        # Obtener tipo MIME
+        mime_type = mime_types[file_ext]
         
+        # Para imágenes: enviar como imagen
+        if file_ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']:
+            return send_file(
+                ruta,
+                mimetype=mime_type
+            )
+        
+        # Para PDFs: enviar como PDF (PDF.js lo manejará en el frontend)
+        elif file_ext == '.pdf':
+            return send_file(
+                ruta,
+                mimetype=mime_type,
+                as_attachment=False,  # Importante: no como adjunto
+                download_name=os.path.basename(ruta)
+            )
+            
     except Exception as e:
         logger.error(f"Error en preview de documento: {e}", exc_info=True)
         return jsonify({"error": "Error al previsualizar el documento"}), 500
+
 
 # ======================================
 # API PARA COORDINADOR POR ÁREA
@@ -2986,16 +3476,69 @@ def api_coordinador_por_area(area_id):
         logger.error(f"Error obteniendo coordinador: {e}", exc_info=True)
         return jsonify({"error": "Error al obtener información del coordinador"}), 500
 
+# Ejecutar reparación de hashes al iniciar
+def verificar_y_reparar_hashes():
+    """Verificar y reparar hashes al iniciar la aplicación."""
+    with get_db() as db:
+        usuarios = db.query(Usuario).all()
+        actualizados = 0
+        
+        for usuario in usuarios:
+            # Si el hash está vacío o parece dañado
+            if not usuario.password_hash or usuario.password_hash == '':
+                # Asignar contraseña por defecto basada en el rol
+                password_default = 'admin123' if usuario.rol == 'admin' else 'coordinador123'
+                usuario.password_hash = Usuario.hash_password(user_data['password'])
+                actualizados += 1
+                logger.warning(f"Hash reparado para usuario: {usuario.correo}")
+        
+        if actualizados > 0:
+            db.commit()
+            logger.info(f"Se repararon {actualizados} hashes de contraseña")
 
-# ======================================
-# MAIN
-# ======================================
+def migrar_hashes_existentes():
+    """Migra los hashes existentes a formato scrypt."""
+    with get_db() as db:
+        usuarios = db.query(Usuario).all()
+        passwords_por_rol = {
+            'admin': 'Admin123!',
+            'coordinador': 'TiPassword123!'
+        }
+        
+        actualizados = 0
+        for usuario in usuarios:
+            # Determinar qué contraseña usar según el correo
+            if 'admin' in usuario.correo:
+                password = 'Admin123!'
+            elif 'coordinador.ti' in usuario.correo:
+                password = 'TiPassword123!'
+            elif 'coordinador.rh' in usuario.correo:
+                password = 'Coordinador123!'  # Ajusta según necesites
+            else:
+                password = 'Default123!'
+            
+            # Generar nuevo hash con scrypt
+            nuevo_hash = Usuario.hash_password(password)
+            usuario.password_hash = nuevo_hash
+            actualizados += 1
+            
+            logger.info(f"Actualizado hash para {usuario.correo}")
+        
+        if actualizados > 0:
+            db.commit()
+            logger.info(f"✓ Migrados {actualizados} hashes a scrypt")
+
+
 if __name__ == "__main__":
     app.config['SESSION_COOKIE_SECURE'] = False
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     
     initialize_app()
+    
+
+    # Luego asegurar que todos los usuarios estén creados correctamente
+    crear_usuarios_con_hash_correcto()
     
     app.run(
         host='0.0.0.0',
