@@ -94,9 +94,10 @@
                 <a href="{{ url_for('alta') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'alta' %}active{% endif %}">
                     <i class="bi bi-person-plus me-2"></i>Alta Colaborador
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-people-fill me-2"></i>Colaboradores
-                </a>
+                <a href="{{ url_for('colaboradores') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'colaboradores' %}active{% endif %}">
+    <i class="bi bi-people-fill me-2"></i>Colaboradores
+</a>
+                
                 <a href="#" class="list-group-item list-group-item-action">
                     <i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes
                 </a>

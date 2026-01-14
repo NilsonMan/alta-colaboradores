@@ -1,0 +1,2230 @@
+{% extends "base.html" %}
+
+{% block title %}Colaboradores - Sistema de Gestión{% endblock %}
+
+{% block head %}
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    
+    <style>
+        /* ESTILOS PRINCIPALES MEJORADOS - UX ÓPTIMO */
+        :root {
+            --card-spacing: 24px;
+            --border-radius-lg: 16px;
+            --border-radius-md: 12px;
+            --border-radius-sm: 8px;
+            --shadow-light: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 30px rgba(0,0,0,0.12);
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+            --primary-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+            --success-gradient: linear-gradient(135deg, #10b981, #059669);
+            --warning-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+            --info-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        /* Layout mejorado */
+        .main-container {
+            padding: var(--card-spacing);
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ENCABEZADO MEJORADO */
+        .page-header {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.05));
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(67, 97, 238, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .dark-mode .page-title {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .page-subtitle {
+            color: #a0aec0;
+        }
+
+        /* ESTADÍSTICAS MEJORADAS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+            border-color: #4361ee;
+        }
+
+        .dark-mode .stat-card {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .stat-card.total::before { background: linear-gradient(135deg, #4361ee, #3a0ca3); }
+        .stat-card.active::before { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-card.commercial::before { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-card.management::before { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .dark-mode .stat-value {
+            color: #e2e8f0;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dark-mode .stat-label {
+            color: #a0aec0;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            opacity: 0.15;
+        }
+
+        /* FILTROS MEJORADOS */
+        .filters-container {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-light);
+        }
+
+        .dark-mode .filters-container {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+
+        .dark-mode .filter-label {
+            color: #cbd5e0;
+        }
+
+        .filter-input {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-sm);
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            background: white;
+        }
+
+        .filter-input:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            outline: none;
+        }
+
+        .dark-mode .filter-input {
+            background: #4a5568;
+            border-color: #718096;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .filter-input:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* BOTONES MEJORADOS */
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border-radius: var(--border-radius-sm);
+            padding: 0.625rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        /* TABLA MEJORADA - UX ÓPTIMO */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+        }
+
+        .dark-mode .table-container {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        #colaboradoresTable_wrapper {
+            padding: 0 !important;
+        }
+
+        #colaboradoresTable {
+            width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0 !important;
+        }
+
+        #colaboradoresTable thead th {
+            background: #f8fafc;
+            padding: 1rem 1.25rem !important;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .dark-mode #colaboradoresTable thead th {
+            background: #4a5568;
+            border-color: #718096;
+            color: #e2e8f0;
+        }
+
+        #colaboradoresTable tbody td {
+            padding: 1rem 1.25rem !important;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            vertical-align: middle;
+        }
+
+        .dark-mode #colaboradoresTable tbody td {
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        #colaboradoresTable tbody tr {
+            transition: all var(--transition-fast);
+        }
+
+        #colaboradoresTable tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.04) !important;
+        }
+
+        .dark-mode #colaboradoresTable tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.1) !important;
+        }
+
+        /* AVATAR MEJORADO */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: white;
+            background: var(--primary-gradient);
+            margin: 0 auto;
+        }
+
+        /* BADGES MEJORADOS */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .area-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .area-badge.commercial {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .area-badge.management {
+            background: rgba(139, 92, 246, 0.1);
+            color: #7c3aed;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        /* ACCIONES MEJORADAS */
+        .action-buttons-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #4361ee;
+            color: #4361ee;
+        }
+
+        .dark-mode .action-btn {
+            background: #4a5568;
+            border-color: #718096;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .action-btn:hover {
+            border-color: #4361ee;
+            color: #4361ee;
+        }
+
+        .action-btn.view:hover { background: rgba(67, 97, 238, 0.1); }
+        .action-btn.edit:hover { background: rgba(16, 185, 129, 0.1); }
+        .action-btn.change:hover { background: rgba(245, 158, 11, 0.1); }
+        .action-btn.documents:hover { background: rgba(139, 92, 246, 0.1); }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .table-container {
+                border-radius: var(--border-radius-md);
+                overflow-x: auto;
+            }
+            
+            #colaboradoresTable {
+                min-width: 1200px;
+            }
+        }
+
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* LOADING SPINNER */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .dark-mode .loading-overlay {
+            background: rgba(26, 32, 44, 0.9);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #4361ee;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* DATATABLES CUSTOM */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: var(--border-radius-sm) !important;
+            margin: 0 2px !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-gradient) !important;
+            border-color: #4361ee !important;
+            color: white !important;
+        }
+
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: var(--border-radius-sm) !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 0.5rem !important;
+        }
+
+        .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-color: #4a5568 !important;
+            color: #e2e8f0 !important;
+        }
+
+        .dark-mode .dataTables_wrapper .dataTables_length select,
+        .dark-mode .dataTables_wrapper .dataTables_filter input {
+            background: #4a5568 !important;
+            border-color: #718096 !important;
+            color: #e2e8f0 !important;
+        }
+
+        /* MODAL MEJORADO */
+        .modal-content {
+            border-radius: var(--border-radius-lg);
+            border: none;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .modal-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            padding: 1.5rem;
+        }
+
+        .dark-mode .modal-header {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .dark-mode .modal-footer {
+            border-color: #4a5568;
+        }
+
+        /* DETAIL CARD EN MODAL */
+        .detail-card {
+            background: #f8fafc;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dark-mode .detail-card {
+            background: #4a5568;
+            border-color: #718096;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            color: #2d3748;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .dark-mode .detail-value {
+            color: #e2e8f0;
+        }
+
+        /* TOOLTIPS */
+        .tooltip-inner {
+            background: #2d3748;
+            color: white;
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            box-shadow: var(--shadow-light);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container fade-in">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Encabezado de página -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-people-fill me-2 text-primary"></i>Colaboradores
+                </h1>
+                <p class="page-subtitle">
+                    Gestión completa del personal - Visualiza, edita y administra todos los colaboradores
+                </p>
+            </div>
+            <div class="action-buttons">
+                <a href="{{ url_for('alta') }}" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-2"></i>Nuevo Colaborador
+                </a>
+                <button type="button" class="btn btn-warning" id="btnExport">
+                    <i class="bi bi-download me-1"></i>Exportar
+                </button>
+                <button type="button" class="btn btn-success" id="btnRefresh">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="stats-grid">
+        <div class="stat-card total">
+            <div class="stat-icon">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-value" id="totalColaboradores">0</div>
+            <div class="stat-label">Total Colaboradores</div>
+        </div>
+
+        <div class="stat-card active">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-value" id="totalActivos">0</div>
+            <div class="stat-label">Activos</div>
+        </div>
+
+        <div class="stat-card commercial">
+            <div class="stat-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-value" id="totalComercial">0</div>
+            <div class="stat-label">Comercial</div>
+        </div>
+
+        <div class="stat-card management">
+            <div class="stat-icon">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="stat-value" id="totalGestion">0</div>
+            <div class="stat-label">Gestión</div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-container">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-search me-1"></i> Buscar
+                </label>
+                <input type="text" class="filter-input" id="searchInput" 
+                       placeholder="Nombre, correo, RFC...">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-funnel me-1"></i> Estado
+                </label>
+                <select class="filter-input" id="filterEstado">
+                    <option value="">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="bi bi-diagram-3 me-1"></i> Área
+                </label>
+                <select class="filter-input" id="filterArea">
+                    <option value="">Todas las áreas</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 align-items-end">
+                <button class="btn btn-outline-secondary" id="btnClearFilters">
+                    <i class="bi bi-x-circle me-1"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de colaboradores -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table id="colaboradoresTable" class="table table-hover mb-0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th width="50">ID</th>
+                        <th width="60"></th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Área</th>
+                        <th>Puesto</th>
+                        <th>Coordinador</th>
+                        <th>Correo Coordinador</th>
+                        <th>Fecha Alta</th>
+                        <th>Estado</th>
+                        <th width="140" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de detalles -->
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Colaborador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4">
+                        <div class="avatar mx-auto mb-3" id="modalAvatar" style="width: 80px; height: 80px; font-size: 32px;">JD</div>
+                        <h4 id="modalNombre">John Doe</h4>
+                        <div class="status-badge mx-auto" id="modalEstado">Activo</div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Correo:</div>
+                                    <div class="detail-value" id="modalCorreo">john@example.com</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">RFC:</div>
+                                    <div class="detail-value" id="modalRfc">XAXX010101000</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">CURP:</div>
+                                    <div class="detail-value" id="modalCurp">XAXX010101HDFXXX01</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">NSS:</div>
+                                    <div class="detail-value" id="modalNss">12345678901</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Área:</div>
+                                    <div class="detail-value" id="modalArea">Comercial</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Puesto:</div>
+                                    <div class="detail-value" id="modalPuesto">Vendedor</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Coordinador:</div>
+                                    <div class="detail-value" id="modalCoordinador">Juan Pérez</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Correo Coordinador:</div>
+                                    <div class="detail-value" id="modalCorreoCoordinador">juan@example.com</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="detail-item">
+                                    <div class="detail-label">Teléfono:</div>
+                                    <div class="detail-value" id="modalTelefono">555-1234</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Domicilio:</div>
+                                    <div class="detail-value" id="modalDomicilio">Calle Falsa 123</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Sueldo:</div>
+                                    <div class="detail-value" id="modalSueldo">$15,000 MXN</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Comentarios:</div>
+                                    <div class="detail-value" id="modalComentarios">Sin comentarios</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-warning text-dark" id="btnEditar">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnBaja">
+                    <i class="bi bi-person-x me-1"></i>Dar de Baja
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Colaborador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarColaborador">
+                    <input type="hidden" id="editColaboradorId">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre:</label>
+                                <input type="text" class="form-control" id="editNombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Apellido:</label>
+                                <input type="text" class="form-control" id="editApellido" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Correo:</label>
+                                <input type="email" class="form-control" id="editCorreo" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono:</label>
+                                <input type="text" class="form-control" id="editTelefono" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">RFC:</label>
+                                <input type="text" class="form-control" id="editRfc" maxlength="13" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">CURP:</label>
+                                <input type="text" class="form-control" id="editCurp" maxlength="18">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">NSS:</label>
+                                <input type="text" class="form-control" id="editNss" maxlength="15">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Área:</label>
+                                <select class="form-select" id="editArea" required>
+                                    <option value="">Seleccionar área...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Puesto:</label>
+                                <select class="form-select" id="editPuesto">
+                                    <option value="">Seleccionar puesto...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Domicilio:</label>
+                                <textarea class="form-control" id="editDomicilio" rows="2" maxlength="500"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Sueldo:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="editSueldo" step="0.01" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Comentarios:</label>
+                        <textarea class="form-control" id="editComentarios" rows="3" maxlength="1000"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estado:</label>
+                                <select class="form-select" id="editEstado">
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Edad:</label>
+                                <input type="number" class="form-control" id="editEdad" min="18" max="100">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarCambios">
+                    <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de documentos -->
+<div class="modal fade" id="documentosModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-files me-2"></i>Documentos del Colaborador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="documentosContainer">
+                    <div class="text-center py-5" id="loadingDocuments">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando documentos...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Cargando documentos...</p>
+                    </div>
+                    <div id="documentosContent" style="display: none;">
+                        <!-- Contenido se cargará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery PRIMERO -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+<!-- PDF.js para previsualización de PDFs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
+<!-- FileSaver.js para exportación -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<!-- SheetJS para exportación a Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    // Variable global para la tabla
+    let colaboradoresTable = null;
+    let currentColaboradorId = null;
+    let areasData = [];
+    let puestosData = [];
+
+    // Función para esperar a que jQuery esté cargado
+    function waitForjQuery() {
+        if (window.jQuery) {
+            console.log('✅ jQuery cargado, versión:', $.fn.jquery);
+            initApp();
+        } else {
+            console.log('⏳ Esperando jQuery...');
+            setTimeout(waitForjQuery, 100);
+        }
+    }
+
+    // Función principal de inicialización
+    function initApp() {
+        console.log('=== INICIANDO APLICACIÓN DE COLABORADORES ===');
+        cargarAreas();
+        testApi();
+        initTable();
+        setupEventListeners();
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('📄 DOM cargado');
+        waitForjQuery();
+    });
+
+    // Función para cargar áreas desde el backend
+    async function cargarAreas() {
+        try {
+            const response = await fetch('/api/areas');
+            if (response.ok) {
+                areasData = await response.json();
+                
+                // Llenar el select de filtro
+                const filterArea = document.getElementById('filterArea');
+                filterArea.innerHTML = '<option value="">Todas las áreas</option>';
+                
+                areasData.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area.id;
+                    option.textContent = area.nombre;
+                    filterArea.appendChild(option);
+                });
+                
+                // Llenar el select de edición
+                const editArea = document.getElementById('editArea');
+                editArea.innerHTML = '<option value="">Seleccionar área...</option>';
+                
+                areasData.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area.id;
+                    option.textContent = area.nombre;
+                    editArea.appendChild(option);
+                });
+                
+                console.log('✅ Áreas cargadas:', areasData.length);
+            }
+        } catch (error) {
+            console.error('❌ Error cargando áreas:', error);
+        }
+    }
+
+    // Función para cargar coordinador por área
+    async function cargarCoordinadorPorArea(areaId) {
+        try {
+            const response = await fetch(`/api/coordinador-por-area/${areaId}`);
+            if (response.ok) {
+                const coordinador = await response.json();
+                return coordinador;
+            }
+        } catch (error) {
+            console.error('❌ Error cargando coordinador:', error);
+            return { nombre_coordinador: 'N/A', correo_coordinador: 'N/A' };
+        }
+    }
+
+    // Función para cargar puestos por área
+    async function cargarPuestosPorArea(areaId) {
+        try {
+            const response = await fetch(`/api/puestos-por-area/${areaId}`);
+            if (response.ok) {
+                puestosData = await response.json();
+                
+                // Llenar el select de puestos
+                const editPuesto = document.getElementById('editPuesto');
+                editPuesto.innerHTML = '<option value="">Seleccionar puesto...</option>';
+                
+                puestosData.forEach(puesto => {
+                    const option = document.createElement('option');
+                    option.value = puesto.id;
+                    option.textContent = puesto.nombre;
+                    editPuesto.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('❌ Error cargando puestos:', error);
+        }
+    }
+
+    function testApi() {
+        console.log('🔍 Probando API...');
+        
+        fetch('/api/colaboradores/todos')
+            .then(response => {
+                console.log('📡 Status API:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ API responde OK');
+                console.log('📊 Registros recibidos:', data.length);
+                if (data.length === 0) {
+                    console.log('💡 Base de datos vacía. Crea colaboradores desde /alta');
+                } else {
+                    console.log('📋 Primer registro:', data[0]);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error en API:', error);
+            });
+    }
+
+    function showLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) spinner.style.display = 'flex';
+    }
+
+    function hideLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) spinner.style.display = 'none';
+    }
+
+    function initTable() {
+        console.log('🎯 Iniciando DataTable...');
+        
+        // Verificar que jQuery esté disponible
+        if (typeof $ === 'undefined') {
+            console.error('❌ jQuery no disponible');
+            alert('Error: jQuery no se cargó. Recarga la página.');
+            return;
+        }
+        
+        // Verificar que DataTables esté disponible
+        if (typeof $.fn.dataTable === 'undefined') {
+            console.error('❌ DataTables no disponible');
+            alert('Error: DataTables no se cargó. Verifica tu conexión a internet.');
+            return;
+        }
+        
+        showLoading();
+        
+        // Destruir tabla si ya existe
+        if ($.fn.DataTable.isDataTable('#colaboradoresTable')) {
+            console.log('🗑️ Destruyendo tabla existente...');
+            colaboradoresTable.destroy();
+            $('#colaboradoresTable').empty();
+        }
+        
+        // Configuración de DataTable
+        colaboradoresTable = $('#colaboradoresTable').DataTable({
+            responsive: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+                emptyTable: "No hay colaboradores registrados",
+                loadingRecords: "Cargando...",
+                processing: "Procesando..."
+            },
+            ajax: {
+                url: '/api/colaboradores/todos',
+                type: 'GET',
+                dataSrc: '',
+                error: function(xhr, error, thrown) {
+                    console.error('❌ Error AJAX:', error);
+                    hideLoading();
+                    showAlert('Error', 'Error cargando datos. Verifica la consola para más detalles.', 'danger');
+                    return [];
+                }
+            },
+            columns: [
+                { 
+                    data: 'id',
+                    className: 'text-center',
+                    width: '50px'
+                },
+                { 
+                    data: null,
+                    render: function(data, type, row) {
+                        const nombres = row.nombre || '';
+                        const apellidos = row.apellido || '';
+                        const iniciales = (nombres.charAt(0) + apellidos.charAt(0)).toUpperCase() || '??';
+                        const colorIndex = (row.id % 6) + 1;
+                        return `<div class="avatar avatar-color-${colorIndex}">${iniciales}</div>`;
+                    },
+                    className: 'text-center',
+                    orderable: false,
+                    width: '60px'
+                },
+                { 
+                    data: null,
+                    render: function(data, type, row) {
+                        return `${row.nombre || ''} ${row.apellido || ''}`;
+                    }
+                },
+                { 
+                    data: 'correo',
+                    defaultContent: 'N/A',
+                    render: function(data) {
+                        return data || 'N/A';
+                    }
+                },
+                { 
+                    data: 'area_nombre',
+                    render: function(data, type, row) {
+                        const isComercial = row.area_id == 2;
+                        return `<span class="area-badge ${isComercial ? 'commercial' : 'management'}">${data || 'N/A'}</span>`;
+                    },
+                    defaultContent: 'N/A'
+                },
+                { 
+                    data: 'puesto_nombre',
+                    defaultContent: 'N/A',
+                    render: function(data) {
+                        return data || 'N/A';
+                    }
+                },
+                { 
+                    data: 'nombre_coordinador',
+                    defaultContent: 'N/A',
+                    render: function(data) {
+                        return data || 'N/A';
+                    }
+                },
+                { 
+                    data: 'correo_coordinador',
+                    defaultContent: 'N/A',
+                    render: function(data) {
+                        return data || 'N/A';
+                    }
+                },
+                { 
+                    data: 'fecha_alta',
+                    render: function(data) {
+                        if (!data) return 'N/A';
+                        try {
+                            return new Date(data).toLocaleDateString('es-MX');
+                        } catch (e) {
+                            return data;
+                        }
+                    },
+                    defaultContent: 'N/A'
+                },
+                { 
+                    data: 'baja',
+                    render: function(data) {
+                        const isActive = !data;
+                        return `<span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                            ${isActive ? 'Activo' : 'Inactivo'}
+                        </span>`;
+                    },
+                    className: 'text-center'
+                },
+                { 
+                    data: null,
+                    render: function(data, type, row) {
+                        return `
+                            <div class="action-buttons-group">
+                                <button class="action-btn view btn-view" 
+                                        data-id="${row.id}" 
+                                        title="Ver detalles"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="action-btn edit btn-edit" 
+                                        data-id="${row.id}" 
+                                        title="Editar"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="action-btn change btn-change-area" 
+                                        data-id="${row.id}" 
+                                        title="Cambiar área"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                </button>
+                                <button class="action-btn documents btn-docs" 
+                                        data-id="${row.id}" 
+                                        title="Ver documentos"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top">
+                                    <i class="bi bi-files"></i>
+                                </button>
+                            </div>
+                        `;
+                    },
+                    orderable: false,
+                    className: 'text-center'
+                }
+            ],
+            order: [[0, 'desc']],
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+            processing: true,
+            serverSide: false,
+            deferRender: true,
+            initComplete: function(settings, json) {
+                console.log('✅ DataTable inicializado correctamente');
+                console.log('📦 Datos recibidos:', json ? json.length : 0, 'registros');
+                
+                updateStatisticsFromTable();
+                hideLoading();
+                
+                // Inicializar tooltips de Bootstrap
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                
+                // Re-aplicar eventos después de inicializar
+                setTimeout(applyButtonEvents, 100);
+            },
+            drawCallback: function(settings) {
+                console.log('🔄 Tabla dibujada');
+                // Re-inicializar tooltips después de cada dibujado
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                applyButtonEvents();
+                updateStatisticsFromTable();
+            },
+            error: function(settings, techNote, message) {
+                console.error('DataTables error:', message);
+                hideLoading();
+            }
+        });
+    }
+
+    function applyButtonEvents() {
+        // Botones de ver detalles
+        $(document).on('click', '.btn-view', function() {
+            const id = $(this).data('id');
+            console.log('👁️ Ver detalles ID:', id);
+            showColaboradorDetails(id);
+        });
+
+        // Botones de editar
+        $(document).on('click', '.btn-edit', function() {
+            const id = $(this).data('id');
+            console.log('✏️ Editar ID:', id);
+            showEditModal(id);
+        });
+
+        // Botones de cambiar área
+        $(document).on('click', '.btn-change-area', function() {
+            const id = $(this).data('id');
+            console.log('🔄 Cambiar área ID:', id);
+            changeArea(id);
+        });
+
+        // Botones de documentos
+        $(document).on('click', '.btn-docs', function() {
+            const id = $(this).data('id');
+            console.log('📄 Documentos ID:', id);
+            showDocumentosModal(id);
+        });
+    }
+
+    function setupEventListeners() {
+        console.log('🔧 Configurando event listeners...');
+        
+        // Búsqueda en tiempo real
+        $('#searchInput').on('keyup', function() {
+            colaboradoresTable.search(this.value).draw();
+        });
+
+        // Filtro por estado
+        $('#filterEstado').on('change', function() {
+            colaboradoresTable.draw();
+        });
+
+        // Filtro por área
+        $('#filterArea').on('change', function() {
+            colaboradoresTable.draw();
+        });
+
+        // Limpiar filtros
+        $('#btnClearFilters').on('click', function() {
+            $('#searchInput').val('');
+            $('#filterEstado').val('');
+            $('#filterArea').val('');
+            colaboradoresTable.search('').draw();
+        });
+
+        // Refrescar datos
+        $('#btnRefresh').on('click', function() {
+            refreshData();
+        });
+
+        // Exportar datos
+        $('#btnExport').on('click', function() {
+            exportToExcel();
+        });
+
+        // Botones del modal de detalles
+        $('#btnEditar').on('click', function() {
+            if (currentColaboradorId) {
+                showEditModal(currentColaboradorId);
+            }
+        });
+
+        $('#btnBaja').on('click', function() {
+            if (currentColaboradorId) {
+                darDeBaja(currentColaboradorId);
+            }
+        });
+
+        // Botones del modal de edición
+        $('#editArea').on('change', async function() {
+            const areaId = $(this).val();
+            if (areaId) {
+                await cargarPuestosPorArea(areaId);
+            }
+        });
+
+        $('#btnGuardarCambios').on('click', function() {
+            guardarCambios();
+        });
+
+        // Configurar filtros personalizados para DataTables
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                const estado = $('#filterEstado').val();
+                const area = $('#filterArea').val();
+                
+                let rowData;
+                try {
+                    rowData = colaboradoresTable.row(dataIndex).data();
+                } catch (e) {
+                    return true;
+                }
+                
+                if (!rowData) return true;
+                
+                // Filtrar por estado
+                if (estado) {
+                    const isActive = !rowData.baja;
+                    if (estado === 'activo' && !isActive) return false;
+                    if (estado === 'inactivo' && isActive) return false;
+                }
+                
+                // Filtrar por área
+                if (area) {
+                    if (rowData.area_id != area) return false;
+                }
+                
+                return true;
+            }
+        );
+
+        // FIX para fondo oscuro persistente
+        $(document).on('hidden.bs.modal', '.modal', function() {
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+        });
+    }
+
+    function updateStatisticsFromTable() {
+        if (!colaboradoresTable) {
+            console.log('📊 Tabla no disponible para estadísticas');
+            return;
+        }
+        
+        try {
+            const data = colaboradoresTable.rows().data().toArray();
+            const stats = {
+                total: data.length,
+                activos: data.filter(row => !row.baja).length,
+                comercial: data.filter(row => row.area_id == 2).length,
+                gestion: data.filter(row => row.area_id != 2).length
+            };
+            
+            $('#totalColaboradores').text(stats.total || 0);
+            $('#totalActivos').text(stats.activos || 0);
+            $('#totalComercial').text(stats.comercial || 0);
+            $('#totalGestion').text(stats.gestion || 0);
+            
+            console.log('📈 Estadísticas:', stats);
+        } catch (error) {
+            console.error('❌ Error calculando estadísticas:', error);
+        }
+    }
+
+    async function showColaboradorDetails(id) {
+        showLoading();
+        
+        try {
+            console.log('🔍 Obteniendo detalles para ID:', id);
+            const response = await fetch(`/api/colaborador/${id}`);
+            
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                showAlert('Error', data.error, 'danger');
+                hideLoading();
+                return;
+            }
+
+            currentColaboradorId = id;
+            
+            // Actualizar modal con los datos
+            const nombres = data.nombre || '';
+            const apellidos = data.apellido || '';
+            const iniciales = (nombres.charAt(0) + apellidos.charAt(0)).toUpperCase() || '??';
+            const colorIndex = (id % 6) + 1;
+            
+            $('#modalAvatar').html(iniciales);
+            $('#modalAvatar').attr('class', `avatar mx-auto mb-3 avatar-color-${colorIndex}`);
+            $('#modalAvatar').css({ width: '80px', height: '80px', fontSize: '32px' });
+            
+            $('#modalNombre').text(nombres + ' ' + apellidos);
+            $('#modalEstado').text(data.baja ? 'Inactivo' : 'Activo');
+            $('#modalEstado').attr('class', `status-badge mx-auto ${data.baja ? 'status-inactive' : 'status-active'}`);
+            $('#modalCorreo').text(data.correo || 'N/A');
+            $('#modalRfc').text(data.rfc || 'N/A');
+            $('#modalCurp').text(data.curp || 'N/A');
+            $('#modalNss').text(data.nss || 'N/A');
+            $('#modalArea').text(data.area || 'N/A');
+            $('#modalPuesto').text(data.puesto || 'N/A');
+            $('#modalCoordinador').text(data.nombre_coordinador || 'N/A');
+            $('#modalCorreoCoordinador').text(data.correo_coordinador || 'N/A');
+            $('#modalTelefono').text(data.telefono || 'N/A');
+            $('#modalDomicilio').text(data.domicilio || 'N/A');
+            $('#modalSueldo').text(data.sueldo ? `$${parseFloat(data.sueldo).toLocaleString('es-MX')} MXN` : 'N/A');
+            $('#modalComentarios').text(data.comentarios || 'Sin comentarios');
+            
+            // Mostrar/ocultar botón de baja según estado
+            if (data.baja) {
+                $('#btnBaja').hide();
+            } else {
+                $('#btnBaja').show();
+            }
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('detalleModal'));
+            modal.show();
+            
+        } catch (error) {
+            console.error('❌ Error cargando detalles:', error);
+            showAlert('Error', 'No se pudieron cargar los detalles del colaborador', 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function showEditModal(id) {
+        try {
+            console.log('📝 Cargando datos para edición ID:', id);
+            
+            const response = await fetch(`/api/colaborador/${id}`);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Llenar el formulario
+            $('#editColaboradorId').val(data.id);
+            $('#editNombre').val(data.nombre || '');
+            $('#editApellido').val(data.apellido || '');
+            $('#editCorreo').val(data.correo || '');
+            $('#editTelefono').val(data.telefono || '');
+            $('#editRfc').val(data.rfc || '');
+            $('#editCurp').val(data.curp || '');
+            $('#editNss').val(data.nss || '');
+            $('#editDomicilio').val(data.domicilio || '');
+            $('#editSueldo').val(data.sueldo || '');
+            $('#editComentarios').val(data.comentarios || '');
+            $('#editEstado').val(data.baja ? 'inactivo' : 'activo');
+            $('#editEdad').val(data.edad || '');
+            
+            // Seleccionar área
+            $('#editArea').val(data.area_id || '');
+            
+            // Cargar puestos para esta área
+            if (data.area_id) {
+                await cargarPuestosPorArea(data.area_id);
+                // Seleccionar puesto actual
+                setTimeout(() => {
+                    $('#editPuesto').val(data.puesto_id || '');
+                }, 100);
+            }
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('editarModal'));
+            modal.show();
+            
+        } catch (error) {
+            console.error('❌ Error cargando datos para edición:', error);
+            showAlert('Error', 'No se pudieron cargar los datos del colaborador', 'danger');
+        }
+    }
+
+    async function guardarCambios() {
+        const id = $('#editColaboradorId').val();
+        if (!id) return;
+        
+        // Validar NSS (máximo 15 caracteres)
+        const nss = $('#editNss').val();
+        if (nss && nss.length > 15) {
+            showAlert('Error', 'El NSS no puede tener más de 15 caracteres', 'danger');
+            return;
+        }
+        
+        const datos = {
+            id: id,
+            nombre: $('#editNombre').val().trim(),
+            apellido: $('#editApellido').val().trim(),
+            correo: $('#editCorreo').val().trim(),
+            telefono: $('#editTelefono').val().trim(),
+            rfc: $('#editRfc').val().trim().toUpperCase(),
+            curp: $('#editCurp').val().trim().toUpperCase(),
+            nss: nss.trim(),
+            domicilio: $('#editDomicilio').val().trim(),
+            sueldo: $('#editSueldo').val(),
+            comentarios: $('#editComentarios').val().trim(),
+            area_id: $('#editArea').val(),
+            puesto_id: $('#editPuesto').val(),
+            baja: $('#editEstado').val() === 'inactivo',
+            edad: $('#editEdad').val() || null
+        };
+        
+        showLoading();
+        
+        try {
+            const response = await fetch('/api/colaborador/actualizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showAlert('Éxito', 'Colaborador actualizado correctamente', 'success');
+                
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editarModal'));
+                modal.hide();
+                
+                // Actualizar tabla
+                refreshData();
+            } else {
+                showAlert('Error', result.error || 'Error al actualizar colaborador', 'danger');
+            }
+        } catch (error) {
+            console.error('❌ Error actualizando colaborador:', error);
+            showAlert('Error', 'Error al actualizar colaborador', 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function showDocumentosModal(colaboradorId) {
+        currentColaboradorId = colaboradorId;
+        
+        const modal = new bootstrap.Modal(document.getElementById('documentosModal'));
+        
+        // Mostrar loading
+        document.getElementById('loadingDocuments').style.display = 'block';
+        document.getElementById('documentosContent').style.display = 'none';
+        
+        // Cargar documentos
+        try {
+            const response = await fetch(`/api/documentos/${colaboradorId}`);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            const documentos = await response.json();
+            
+            // Construir contenido
+            const documentosContent = document.getElementById('documentosContent');
+            documentosContent.innerHTML = '';
+            
+            if (documentos.length === 0) {
+                documentosContent.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-folder-x display-1 text-muted"></i>
+                        <h5 class="mt-3">No hay documentos registrados</h5>
+                        <p class="text-muted">Este colaborador no tiene documentos subidos.</p>
+                    </div>
+                `;
+            } else {
+                let contenido = '<div class="row g-3">';
+                
+                documentos.forEach((doc, index) => {
+                    const tamañoMB = doc.tamano ? (doc.tamano / (1024 * 1024)).toFixed(2) : 'N/A';
+                    const fecha = doc.fecha_subida || 'N/A';
+                    const esPDF = doc.tipo && doc.tipo.toLowerCase() === 'pdf';
+                    const esImagen = doc.tipo && ['jpg', 'jpeg', 'png', 'gif'].includes(doc.tipo.toLowerCase());
+                    
+                    contenido += `
+                        <div class="col-md-6">
+                            <div class="detail-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-1">${doc.nombre_archivo || 'Documento sin nombre'}</h6>
+                                        <div class="text-muted small">
+                                            <span class="badge bg-info">${doc.tipo || 'N/A'}</span>
+                                            <span class="ms-2">${tamañoMB} MB</span>
+                                            <span class="ms-2">${fecha}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    ${esImagen ? `
+                                        <button class="btn btn-sm btn-outline-primary btn-preview-image" 
+                                                data-ruta="${doc.ruta_archivo}" 
+                                                data-nombre="${doc.nombre_archivo}">
+                                            <i class="bi bi-image me-1"></i>Ver Imagen
+                                        </button>
+                                    ` : ''}
+                                    
+                                    ${esPDF ? `
+                                        <button class="btn btn-sm btn-outline-primary btn-preview-pdf" 
+                                                data-ruta="${doc.ruta_archivo}" 
+                                                data-nombre="${doc.nombre_archivo}">
+                                            <i class="bi bi-file-pdf me-1"></i>Ver PDF
+                                        </button>
+                                    ` : ''}
+                                    
+                                    <button class="btn btn-sm btn-success btn-descargar-doc" 
+                                            data-ruta="${doc.ruta_archivo}" 
+                                            data-nombre="${doc.nombre_archivo}">
+                                        <i class="bi bi-download me-1"></i>Descargar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                contenido += '</div>';
+                documentosContent.innerHTML = contenido;
+                
+                // Agregar event listeners para los botones
+                documentosContent.querySelectorAll('.btn-preview-image').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        previewImage(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
+                    });
+                });
+                
+                documentosContent.querySelectorAll('.btn-preview-pdf').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        previewPDF(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
+                    });
+                });
+                
+                documentosContent.querySelectorAll('.btn-descargar-doc').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const ruta = this.getAttribute('data-ruta');
+                        const nombre = this.getAttribute('data-nombre');
+                        descargarDocumento(ruta, nombre);
+                    });
+                });
+            }
+            
+            // Ocultar loading y mostrar contenido
+            document.getElementById('loadingDocuments').style.display = 'none';
+            document.getElementById('documentosContent').style.display = 'block';
+            
+            // Mostrar modal
+            modal.show();
+            
+        } catch (error) {
+            console.error('❌ Error cargando documentos:', error);
+            const documentosContent = document.getElementById('documentosContent');
+            documentosContent.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+                    <h5 class="mt-3">Error al cargar documentos</h5>
+                    <p class="text-muted">No se pudieron cargar los documentos. Intenta nuevamente.</p>
+                </div>
+            `;
+            document.getElementById('loadingDocuments').style.display = 'none';
+            document.getElementById('documentosContent').style.display = 'block';
+            modal.show();
+        }
+    }
+
+    function previewImage(ruta, nombre) {
+        const modalHTML = `
+            <div class="modal fade" id="imagePreviewModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${nombre}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="/api/documento/preview?ruta=${encodeURIComponent(ruta)}" 
+                                 class="img-fluid rounded" 
+                                 alt="${nombre}"
+                                 style="max-height: 70vh;">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-success btn-descargar-from-preview" 
+                                    data-ruta="${ruta}" 
+                                    data-nombre="${nombre}">
+                                <i class="bi bi-download me-1"></i>Descargar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Agregar modal al DOM
+        const modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHTML;
+        document.body.appendChild(modalContainer.firstChild);
+        
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+        modal.show();
+        
+        // Event listener para descargar desde el modal
+        document.querySelector('.btn-descargar-from-preview').addEventListener('click', function() {
+            descargarDocumento(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
+        });
+        
+        // Remover modal cuando se cierre
+        document.getElementById('imagePreviewModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+
+    async function previewPDF(ruta, nombre) {
+        const modalHTML = `
+            <div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${nombre}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="pdf-container" id="pdfViewer">
+                                <div class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando PDF...</span>
+                                    </div>
+                                    <p class="mt-3 text-muted">Cargando PDF...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-success btn-descargar-from-preview" 
+                                    data-ruta="${ruta}" 
+                                    data-nombre="${nombre}">
+                                <i class="bi bi-download me-1"></i>Descargar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Agregar modal al DOM
+        const modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHTML;
+        document.body.appendChild(modalContainer.firstChild);
+        
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+        modal.show();
+        
+        // Cargar PDF
+        try {
+            const pdfContainer = document.getElementById('pdfViewer');
+            
+            // Configurar PDF.js
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+            
+            const loadingTask = pdfjsLib.getDocument(`/api/documento/preview?ruta=${encodeURIComponent(ruta)}`);
+            const pdf = await loadingTask.promise;
+            
+            // Limpiar contenedor
+            pdfContainer.innerHTML = '';
+            
+            // Obtener primera página
+            const page = await pdf.getPage(1);
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale });
+            
+            // Preparar canvas para renderizar
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            pdfContainer.appendChild(canvas);
+            
+            // Renderizar página
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            await page.render(renderContext).promise;
+            
+            // Añadir información del PDF
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'mt-3 text-center text-muted';
+            infoDiv.innerHTML = `Página 1 de ${pdf.numPages} | ${nombre}`;
+            pdfContainer.appendChild(infoDiv);
+            
+        } catch (error) {
+            console.error('❌ Error cargando PDF:', error);
+            const pdfContainer = document.getElementById('pdfViewer');
+            pdfContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+                    <h5 class="mt-3">Error al cargar el PDF</h5>
+                    <p class="text-muted">No se pudo cargar el documento PDF.</p>
+                </div>
+            `;
+        }
+        
+        // Event listener para descargar desde el modal
+        document.querySelector('.btn-descargar-from-preview').addEventListener('click', function() {
+            descargarDocumento(this.getAttribute('data-ruta'), this.getAttribute('data-nombre'));
+        });
+        
+        // Remover modal cuando se cierre
+        document.getElementById('pdfPreviewModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+
+    async function descargarDocumento(ruta, nombre) {
+        try {
+            showLoading();
+            
+            const response = await fetch(`/api/documento/descargar?ruta=${encodeURIComponent(ruta)}&nombre=${encodeURIComponent(nombre)}`);
+            
+            if (!response.ok) {
+                throw new Error('Error al descargar el documento');
+            }
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombre;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showAlert('Éxito', `Documento "${nombre}" descargado correctamente`, 'success');
+        } catch (error) {
+            console.error('❌ Error descargando documento:', error);
+            showAlert('Error', 'No se pudo descargar el documento', 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function changeArea(id) {
+        window.location.href = `/cambio-area-colaborador?colaborador_id=${id}`;
+    }
+
+    function darDeBaja(id) {
+        const modalHTML = `
+            <div class="modal fade" id="bajaModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Dar de Baja Colaborador
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Motivo de la baja:</label>
+                                <textarea class="form-control" id="motivoBaja" rows="3" 
+                                          placeholder="Ingresa el motivo de la baja..." 
+                                          required></textarea>
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Esta acción no se puede deshacer. El colaborador será marcado como inactivo.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="confirmarBaja">Confirmar Baja</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Agregar modal al DOM
+        const modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHTML;
+        document.body.appendChild(modalContainer.firstChild);
+        
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('bajaModal'));
+        modal.show();
+        
+        // Configurar evento para confirmar baja
+        document.getElementById('confirmarBaja').addEventListener('click', async function() {
+            const motivo = document.getElementById('motivoBaja').value.trim();
+            
+            if (!motivo) {
+                showAlert('Error', 'Debes ingresar un motivo para la baja', 'warning');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('/api/procesar-baja', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        colaborador_id: id,
+                        motivo: motivo,
+                        fecha_baja: new Date().toISOString().split('T')[0]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Éxito', 'Colaborador dado de baja correctamente', 'success');
+                    refreshData();
+                    modal.hide();
+                    
+                    // Cerrar también el modal de detalles si está abierto
+                    const detalleModal = bootstrap.Modal.getInstance(document.getElementById('detalleModal'));
+                    if (detalleModal) {
+                        detalleModal.hide();
+                    }
+                } else {
+                    showAlert('Error', data.error || 'Error al dar de baja', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error', 'Error al procesar la baja', 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Remover modal cuando se cierre
+        document.getElementById('bajaModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+
+    function refreshData() {
+        console.log('🔄 Refrescando datos...');
+        showLoading();
+        
+        if (colaboradoresTable) {
+            const btnRefresh = $('#btnRefresh');
+            const originalHTML = btnRefresh.html();
+            btnRefresh.html('<i class="bi bi-arrow-clockwise spin"></i>');
+            btnRefresh.prop('disabled', true);
+            
+            colaboradoresTable.ajax.reload(function() {
+                console.log('✅ Datos refrescados');
+                hideLoading();
+                updateStatisticsFromTable();
+                
+                btnRefresh.html(originalHTML);
+                btnRefresh.prop('disabled', false);
+            }, false);
+        } else {
+            hideLoading();
+        }
+    }
+
+    function exportToExcel() {
+        if (!colaboradoresTable) return;
+        
+        showLoading();
+        
+        try {
+            const data = colaboradoresTable.rows().data().toArray();
+            
+            if (data.length === 0) {
+                showAlert('Info', 'No hay datos para exportar', 'info');
+                hideLoading();
+                return;
+            }
+            
+            const worksheet = XLSX.utils.json_to_sheet(data.map(row => ({
+                'ID': row.id,
+                'Nombre': `${row.nombre || ''} ${row.apellido || ''}`,
+                'Correo': row.correo || '',
+                'RFC': row.rfc || '',
+                'CURP': row.curp || '',
+                'NSS': row.nss || '',
+                'Área': row.area_nombre || '',
+                'Puesto': row.puesto_nombre || '',
+                'Coordinador': row.nombre_coordinador || '',
+                'Correo Coordinador': row.correo_coordinador || '',
+                'Fecha Alta': row.fecha_alta ? new Date(row.fecha_alta).toLocaleDateString('es-MX') : '',
+                'Estado': row.baja ? 'Inactivo' : 'Activo',
+                'Teléfono': row.telefono || '',
+                'Sueldo': row.sueldo ? `$${parseFloat(row.sueldo).toLocaleString('es-MX')}` : '',
+                'Domicilio': row.domicilio || ''
+            })));
+            
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Colaboradores");
+            
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            
+            saveAs(blob, `colaboradores_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            showAlert('Éxito', 'Archivo exportado correctamente', 'success');
+        } catch (error) {
+            console.error('❌ Error exportando a Excel:', error);
+            showAlert('Error', 'Error al exportar el archivo', 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function showAlert(title, message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+        alertDiv.style.zIndex = '9999';
+        alertDiv.style.maxWidth = '400px';
+        alertDiv.innerHTML = `
+            <strong>${title}</strong><br>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+
+    // Estilos para spinner
+    const style = document.createElement('style');
+    style.textContent = `
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .avatar-color-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .avatar-color-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .avatar-color-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .avatar-color-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .avatar-color-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .avatar-color-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

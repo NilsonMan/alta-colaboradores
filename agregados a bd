@@ -6,11 +6,11 @@ ADD COLUMN fecha_ultimo_cambio_area DATE NULL,
 ADD COLUMN motivo_ultimo_cambio_area VARCHAR(200) NULL,
 ADD COLUMN area_anterior_id INT NULL;
 
--- Agregar la foreign key para area_anterior_id
-ALTER TABLE colaboradores 
-ADD CONSTRAINT fk_colaboradores_area_anterior
-FOREIGN KEY (area_anterior_id) REFERENCES areas(id)
-ON DELETE SET NULL;
+ALTER TABLE areas
+ADD COLUMN nombre_coordinador VARCHAR(150) NULL,
+ADD COLUMN correo_coordinador VARCHAR(150) NULL;
 
--- Verificar que se agregaron
-DESCRIBE colaboradores;
+
+
+ALTER TABLE colaboradores
+ADD COLUMN correo_coordinador VARCHAR(150) NULL;

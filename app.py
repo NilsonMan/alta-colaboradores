@@ -160,9 +160,13 @@ class Area(Base):
     id = Column(Integer, primary_key=True)
     nombre = Column(String(100), unique=True, nullable=False)
     nombre_normalizado = Column(String(100), unique=True, nullable=False)
+
+    # 👇 NUEVOS CAMPOS
+    nombre_coordinador = Column(String(150))
+    correo_coordinador = Column(String(150))
+
     puestos = relationship("Puesto", back_populates="area")
     
-    # Relaciones con colaboradores
     colaboradores_actuales = relationship(
         "Colaborador", 
         foreign_keys="[Colaborador.area_id]", 
@@ -174,6 +178,7 @@ class Area(Base):
         foreign_keys="[Colaborador.area_anterior_id]", 
         back_populates="area_anterior"
     )
+
 
 class Puesto(Base):
     __tablename__ = "puestos"
@@ -206,6 +211,7 @@ class Colaborador(Base):
     nombre = Column(String(100), nullable=False)
     apellido = Column(String(100), nullable=False)
     correo = Column(String(150), unique=True, nullable=False)
+    correo_coordinador = Column(String(150))
     edad = Column(Integer)
     estado_civil = Column(String(50))
     domicilio = Column(Text)
@@ -517,10 +523,15 @@ def crear_colaborador(db, area_id):
     except (ValueError, TypeError):
         edad = None
     
+    # OBTENER EL CORREO DEL COORDINADOR DEL ÁREA SELECCIONADA
+    area = db.query(Area).filter_by(id=area_id).first()
+    correo_coordinador = area.correo_coordinador if area else None
+    
     col = Colaborador(
         nombre=request.form.get("nombre", "").strip(),
         apellido=request.form.get("apellido", "").strip(),
         correo=request.form.get("correo", "").strip(),
+        correo_coordinador=correo_coordinador,  # ✅ NUEVO: Asignar correo del coordinador
         edad=edad,
         estado_civil=request.form.get("estado_civil"),
         domicilio=request.form.get("domicilio"),
@@ -553,7 +564,7 @@ def crear_colaborador(db, area_id):
     )
     
     db.add(col)
-    db.flush()  # Obtiene el ID sin hacer commit
+    db.flush()
     
     agregar_relaciones(db, col)
     
@@ -563,11 +574,10 @@ def crear_colaborador(db, area_id):
     except Exception as e:
         logger.warning(f"Error guardando documentos para colaborador {col.id}: {e}")
     
-    db.commit()  # Ahora sí hacemos commit de TODO
+    db.commit()
     
-    logger.info(f"✅ Colaborador creado: {col.nombre} {col.apellido} (ID: {col.id})")
-    return col.id  # <-- Retorna el ID del colaborador creado
-
+    logger.info(f"✅ Colaborador creado: {col.nombre} {col.apellido} (ID: {col.id}) - Correo coordinador: {correo_coordinador}")
+    return col.id
 
 def agregar_relaciones(db, colaborador):
     """Agrega recursos y programas al colaborador."""
@@ -724,6 +734,32 @@ def procesar_cambio_area(db):
         flash(f"❌ Error al procesar cambio de área: {str(e)}", "error")
         return redirect(url_for('cambio_area_colaborador'))
 
+#===================================================
+#consultar areas
+#=========================================
+@app.route("/api/area-info/<int:area_id>", methods=["GET"])
+@require_db
+def api_area_info(area_id):
+    """API para obtener información detallada de un área."""
+    try:
+        db = g.db
+        
+        area = db.query(Area).filter_by(id=area_id).first()
+        
+        if not area:
+            return jsonify({"error": "Área no encontrada"}), 404
+        
+        return jsonify({
+            "id": area.id,
+            "nombre": area.nombre,
+            "nombre_coordinador": area.nombre_coordinador,
+            "correo_coordinador": area.correo_coordinador,
+            "total_puestos": len(area.puestos) if area.puestos else 0
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo info del área {area_id}: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener información del área"}), 500
 # ======================================
 # API ENDPOINTS
 # ======================================
@@ -1273,7 +1309,7 @@ def api_procesar_baja():
 @app.route("/api/procesar-cambio-area", methods=["POST"])
 @require_db
 def api_procesar_cambio_area():
-    """API para procesar cambio de área - ACTUALIZADO con nuevos campos."""
+    """API para procesar cambio de área - ACTUALIZADO con nuevo correo coordinador."""
     try:
         data = request.get_json()
         
@@ -1295,6 +1331,10 @@ def api_procesar_cambio_area():
         if not nueva_area:
             return jsonify({"error": "Área no válida"}), 400
         
+        # ✅ OBTENER NUEVO CORREO DEL COORDINADOR DEL ÁREA
+        nuevo_correo_coordinador = nueva_area.correo_coordinador
+        nombre_coordinador = nueva_area.nombre_coordinador
+        
         # Convertir fecha
         try:
             fecha_cambio = datetime.strptime(data['fecha_cambio'], "%Y-%m-%d").date()
@@ -1306,6 +1346,9 @@ def api_procesar_cambio_area():
         area_actual_id = colaborador.area_id
         puesto_actual = colaborador.puesto.nombre if colaborador.puesto else "N/A"
         sueldo_actual = colaborador.sueldo
+        
+        # ✅ ACTUALIZAR CORREO DEL COORDINADOR
+        colaborador.correo_coordinador = nuevo_correo_coordinador
         
         # ACTUALIZAR NUEVOS CAMPOS DE CAMBIO DE ÁREA
         colaborador.fecha_ultimo_cambio_area = fecha_cambio
@@ -1331,6 +1374,13 @@ def api_procesar_cambio_area():
         comentario_cambio = f"\n\n[CAMBIO ÁREA - {fecha_cambio.strftime('%Y-%m-%d')}]: "
         comentario_cambio += f"Área: '{area_actual}' → '{nueva_area.nombre}'"
         
+        # Información del coordinador (nuevo campo)
+        if nombre_coordinador:
+            comentario_cambio += f" | Coordinador: '{nombre_coordinador}'"
+        
+        if nuevo_correo_coordinador:
+            comentario_cambio += f" | Correo coordinador: '{nuevo_correo_coordinador}'"
+        
         if data.get('nuevo_puesto_id'):
             nuevo_puesto = db.query(Puesto).filter_by(id=data['nuevo_puesto_id']).first()
             if nuevo_puesto:
@@ -1347,6 +1397,7 @@ def api_procesar_cambio_area():
         db.commit()
         
         logger.info(f"Cambio de área procesado para colaborador ID: {colaborador.id}")
+        logger.info(f"Nuevo coordinador: {nombre_coordinador} ({nuevo_correo_coordinador})")
         
         return jsonify({
             "success": True,
@@ -1356,7 +1407,9 @@ def api_procesar_cambio_area():
                 "nombre": f"{colaborador.nombre} {colaborador.apellido}",
                 "area_anterior": area_actual,
                 "area_nueva": nueva_area.nombre,
-                "fecha_cambio": fecha_cambio.strftime("%Y-%m-%d")
+                "fecha_cambio": fecha_cambio.strftime("%Y-%m-%d"),
+                "coordinador_nuevo": nombre_coordinador,
+                "correo_coordinador_nuevo": nuevo_correo_coordinador
             }
         })
         
@@ -1364,7 +1417,6 @@ def api_procesar_cambio_area():
         logger.error(f"Error procesando cambio de área: {e}", exc_info=True)
         db.rollback()
         return jsonify({"error": f"Error al procesar el cambio de área: {str(e)}"}), 500
-
 # ======================================
 # API PARA BUSCAR COLABORADOR POR TEXTO
 # ======================================
@@ -2513,6 +2565,428 @@ def alta_colaborador_post():
         logger.error(f"Error en alta POST: {e}", exc_info=True)
         flash(f"❌ Error al registrar colaborador: {str(e)}", "error")
         return redirect(url_for('alta'))
+
+# ======================================
+# API PARA OBTENER TODOS LOS COLABORADORES (FIXED)
+# ======================================
+@app.route("/api/colaboradores/todos")
+@require_db
+def api_colaboradores_todos():
+    """API para obtener todos los colaboradores - CORREGIDO."""
+    try:
+        db = g.db
+        
+        # Obtener todos los colaboradores con información de área y puesto
+        colaboradores = db.query(
+            Colaborador.id,
+            Colaborador.nombre,
+            Colaborador.apellido,
+            Colaborador.correo,
+            Colaborador.rfc,
+            Colaborador.curp,
+            Colaborador.nss,
+            Colaborador.fecha_alta,
+            Colaborador.telefono,
+            Colaborador.domicilio,
+            Colaborador.sueldo,
+            Colaborador.comentarios,
+            Colaborador.baja,
+            Colaborador.area_id,
+            Colaborador.puesto_id,
+            Colaborador.correo_coordinador,
+            Area.nombre.label('area_nombre'),
+            Area.nombre_coordinador,
+            Puesto.nombre.label('puesto_nombre')
+        ).join(
+            Area, Colaborador.area_id == Area.id  # isouter=True eliminado
+        ).outerjoin(  # outerjoin ya implica outer, no necesita isouter
+            Puesto, Colaborador.puesto_id == Puesto.id
+        ).order_by(
+            Colaborador.id.desc()
+        ).all()
+        
+        resultados = []
+        for col in colaboradores:
+            resultados.append({
+                'id': col.id,
+                'nombre': col.nombre or '',
+                'apellido': col.apellido or '',
+                'correo': col.correo or '',
+                'rfc': col.rfc or '',
+                'curp': col.curp or '',
+                'nss': col.nss or '',
+                'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
+                'telefono': col.telefono or '',
+                'domicilio': col.domicilio or '',
+                'sueldo': float(col.sueldo) if col.sueldo else None,
+                'comentarios': col.comentarios or '',
+                'baja': bool(col.baja),
+                'area_id': col.area_id,
+                'area_nombre': col.area_nombre or 'N/A',
+                'puesto_nombre': col.puesto_nombre or 'N/A',
+                'nombre_coordinador': col.nombre_coordinador or 'N/A',
+                'correo_coordinador': col.correo_coordinador or 'N/A'
+            })
+        
+        # Retornar el array directamente para DataTables
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo colaboradores: {e}", exc_info=True)
+        return jsonify([])  # Retornar array vacío en caso de error
+# ======================================
+# RUTA PARA LA VISTA DE COLABORADORES
+# ======================================
+@app.route("/colaboradores")
+def colaboradores():
+    """Página de lista de colaboradores."""
+    return render_template("colaboradores.html")
+
+# ======================================
+# API PARA DETALLES DE COLABORADOR (COMPLETA)
+# ======================================
+
+@app.route("/api/colaborador/detalle/<int:colaborador_id>")
+@require_db
+def api_colaborador_detalle(colaborador_id):
+    """API para obtener detalles completos de un colaborador."""
+    try:
+        db = g.db
+        
+        colaborador = db.query(
+            Colaborador,
+            Area.nombre.label('area_nombre'),
+            Area.nombre_coordinador,
+            Area.correo_coordinador,
+            Puesto.nombre.label('puesto_nombre')
+        ).join(
+            Area, Colaborador.area_id == Area.id, isouter=True
+        ).outerjoin(
+            Puesto, Colaborador.puesto_id == Puesto.id, isouter=True
+        ).filter(
+            Colaborador.id == colaborador_id
+        ).first()
+        
+        if not colaborador:
+            return jsonify({"error": "Colaborador no encontrado"}), 404
+        
+        col = colaborador[0]  # El objeto Colaborador
+        
+        return jsonify({
+            'success': True,
+            'colaborador': {
+                'id': col.id,
+                'nombre': col.nombre or '',
+                'apellido': col.apellido or '',
+                'correo': col.correo or '',
+                'rfc': col.rfc or '',
+                'curp': col.curp or '',
+                'nss': col.nss or '',
+                'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
+                'telefono': col.telefono or '',
+                'domicilio': col.domicilio or '',
+                'sueldo': float(col.sueldo) if col.sueldo else None,
+                'comentarios': col.comentarios or '',
+                'baja': bool(col.baja),
+                'area_id': col.area_id,
+                'area_nombre': colaborador.area_nombre or 'N/A',
+                'puesto_nombre': colaborador.puesto_nombre or 'N/A',
+                'nombre_coordinador': colaborador.nombre_coordinador or 'N/A',
+                'correo_coordinador': colaborador.correo_coordinador or 'N/A',
+                'edad': col.edad or 'N/A',
+                'estado_civil': col.estado_civil or 'N/A',
+                'rol_comercial': col.rol_comercial or 'N/A',
+                'metodo_pago': col.metodo_pago or 'N/A',
+                'banco': col.banco or 'N/A',
+                'reclutador': col.reclutador or 'N/A',
+                'numero_cuenta': col.numero_cuenta or 'N/A',
+                'tiene_infonavit': bool(col.tiene_infonavit),
+                'infonavit_credito': col.infonavit_credito or 'N/A',
+                'tiene_fonacot': bool(col.tiene_fonacot),
+                'fonacot_credito': col.fonacot_credito or 'N/A'
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo detalle de colaborador: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# ======================================
+# API PARA BUSCAR COLABORADOR POR ID (SIMPLIFICADA)
+# ======================================
+@app.route("/api/colaborador/<int:colaborador_id>", methods=["GET"])
+@require_db
+def api_colaborador_por_id_simple(colaborador_id):
+    """API simplificada para obtener colaborador por ID - para DataTables."""
+    try:
+        db = g.db
+        
+        colaborador = db.query(
+            Colaborador,
+            Area.nombre.label('area_nombre'),
+            Puesto.nombre.label('puesto_nombre')
+        ).join(
+            Area, Colaborador.area_id == Area.id, isouter=True
+        ).outerjoin(
+            Puesto, Colaborador.puesto_id == Puesto.id, isouter=True
+        ).filter(
+            Colaborador.id == colaborador_id
+        ).first()
+        
+        if not colaborador:
+            return jsonify({"error": "Colaborador no encontrado"}), 404
+        
+        col = colaborador[0]  # El objeto Colaborador
+        
+        return jsonify({
+            'id': col.id,
+            'nombre': col.nombre or '',
+            'apellido': col.apellido or '',
+            'correo': col.correo or '',
+            'rfc': col.rfc or '',
+            'curp': col.curp or '',
+            'nss': col.nss or '',
+            'fecha_alta': col.fecha_alta.isoformat() if col.fecha_alta else None,
+            'telefono': col.telefono or '',
+            'domicilio': col.domicilio or '',
+            'sueldo': float(col.sueldo) if col.sueldo else None,
+            'comentarios': col.comentarios or '',
+            'baja': bool(col.baja),
+            'area_id': col.area_id,
+            'area_nombre': colaborador.area_nombre or 'N/A',
+            'puesto_nombre': colaborador.puesto_nombre or 'N/A'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo colaborador por ID: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener colaborador"}), 500
+
+@app.route("/api/test/colaboradores")
+@require_db
+def api_test_colaboradores():
+    """API de prueba para verificar datos."""
+    try:
+        db = g.db
+        
+        # Contar colaboradores
+        total = db.query(func.count(Colaborador.id)).scalar() or 0
+        
+        # Obtener primeros 5 colaboradores
+        colaboradores = db.query(Colaborador).limit(5).all()
+        
+        resultados = []
+        for col in colaboradores:
+            resultados.append({
+                'id': col.id,
+                'nombre': col.nombre or '',
+                'apellido': col.apellido or '',
+                'correo': col.correo or '',
+                'rfc': col.rfc or '',
+                'area_id': col.area_id,
+                'baja': bool(col.baja)
+            })
+        
+        return jsonify({
+            'success': True,
+            'total_colaboradores': total,
+            'muestra': resultados,
+            'message': f'Total en BD: {total} colaboradores'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error en API de prueba: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ======================================
+# API PARA ACTUALIZAR COLABORADOR - CORREGIDA
+# ======================================
+@app.route("/api/colaborador/actualizar", methods=["POST"])
+@require_db
+def api_actualizar_colaborador():
+    """API para actualizar datos de colaborador - CORREGIDO con límites de longitud."""
+    try:
+        data = request.get_json()
+        db = g.db
+        
+        if not data or 'id' not in data:
+            return jsonify({"error": "Datos inválidos"}), 400
+        
+        colaborador = db.query(Colaborador).filter_by(id=data['id']).first()
+        if not colaborador:
+            return jsonify({"error": "Colaborador no encontrado"}), 404
+        
+        # Actualizar campos básicos con validación de longitud
+        if 'nombre' in data:
+            colaborador.nombre = data['nombre'][:100]  # Limitar a 100 caracteres
+        if 'apellido' in data:
+            colaborador.apellido = data['apellido'][:100]
+        if 'correo' in data:
+            colaborador.correo = data['correo'][:150]
+        if 'telefono' in data:
+            colaborador.telefono = data['telefono'][:20] if data['telefono'] else None
+        if 'rfc' in data:
+            colaborador.rfc = data['rfc'][:13].upper() if data['rfc'] else None
+        if 'curp' in data:
+            colaborador.curp = data['curp'][:18].upper() if data['curp'] else None
+        if 'nss' in data:
+            # LIMITAR NSS A 15 CARACTERES (SOLUCIÓN AL ERROR)
+            colaborador.nss = data['nss'][:15] if data['nss'] else None
+        if 'domicilio' in data:
+            colaborador.domicilio = data['domicilio'][:500] if data['domicilio'] else None
+        if 'sueldo' in data:
+            try:
+                colaborador.sueldo = float(data['sueldo']) if data['sueldo'] else None
+            except ValueError:
+                pass
+        if 'comentarios' in data:
+            colaborador.comentarios = data['comentarios'][:1000] if data['comentarios'] else None
+        if 'edad' in data:
+            try:
+                colaborador.edad = int(data['edad']) if data['edad'] else None
+            except ValueError:
+                pass
+        if 'area_id' in data and data['area_id']:
+            colaborador.area_id = int(data['area_id'])
+            # Obtener coordinador del área
+            area = db.query(Area).filter_by(id=data['area_id']).first()
+            if area:
+                colaborador.correo_coordinador = area.correo_coordinador
+        if 'puesto_id' in data and data['puesto_id']:
+            colaborador.puesto_id = int(data['puesto_id'])
+        if 'baja' in data:
+            colaborador.baja = bool(data['baja'])
+            if data['baja'] and not colaborador.fecha_baja:
+                colaborador.fecha_baja = date.today()
+            elif not data['baja']:
+                colaborador.fecha_baja = None
+        
+        db.commit()
+        
+        logger.info(f"Colaborador actualizado: {colaborador.id} - {colaborador.nombre} {colaborador.apellido}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Colaborador actualizado correctamente",
+            "colaborador": {
+                "id": colaborador.id,
+                "nombre": f"{colaborador.nombre} {colaborador.apellido}"
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error actualizando colaborador: {e}", exc_info=True)
+        db.rollback()
+        return jsonify({"error": f"Error al actualizar colaborador: {str(e)}"}), 500
+
+# ======================================
+# API PARA OBTENER DOCUMENTOS
+# ======================================
+@app.route("/api/documentos/<int:colaborador_id>")
+@require_db
+def api_documentos(colaborador_id):
+    """API para obtener documentos de un colaborador."""
+    try:
+        db = g.db
+        
+        documentos = db.query(Documento).filter_by(colaborador_id=colaborador_id).order_by(Documento.id.desc()).all()
+        
+        resultados = []
+        for doc in documentos:
+            resultados.append({
+                "id": doc.id,
+                "nombre_archivo": doc.nombre_archivo,
+                "ruta_archivo": doc.ruta_archivo,
+                "tipo": doc.tipo,
+                "tamano": doc.tamano,
+                "fecha_subida": doc.fecha_subida.strftime("%Y-%m-%d") if doc.fecha_subida else "N/A"
+            })
+        
+        return jsonify(resultados)
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo documentos: {e}", exc_info=True)
+        return jsonify([])
+
+# ======================================
+# API PARA DESCARGAR DOCUMENTO
+# ======================================
+@app.route("/api/documento/descargar")
+@require_db
+def api_descargar_documento():
+    """API para descargar un documento."""
+    try:
+        ruta = request.args.get('ruta')
+        nombre = request.args.get('nombre')
+        
+        if not ruta or not os.path.exists(ruta):
+            return jsonify({"error": "Documento no encontrado"}), 404
+        
+        return send_file(
+            ruta,
+            as_attachment=True,
+            download_name=nombre,
+            mimetype='application/octet-stream'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error descargando documento: {e}", exc_info=True)
+        return jsonify({"error": "Error al descargar el documento"}), 500
+
+# ======================================
+# API PARA PREVIEW DE DOCUMENTOS
+# ======================================
+@app.route("/api/documento/preview")
+@require_db
+def api_documento_preview():
+    """API para previsualizar documentos (imágenes)."""
+    try:
+        ruta = request.args.get('ruta')
+        
+        if not ruta or not os.path.exists(ruta):
+            return jsonify({"error": "Documento no encontrado"}), 404
+        
+        # Verificar que sea una imagen
+        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp'}
+        file_ext = os.path.splitext(ruta)[1].lower()
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({"error": "Tipo de archivo no soportado para previsualización"}), 400
+        
+        return send_file(
+            ruta,
+            mimetype=f'image/{file_ext[1:]}'  # Remover el punto
+        )
+        
+    except Exception as e:
+        logger.error(f"Error en preview de documento: {e}", exc_info=True)
+        return jsonify({"error": "Error al previsualizar el documento"}), 500
+
+# ======================================
+# API PARA COORDINADOR POR ÁREA
+# ======================================
+@app.route("/api/coordinador-por-area/<int:area_id>")
+@require_db
+def api_coordinador_por_area(area_id):
+    """API para obtener coordinador por área."""
+    try:
+        db = g.db
+        
+        area = db.query(Area).filter_by(id=area_id).first()
+        
+        if not area:
+            return jsonify({"error": "Área no encontrada"}), 404
+        
+        return jsonify({
+            "nombre_coordinador": area.nombre_coordinador or "N/A",
+            "correo_coordinador": area.correo_coordinador or "N/A"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo coordinador: {e}", exc_info=True)
+        return jsonify({"error": "Error al obtener información del coordinador"}), 500
+
+
 # ======================================
 # MAIN
 # ======================================

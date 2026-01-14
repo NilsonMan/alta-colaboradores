@@ -1224,7 +1224,37 @@
         showForm();
         configurePuestos();
         await loadPuestos(areaId);
+    }// En la función handleAreaChange o initAreaManager
+async function handleAreaChange() {
+    const areaId = DOM.areaSelect.value;
+    if (!areaId) return;
+    
+    STATE.areaSeleccionada = areaId;
+    STATE.esComercial = parseInt(areaId) === CONFIG.AREA_COMERCIAL_ID;
+    
+    if (DOM.areaHidden) {
+        DOM.areaHidden.value = areaId;
     }
+    
+    // OPCIONAL: Obtener información del área incluyendo coordinador
+    try {
+        const response = await fetch(`/api/area-info/${areaId}`);
+        if (response.ok) {
+            const areaInfo = await response.json();
+            console.log('Información del área:', areaInfo);
+            // Podrías mostrar esta información en algún lugar de la UI
+            if (areaInfo.correo_coordinador) {
+                console.log(`Correo del coordinador: ${areaInfo.correo_coordinador}`);
+            }
+        }
+    } catch (error) {
+        console.log('Error obteniendo info del área:', error);
+    }
+    
+    showForm();
+    configurePuestos();
+    await loadPuestos(areaId);
+}
     
     function showForm() {
         if (DOM.formulario) {
