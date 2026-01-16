@@ -1,0 +1,731 @@
+{% extends "base.html" %}
+{% block title %}Alta de Colaboradores{% endblock %}
+
+{% block head %}
+{{ super() }} <!-- Esto ya incluye Bootstrap CSS y Bootstrap Icons -->
+<link rel="stylesheet" href="/static/css/alta.css?v=2.2">
+
+<style>
+    .flash-message {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 217, 57, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 217, 57, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 217, 57, 0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- MODAL PREVISUALIZACIÓN -->
+<div class="modal fade" id="modalPreview" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Previsualización del documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="previewFrame" style="width:100%;height:75vh;border:none;display:none;"></iframe>
+                <img id="previewImg" style="max-width:100%;max-height:75vh;display:none;" alt="Previsualización">
+                <div id="previewUnsupported" class="d-none">
+                    <i class="bi bi-file-earmark-text" style="font-size: 4rem; color: var(--text-light);"></i>
+                    <p class="mt-3">Previsualización no disponible para este tipo de archivo</p>
+                    <a href="#" id="downloadPreview" class="btn btn-primary mt-2">
+                        <i class="bi bi-download me-1"></i>Descargar archivo
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CORREO (SOLO se muestra al dar clic en confirmar) -->
+<div class="modal fade" id="modalCorreo" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-envelope-check me-2"></i>Confirmar Correo
+                </h5>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <p class="mb-1">¿El correo institucional es correcto?</p>
+                <h5 id="correoConfirmacion" class="fw-bold text-primary"></h5>
+                <p class="text-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <strong>Importante:</strong> Este correo no podrá modificarse después.
+                </p>
+            </div>
+            <div class="modal-footer justify-content-center border-top-0">
+                <button type="button" class="btn btn-outline-secondary px-4" id="correoNo">
+                    <i class="bi bi-pencil me-1"></i>Corregir
+                </button>
+                <button type="button" class="btn btn-primary px-4" id="correoSi">
+                    <i class="bi bi-check-lg me-1"></i>Sí, es correcto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL COLABORADOR REGISTRADO - MODIFICADO -->
+<div class="modal fade" id="modalUsuarioRegistrado" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-duplicate">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-person-check-fill me-2"></i>Colaborador Encontrado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- CONTENIDO COMPLETADO -->
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-exclamation text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <p class="text-center mb-3">
+                    <strong>Ya existe un colaborador registrado con este RFC.</strong>
+                </p>
+                <div class="duplicate-details">
+                    <p class="mb-2"><strong>Nombre:</strong> <span id="dupNombre">-</span></p>
+                    <p class="mb-2"><strong>RFC:</strong> <span id="dupRFC">-</span></p>
+                    <p class="mb-2"><strong>Correo:</strong> <span id="dupCorreo">-</span></p>
+                    <p class="mb-2"><strong>Área:</strong> <span id="dupArea">-</span></p>
+                    <p class="mb-2"><strong>Puesto:</strong> <span id="dupPuesto">-</span></p>
+                    <p class="mb-0"><strong>Estado:</strong> <span id="dupEstado">-</span></p>
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Atención:</strong> Este RFC ya está registrado en el sistema.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                </button>
+                <!-- Botón Cambiar de Área en modal - Protegido -->
+                {% if g.usuario.autenticado and g.usuario.area_id in [3, 4] %}
+                <button type="button" class="btn btn-primary" id="btnCambiarAreaModal">
+                    <i class="bi bi-arrow-left-right me-1"></i>Cambiar de Área
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-primary" id="btnCambiarAreaModal"
+                        data-bs-dismiss="modal"
+                        data-bs-toggle="modal" data-bs-target="#authModal">
+                    <i class="bi bi-arrow-left-right me-1"></i>Cambiar de Área
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Botones especiales -->
+    <!-- Botones especiales - MODIFICADOS -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-end gap-3">
+            <!-- Botón Baja Colaborador - Protegido -->
+            {% if g.usuario.autenticado and g.usuario.area_id in [3, 4] %}
+            <button class="btn btn-baja" id="btnBajaColaborador" 
+                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="Dar de baja colaboradores del sistema"
+                    onclick="window.location.href='/baja-colaborador'">
+                <i class="bi bi-person-dash me-1"></i>Baja de Colaboradores
+            </button>
+            {% else %}
+            <button class="btn btn-baja text-muted" id="btnBajaColaborador" 
+                    data-bs-toggle="modal" data-bs-target="#authModal"
+                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="Requiere permisos de TI o RH">
+                <i class="bi bi-person-dash me-1"></i>Baja de Colaboradores
+                <span class="badge bg-warning ms-1">Requiere permisos</span>
+            </button>
+            {% endif %}
+            
+            <!-- Botón Cambio de Área - Protegido -->
+            {% if g.usuario.autenticado and g.usuario.area_id in [3, 4] %}
+            <button class="btn btn-cambio-area" id="btnCambioArea"
+                    onclick="window.location.href='/cambio-area-colaborador'">
+                <i class="bi bi-arrow-left-right me-1"></i>Cambio de Área
+            </button>
+            {% else %}
+            <button class="btn btn-cambio-area text-muted" id="btnCambioArea"
+                    data-bs-toggle="modal" data-bs-target="#authModal"
+                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                    title="Requiere permisos de TI o RH">
+                <i class="bi bi-arrow-left-right me-1"></i>Cambio de Área
+                <span class="badge bg-warning ms-1">Requiere permisos</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    
+    <!-- Mensajes Flash -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} 
+                                alert-dismissible fade show flash-message mb-2" 
+                         role="alert"
+                         style="max-width: 500px;">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-{{ 'exclamation-triangle-fill' if category == 'error' else 'check-circle-fill' }} 
+                                      me-2 fs-5"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold mb-1">
+                                    {% if category == 'error' %}
+                                        ⚠️ Error de validación
+                                    {% else %}
+                                        ✅ Éxito
+                                    {% endif %}
+                                </div>
+                                <div>{{ message|safe }}</div>
+                            </div>
+                            <button type="button" class="btn-close ms-2" 
+                                    data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <!-- CARD PRINCIPAL -->
+            <div class="card shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <!-- TÍTULO Y ÁREA -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold mb-3" style="color: #ffd939">
+                            <i class="bi bi-person-plus me-2"></i>Alta de Colaborador
+                        </h2>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Área del colaborador *</label>
+                                <select id="area" class="form-select form-select-lg shadow-sm" required>
+                                    <option value="">Selecciona un área</option>
+                                    {% for area in areas %}
+                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORMULARIO PRINCIPAL -->
+                    <form id="formulario" class="d-none" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="area" id="areaHidden">
+
+                        <!-- SECCIÓN 1: DATOS PERSONALES -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="personalData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-person-circle me-2"></i>Datos Personales
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="personalData" class="section-content">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Nombre *</label>
+                                        <input id="nombre" name="nombre" class="form-control" required 
+                                               autocomplete="given-name"
+                                               placeholder="Escribe el nombre">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Apellido *</label>
+                                        <input id="apellido" name="apellido" class="form-control" required 
+                                               autocomplete="family-name"
+                                               placeholder="Escribe el apellido">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-semibold">Correo institucional *</label>
+                                        <div class="input-group">
+                                            <input id="correo" name="correo" class="form-control" required 
+                                                   type="email" autocomplete="email"
+                                                   placeholder="Se generará automáticamente">
+                                            <button type="button" id="btnConfirmarCorreo" class="btn btn-primary d-none">
+                                                <i class="bi bi-check-circle me-1"></i>Confirmar
+                                            </button>
+                                        </div>
+                                        <div id="estadoCorreo" class="form-text">
+                                            <i class="bi bi-clock-history me-1"></i>Pendiente de confirmación
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Edad</label>
+                                        <input type="number" name="edad" class="form-control" min="18" max="70" 
+                                               autocomplete="off" placeholder="Ej: 25">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Estado civil</label>
+                                        <select name="estado_civil" class="form-select" autocomplete="off">
+                                            <option value="">Seleccione</option>
+                                            <option>Soltero(a)</option>
+                                            <option>Casado(a)</option>
+                                            <option>Divorciado(a)</option>
+                                            <option>Viudo(a)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold">Teléfono *</label>
+                                        <input name="telefono" class="form-control" type="tel" 
+                                               pattern="[0-9]{10}" maxlength="10" minlength="10"
+                                               placeholder="10 dígitos" required autocomplete="tel">
+                                    </div>
+                                    <div class="col-md-4">
+    <label class="form-label fw-semibold">RFC *</label>
+    <div class="rfc-verification-wrapper">
+        <div class="rfc-verification-container">
+            <div class="rfc-input-group">
+                <input id="rfcInput" name="rfc" class="form-control text-uppercase" 
+                       maxlength="13" placeholder="RFC (12-13 caracteres)" required 
+                       autocomplete="off">
+            </div>
+            <button type="button" id="btnVerificarRFC" class="btn btn-primary rfc-verify-btn">
+                <i class="bi bi-search me-1"></i>Verificar
+            </button>
+        </div>
+        <div id="rfcStatus" class="verification-status">
+            <span class="text-warning d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history"></i>
+                <span>No verificado</span>
+                <span class="verification-badge not-verified">⏱️ Pendiente</span>
+            </span>
+        </div>
+    </div>
+</div>  
+
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Domicilio</label>
+                                        <textarea name="domicilio" class="form-control" rows="2"
+                                                  autocomplete="street-address" placeholder="Calle, número, colonia, ciudad"></textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-semibold">CURP *</label>
+                                        <input name="curp" id="curp" class="form-control text-uppercase" 
+                                               maxlength="18" minlength="18" required
+                                               autocomplete="off" placeholder="18 caracteres">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-semibold">NSS *</label>
+                                        <input name="nss" class="form-control" pattern="[0-9]{11}" maxlength="11" minlength="11"
+                                               placeholder="11 dígitos" required autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 2: INFORMACIÓN LABORAL -->
+<div class="section-card">
+    <div class="section-toggle" data-target="laboralData">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-briefcase me-2"></i>Información Laboral
+        </h4>
+        <i class="bi bi-chevron-down toggle-icon"></i>
+    </div>
+    <div id="laboralData" class="section-content">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Fecha de alta *</label>
+                <input type="date" name="fecha_alta" class="form-control" required autocomplete="off">
+            </div>
+            
+            <!-- Este select se mostrará para TODAS las áreas -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold" id="labelPuesto">Puesto *</label>
+                <select id="puesto" name="puesto" class="form-select" required>
+                    <option value="">Seleccione un puesto</option>
+                </select>
+            </div>
+            
+            <!-- Campo de sueldo (visible para todas las áreas) -->
+            <div class="col-md-4" id="sueldoContainer">
+                <label class="form-label fw-semibold" id="labelSueldo">Sueldo</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input id="sueldo" type="number" name="sueldo" class="form-control" 
+                           min="0" step="0.01" placeholder="0.00">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Los campos dinámicos se insertarán aquí automáticamente -->
+        
+        <!-- Campos comunes (se mantienen siempre) -->
+        <div class="row g-3 mt-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Reclutador(es)</label>
+                <select name="reclutador" class="form-select" autocomplete="off">
+                    <option value="">Seleccione</option>
+                    {% for r in reclutadores %}
+                    <option value="{{ r.id }}">{{ r.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Método de pago *</label>
+                <select name="metodo_pago" class="form-select" required autocomplete="off">
+                    <option value="">Seleccione</option>
+                    {% for m in metodos_pago %}
+                    <option value="{{ m.id }}">{{ m.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+                        <!-- SECCIÓN 3: CRÉDITOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="creditosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-cash-stack me-2"></i>Créditos
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="creditoData" class="section-content">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">¿Tiene Infonavit?</label>
+                                        <select name="infonavit" class="form-select" onchange="toggleCredito('infonavit')">
+                                            <option>No</option>
+                                            <option>Sí</option>
+                                        </select>
+                                        <div class="mt-2">
+                                            <input id="infonavit_credito" name="infonavit_credito" 
+                                                   class="form-control d-none" autocomplete="off"
+                                                   placeholder="Número de crédito Infonavit">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">¿Tiene Fonacot?</label>
+                                        <select name="fonacot" class="form-select" onchange="toggleCredito('fonacot')">
+                                            <option>No</option>
+                                            <option>Sí</option>
+                                        </select>
+                                        <div class="mt-2"> 
+                                            <input id="fonacot_credito" name="fonacot_credito" 
+                                                   class="form-control d-none" autocomplete="off"
+                                                   placeholder="Número de crédito Fonacot">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 4: DOCUMENTACIÓN -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="documentosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-files me-2"></i>Documentación Requerida
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="documentosData" class="section-content">
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Arrastra o selecciona archivos (PDF, JPG, PNG) máximo 10MB cada uno
+                                </div>
+                                
+                                <div class="doc-grid">
+                                    {% for d in ["Constancia fiscal","CURP","INE","RFC","NSS","Comprobante domicilio","Comprobante estudios","Carta 1","Carta 2"] %}
+                                    <div class="doc-card">
+                                        <div class="doc-inner">
+                                            <div class="doc-face doc-front">
+                                                <div class="doc-icon">📄</div>
+                                                <div class="doc-title">{{ d }}</div>
+                                                <div class="doc-hint">Haz clic o arrastra</div>
+                                                <input type="file" name="documentos[]" 
+                                                       accept=".pdf,.jpg,.jpeg,.png" 
+                                                       data-max-size="10485760"
+                                                       data-doc-name="{{ d }}">
+                                            </div>
+                                            <div class="doc-face doc-back">
+                                                <div class="status">✅ Cargado</div>
+                                                <div class="doc-file-name small text-truncate mt-1" style="max-width: 150px;"></div>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="previsualizarDocumento(this)">
+                                                        <i class="bi bi-eye"></i> Ver
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                            onclick="cambiarDocumento(this)">
+                                                        <i class="bi bi-arrow-clockwise"></i> Cambiar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <div id="progressContainer" class="progress-container">
+                                        <div class="progress-wrapper">
+                                            <div class="progress-bar-container">
+                                                <div id="uploadProgress" class="progress-bar"></div>
+                                            </div>
+                                            <div class="progress-percentage" id="progressPercentage">0%</div>
+                                        </div>
+                                        <div class="progress-text">
+                                            <span id="uploadStatus">0 de 9 documentos cargados</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 5: RECURSOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="recursosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-laptop me-2"></i>Equipo y Programas
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="recursosData" class="section-content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold mb-3">Equipo electrónico</h6>
+                                        <div class="box">
+                                            {% for r in recursos %}
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="equipo[]" value="{{ r.id }}" id="recurso_{{ r.id }}">
+                                                <label class="form-check-label" for="recurso_{{ r.id }}">
+                                                    {{ r.nombre }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold mb-3">Programas</h6>
+                                        <div class="box">
+                                            {% for p in programas %}
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="programas[]" value="{{ p.id }}" id="programa_{{ p.id }}">
+                                                <label class="form-check-label" for="programa_{{ p.id }}">
+                                                    {{ p.nombre }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 6: COMENTARIOS -->
+                        <div class="section-card">
+                            <div class="section-toggle" data-target="comentariosData">
+                                <h4 class="mb-0 fw-bold">
+                                    <i class="bi bi-chat-left-text me-2"></i>Comentarios Adicionales
+                                </h4>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </div>
+                            <div id="comentariosData" class="section-content">
+                                <textarea name="comentarios" class="form-control" rows="3" 
+                                          maxlength="500" placeholder="Observaciones, notas o comentarios adicionales..."></textarea>
+                                <div class="form-text text-end">
+                                    <span id="charCount">0</span>/500 caracteres
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOTÓN DE ENVÍO -->
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <button type="submit" id="btnSubmitForm" class="btn btn-primary btn-lg px-5 py-3 fw-bold">
+                                <i class="bi bi-save me-2"></i>Guardar Colaborador
+                            </button>
+                            <div class="mt-2">
+                                <small class="text-muted">* Campos obligatorios</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/alta.js?v=2.4"></script>
+
+<script>
+// Configuración global
+window.APP_CONFIG = {
+    dominioCorreo: '@marnezdesarrollos.com',
+    AREA_COMERCIAL_ID: 2,
+    MAX_FILE_SIZE: 10485760,
+    today: new Date().toISOString().split('T')[0]
+};
+
+window.VALIDATION_REGEX = {
+    curp: /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$/,
+    email: /^[^\s@]+@marnezdesarrollos\.com$/i,
+    rfc: /^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$/
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Botón Cambiar de Área en modal
+    const btnCambiarAreaModal = document.getElementById('btnCambiarAreaModal');
+    if (btnCambiarAreaModal) {
+        btnCambiarAreaModal.addEventListener('click', function(e) {
+            // Verificar si el usuario está autenticado y tiene permisos
+            const isAuthenticated = {{ 'true' if g.usuario.autenticado else 'false' }};
+            const hasPermission = {{ 'true' if g.usuario.autenticado and g.usuario.area_id in [3, 4] else 'false' }};
+            
+            if (isAuthenticated && hasPermission) {
+                // Redirigir a la página de cambio de área
+                window.location.href = '/cambio-area-colaborador';
+            } else if (isAuthenticated && !hasPermission) {
+                // Mostrar modal de autenticación
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Cerrar el modal actual primero
+                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalUsuarioRegistrado'));
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                
+                // Mostrar modal de autenticación
+                setTimeout(() => {
+                    const authModal = new bootstrap.Modal(document.getElementById('authModal'), {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    authModal.show();
+                }, 300);
+            }
+            // Si no está autenticado, el botón ya está configurado para abrir el modal de autenticación
+        });
+    }
+    
+    // Botón Baja Colaborador en la página principal
+    const btnBajaColaborador = document.getElementById('btnBajaColaborador');
+    if (btnBajaColaborador) {
+        btnBajaColaborador.addEventListener('click', function(e) {
+            const isAuthenticated = {{ 'true' if g.usuario.autenticado else 'false' }};
+            const hasPermission = {{ 'true' if g.usuario.autenticado and g.usuario.area_id in [3, 4] else 'false' }};
+            
+            if (isAuthenticated && !hasPermission) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Mostrar modal de autenticación
+                const authModal = new bootstrap.Modal(document.getElementById('authModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                authModal.show();
+            }
+        });
+    }
+    
+    // Botón Cambio de Área en la página principal
+    const btnCambioArea = document.getElementById('btnCambioArea');
+    if (btnCambioArea) {
+        btnCambioArea.addEventListener('click', function(e) {
+            const isAuthenticated = {{ 'true' if g.usuario.autenticado else 'false' }};
+            const hasPermission = {{ 'true' if g.usuario.autenticado and g.usuario.area_id in [3, 4] else 'false' }};
+            
+            if (isAuthenticated && !hasPermission) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Mostrar modal de autenticación
+                const authModal = new bootstrap.Modal(document.getElementById('authModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                authModal.show();
+            }
+        });
+    }
+});
+
+// También necesitas agregar lógica para el modal de colaborador registrado
+// En tu archivo alta.js, asegúrate de tener esto para el modal de duplicado
+function mostrarModalDuplicado(colaborador) {
+    // Actualizar datos en el modal
+    document.getElementById('dupNombre').textContent = colaborador.nombre;
+    document.getElementById('dupRFC').textContent = colaborador.rfc;
+    document.getElementById('dupCorreo').textContent = colaborador.correo;
+    document.getElementById('dupArea').textContent = colaborador.area;
+    document.getElementById('dupPuesto').textContent = colaborador.puesto;
+    document.getElementById('dupEstado').textContent = colaborador.estado;
+    
+    // Mostrar el modal
+    const modal = new bootstrap.Modal(document.getElementById('modalUsuarioRegistrado'), {
+        backdrop: 'static',
+        keyboard: false
+    });
+    modal.show();
+}
+// Auto-eliminar mensajes flash
+setTimeout(() => {
+    document.querySelectorAll('.flash-message').forEach(alert => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    });
+}, 5000);
+
+// Auto-focus en el área select
+document.addEventListener('DOMContentLoaded', function() {
+    const areaSelect = document.getElementById('area');
+    if (areaSelect && areaSelect.value === '') {
+        areaSelect.focus();
+    }
+});
+
+
+</script>
+{% endblock %}

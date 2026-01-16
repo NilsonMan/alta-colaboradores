@@ -1,9 +1,10 @@
-import os  # <-- AGREGAR ESTO AL INICIO
+import os
 import sys
 import time
 import hashlib
 import logging
 import re
+import requests 
 from datetime import datetime, date, timedelta
 from contextlib import contextmanager
 from functools import wraps
@@ -73,6 +74,9 @@ class Config:
     # Dashboard - ACTUALIZADO SEGÚN TU ESTRUCTURA
     AREA_COMERCIAL_ID = 2  # CAMBIADO: area_id = 2 es comercial (no 5)
     RECLUTADOR_COMERCIAL_IDS = [5]  # reclutador_id = 5 es comercial
+    
+    # Webhook URL para notificaciones (AGREGADO)
+    WEBHOOK_URL = "https://default0b7c0ca9d73a42a2b3bb59b55deb67.a0.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/646718e542c641c49f4daed2cd26c0b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Wm3tX5Neq_YsX7XZhR-Y4fR2w__PGZlmhf3UJwsxrEU"
 
 # ======================================
 # INICIALIZACIÓN FLASK
@@ -693,8 +697,8 @@ def admin_usuarios():
         areas = db.query(Area).order_by(Area.nombre).all()
         
         return render_template("admin_usuarios.html", 
-                             usuarios=usuarios, 
-                             areas=areas)
+                            usuarios=usuarios, 
+                            areas=areas)
         
     except Exception as e:
         logger.error(f"Error en admin usuarios: {e}", exc_info=True)
@@ -872,19 +876,79 @@ def alta():
         return render_template("alta_colaborador.html", today=date.today().isoformat())
 
 def handle_alta_post(db):
-    """Maneja el POST del formulario de alta CON VALIDACIÓN RFC y redirige al dashboard."""
+    """Maneja el POST del formulario de alta CON VALIDACIÓN RFC."""
     try:
         # NUEVA VALIDACIÓN: Verificar RFC antes de procesar
         rfc = request.form.get("rfc", "").upper().strip()
+        curp = request.form.get("curp", "").upper().strip()
+        nss = request.form.get("nss", "").strip()
+        correo = request.form.get("correo", "").strip()
         
+        # Verificar duplicados
+        duplicados = []
+        
+        # Verificar RFC
         if rfc:
-            # Verificar si RFC ya existe
             existe_rfc = db.query(Colaborador).filter_by(rfc=rfc).first()
             if existe_rfc:
-                flash(f"❌ El RFC <strong>{rfc}</strong> ya está registrado para el colaborador: {existe_rfc.nombre} {existe_rfc.apellido}", "error")
+                duplicados.append({
+                    'campo': 'RFC',
+                    'valor': rfc,
+                    'colaborador': f"{existe_rfc.nombre} {existe_rfc.apellido}"
+                })
+        
+        # Verificar CURP
+        if curp:
+            existe_curp = db.query(Colaborador).filter_by(curp=curp).first()
+            if existe_curp:
+                duplicados.append({
+                    'campo': 'CURP',
+                    'valor': curp,
+                    'colaborador': f"{existe_curp.nombre} {existe_curp.apellido}"
+                })
+        
+        # Verificar NSS
+        if nss:
+            existe_nss = db.query(Colaborador).filter_by(nss=nss).first()
+            if existe_nss:
+                duplicados.append({
+                    'campo': 'NSS',
+                    'valor': nss,
+                    'colaborador': f"{existe_nss.nombre} {existe_nss.apellido}"
+                })
+        
+        # Verificar Correo
+        if correo:
+            existe_correo = db.query(Colaborador).filter_by(correo=correo).first()
+            if existe_correo:
+                duplicados.append({
+                    'campo': 'Correo',
+                    'valor': correo,
+                    'colaborador': f"{existe_correo.nombre} {existe_correo.apellido}"
+                })
+        
+        # Si hay duplicados, retornar error JSON
+        if duplicados:
+            # Crear mensajes de error
+            mensajes = []
+            for dup in duplicados:
+                mensajes.append(f"❌ {dup['campo']}: <strong>{dup['valor']}</strong> ya está registrado para el colaborador: {dup['colaborador']}")
+            
+            # Si es una petición AJAX, retornar JSON
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    'success': False,
+                    'error': 'Datos duplicados encontrados',
+                    'duplicados': duplicados,
+                    'message': '<br>'.join(mensajes)
+                }), 400
+            else:
+                # Para peticiones normales, usar flash y redirigir
+                for mensaje in mensajes:
+                    flash(mensaje, 'error')
                 return redirect(url_for('alta'))
         
-        # Resto del código existente...
+        # Resto del código de validación de campos requeridos...
         required_fields = ['area', 'nombre', 'apellido', 'correo', 'rfc', 'curp', 'nss', 'fecha_alta']
         missing_fields = []
         
@@ -893,54 +957,46 @@ def handle_alta_post(db):
                 missing_fields.append(field)
         
         if missing_fields:
-            flash(f"❌ Campos requeridos faltantes: {', '.join(missing_fields)}", "error")
-            return redirect(url_for('alta'))
+            error_msg = f"❌ Campos requeridos faltantes: {', '.join(missing_fields)}"
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'error': error_msg}), 400
+            else:
+                flash(error_msg, "error")
+                return redirect(url_for('alta'))
         
-        # Validar datos únicos
-        rfc = request.form.get("rfc", "").upper()
-        curp = request.form.get("curp", "").upper()
-        nss = request.form.get("nss", "")
-        correo = request.form.get("correo", "")
-        
-        # Verificar duplicados
-        duplicados = []
-        
-        if db.query(Colaborador).filter_by(rfc=rfc).first():
-            duplicados.append(f"RFC: {rfc}")
-        
-        if db.query(Colaborador).filter_by(curp=curp).first():
-            duplicados.append(f"CURP: {curp}")
-        
-        if db.query(Colaborador).filter_by(nss=nss).first():
-            duplicados.append(f"NSS: {nss}")
-        
-        if db.query(Colaborador).filter_by(correo=correo).first():
-            duplicados.append(f"Correo: {correo}")
-        
-        if duplicados:
-            flash(f"❌ Datos duplicados encontrados: {', '.join(duplicados)}", "error")
-            return redirect(url_for('alta'))
-        
-        # Crear colaborador - MODIFICADO para obtener solo el ID
+        # Crear colaborador
         area_id = int(request.form.get("area"))
-        colaborador_id = crear_colaborador(db, area_id)  # <-- Ahora retorna solo el ID
+        colaborador_id = crear_colaborador(db, area_id)
         
-        # Obtener datos del colaborador para el mensaje flash
+        # Obtener datos del colaborador
         colaborador = db.query(Colaborador).get(colaborador_id)
         
-        flash(f"✅ Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> registrado exitosamente", "success")
+        # Enviar notificación
+        enviar_notificacion_slack(colaborador, db)
         
-        # REDIRIGIR AL DASHBOARD en lugar de volver al formulario
-        return redirect(url_for('dashboard'))
-        # Si quieres llevar el ID como parámetro (opcional):
-        # return redirect(url_for('dashboard', nuevo_colaborador_id=colaborador_id))
+        success_msg = f"✅ Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> registrado exitosamente"
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': True,
+                'message': success_msg,
+                'colaborador_id': colaborador_id,
+                'redirect': url_for('dashboard')
+            })
+        else:
+            flash(success_msg, "success")
+            return redirect(url_for('dashboard'))
         
     except Exception as e:
         db.rollback()
         logger.error(f"Error en alta POST: {e}", exc_info=True)
-        flash(f"❌ Error al registrar colaborador: {str(e)}", "error")
-        return redirect(url_for('alta'))
-
+        error_msg = f"❌ Error al registrar colaborador: {str(e)}"
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'error': error_msg}), 500
+        else:
+            flash(error_msg, "error")
+            return redirect(url_for('alta'))
 
 
 def crear_colaborador(db, area_id):
@@ -951,11 +1007,106 @@ def crear_colaborador(db, area_id):
     except ValueError:
         fecha_alta = date.today()
     
-    sueldo_str = request.form.get("sueldo", "0")
-    try:
-        sueldo = float(sueldo_str) if sueldo_str and sueldo_str.strip() else None
-    except ValueError:
-        sueldo = None
+    # OBTENER EL CORREO DEL COORDINADOR DEL ÁREA SELECCIONADA
+    area = db.query(Area).filter_by(id=area_id).first()
+    correo_coordinador = area.correo_coordinador if area else None
+    
+    # ============================================
+    # NUEVA LÓGICA PARA ÁREA COMERCIAL
+    # ============================================
+    puesto_id = None
+    rol_comercial = None
+    numero_comisiones = None
+    sueldo = None
+    
+    # Para área comercial
+    if area_id == app.config['AREA_COMERCIAL_ID']:
+        # Capturar el puesto seleccionado del formulario
+        puesto_id_val = request.form.get("puesto_comercial")
+        
+        if puesto_id_val and puesto_id_val.isdigit():
+            puesto_id = int(puesto_id_val)
+            
+            # Obtener nombre del puesto
+            puesto_obj = db.query(Puesto).filter_by(id=puesto_id).first()
+            if puesto_obj:
+                rol_comercial = puesto_obj.nombre
+                
+            # LÓGICA PARA NÚMERO DE COMISIONES Y SUELDO
+            numero_comisiones = request.form.get("numero_comisiones", "").strip()
+            if not numero_comisiones or numero_comisiones == "":
+                numero_comisiones = None
+            
+            # Si es Asesor (id 8), solo usar número de comisiones
+            if puesto_id == 8:
+                sueldo_str = None  # Asesor no tiene sueldo base
+                # Para asesor, también capturar rol comercial específico
+                rol_comercial_asesor = request.form.get("rol_comercial_select")
+                if rol_comercial_asesor:
+                    rol_comercial = rol_comercial_asesor
+            else:
+                # Para Dirección, Gerencia, Coordinación: capturar sueldo
+                sueldo_str = request.form.get("sueldo", "0")
+                try:
+                    sueldo = float(sueldo_str) if sueldo_str and sueldo_str.strip() else None
+                except ValueError:
+                    sueldo = None
+                    
+        else:
+            # Manejo para el select de texto (backward compatibility)
+            rol_comercial_select = request.form.get("rol_comercial_select")
+            if rol_comercial_select:
+                rol_comercial = rol_comercial_select
+                # Mapeo de nombres a IDs
+                puestos_map = {
+                    'Dirección': 5,
+                    'Gerencia': 6,
+                    'Coordinación': 7,
+                    'Asesor': 8,
+                    'Asesor Diamante': 9,
+                    'Asesor Externo': 10,
+                    'Asesor Interno': 11,
+                    'Inmobiliaria': 12,
+                    'Inmobiliaria Premium': 13
+                }
+                if rol_comercial in puestos_map:
+                    puesto_id = puestos_map[rol_comercial]
+                    
+                    # Aplicar misma lógica basada en puesto_id
+                    if puesto_id == 8:
+                        sueldo_str = None
+                    else:
+                        sueldo_str = request.form.get("sueldo", "0")
+                        try:
+                            sueldo = float(sueldo_str) if sueldo_str and sueldo_str.strip() else None
+                        except ValueError:
+                            sueldo = None
+                            
+                    numero_comisiones = request.form.get("numero_comisiones", "").strip()
+                    if not numero_comisiones or numero_comisiones == "":
+                        numero_comisiones = None
+    
+    else:
+        # Para otras áreas (lógica existente)
+        puesto_id_val = request.form.get("puesto")
+        if puesto_id_val and puesto_id_val.isdigit():
+            puesto_id = int(puesto_id_val)
+            puesto_obj = db.query(Puesto).filter_by(id=puesto_id).first()
+            if puesto_obj:
+                rol_comercial = puesto_obj.nombre
+        
+        sueldo_str = request.form.get("sueldo", "0")
+        try:
+            sueldo = float(sueldo_str) if sueldo_str and sueldo_str.strip() else None
+        except ValueError:
+            sueldo = None
+    
+    # ============================================
+    # VALIDAR Y LIMPIAR NÚMERO DE CUENTA
+    # ============================================
+    numero_cuenta = request.form.get("numero_cuenta", "").strip()
+    if numero_cuenta:
+        numero_cuenta = numero_cuenta.replace(" ", "")
     
     edad_str = request.form.get("edad")
     try:
@@ -963,15 +1114,11 @@ def crear_colaborador(db, area_id):
     except (ValueError, TypeError):
         edad = None
     
-    # OBTENER EL CORREO DEL COORDINADOR DEL ÁREA SELECCIONADA
-    area = db.query(Area).filter_by(id=area_id).first()
-    correo_coordinador = area.correo_coordinador if area else None
-    
     col = Colaborador(
         nombre=request.form.get("nombre", "").strip(),
         apellido=request.form.get("apellido", "").strip(),
         correo=request.form.get("correo", "").strip(),
-        correo_coordinador=correo_coordinador,  # ✅ NUEVO: Asignar correo del coordinador
+        correo_coordinador=correo_coordinador,
         edad=edad,
         estado_civil=request.form.get("estado_civil"),
         domicilio=request.form.get("domicilio"),
@@ -980,24 +1127,28 @@ def crear_colaborador(db, area_id):
         curp=request.form.get("curp", "").upper(),
         nss=request.form.get("nss", ""),
         fecha_alta=fecha_alta,
-        sueldo=sueldo,
+        sueldo=sueldo,  # Ahora puede ser None para Asesor
         comentarios=request.form.get("comentarios"),
-        rol_comercial=request.form.get("rol_comercial") if area_id == app.config['AREA_COMERCIAL_ID'] else None,
-        comisionista=request.form.get("comisionista") == "Sí" if area_id == app.config['AREA_COMERCIAL_ID'] else None,
+        
+        # Campos comerciales (nueva lógica)
+        rol_comercial=rol_comercial,
+        comisionista=area_id == app.config['AREA_COMERCIAL_ID'],
         metodo_pago=request.form.get("metodo_pago_string"),
         banco=request.form.get("banco_string"),
         reclutador=request.form.get("reclutador_string"),
-        metodo_pago_id=int(request.form.get("metodo_pago")) if request.form.get("metodo_pago") else None,
-        banco_id=int(request.form.get("banco")) if request.form.get("banco") else None,
-        reclutador_id=int(request.form.get("reclutador")) if request.form.get("reclutador") else None,
-        numero_cuenta=request.form.get("numero_cuenta"),
-        numero_comisiones=request.form.get("numero_comisiones"),
+        metodo_pago_id=int(request.form.get("metodo_pago")) if request.form.get("metodo_pago") and request.form.get("metodo_pago").isdigit() else None,
+        banco_id=int(request.form.get("banco")) if request.form.get("banco") and request.form.get("banco").isdigit() else None,
+        reclutador_id=int(request.form.get("reclutador")) if request.form.get("reclutador") and request.form.get("reclutador").isdigit() else None,
+        numero_cuenta=numero_cuenta,
+        numero_comisiones=numero_comisiones,  # Nuevo campo
+        
         tiene_infonavit=request.form.get("infonavit") == "Sí",
         infonavit_credito=request.form.get("infonavit_credito"),
         tiene_fonacot=request.form.get("fonacot") == "Sí",
         fonacot_credito=request.form.get("fonacot_credito"),
+        
         area_id=area_id,
-        puesto_id=int(request.form.get("puesto")) if request.form.get("puesto") else None,
+        puesto_id=puesto_id,
         baja=False,
         fecha_baja=None,
         motivo_baja=None
@@ -1008,7 +1159,6 @@ def crear_colaborador(db, area_id):
     
     agregar_relaciones(db, col)
     
-    # Guardar documentos
     try:
         guardar_documentos(db, col.id)
     except Exception as e:
@@ -1016,9 +1166,15 @@ def crear_colaborador(db, area_id):
     
     db.commit()
     
-    logger.info(f"✅ Colaborador creado: {col.nombre} {col.apellido} (ID: {col.id}) - Correo coordinador: {correo_coordinador}")
+    logger.info(f"[OK] Colaborador creado: {col.nombre} {col.apellido} (ID: {col.id})")
+    logger.info(f"     Rol comercial: {rol_comercial}")
+    logger.info(f"     Número de comisiones: {numero_comisiones}")
+    logger.info(f"     Puesto ID: {puesto_id}")
+    logger.info(f"     Sueldo: {sueldo}")
+    
     return col.id
 
+        
 def agregar_relaciones(db, colaborador):
     """Agrega recursos y programas al colaborador."""
     equipo_ids = request.form.getlist("equipo[]")
@@ -1076,6 +1232,93 @@ def guardar_documentos(db, colaborador_id):
                 fecha_subida=date.today()
             )
             db.add(doc)
+
+# ======================================
+# FUNCIÓN PARA ENVIAR NOTIFICACIÓN A SLACK (NUEVA)
+# ======================================
+def enviar_notificacion_slack(colaborador, db):
+    """
+    Envía una notificación a Microsoft Teams (Power Automate Webhook)
+    cuando se crea un nuevo colaborador.
+    """
+    try:
+        # -----------------------------
+        # Obtener información adicional
+        # -----------------------------
+        area_nombre = "N/A"
+        puesto_nombre = "N/A"
+
+        if colaborador.area:
+            area_nombre = colaborador.area.nombre
+
+        if colaborador.puesto_id:
+            puesto = db.query(Puesto).filter_by(id=colaborador.puesto_id).first()
+            if puesto:
+                puesto_nombre = puesto.nombre
+
+        # -----------------------------
+        # Formatear datos
+        # -----------------------------
+        fecha_alta_str = (
+            colaborador.fecha_alta.strftime("%d/%m/%Y")
+            if colaborador.fecha_alta
+            else "N/A"
+        )
+
+        sueldo_str = (
+            f"${colaborador.sueldo:,.2f}"
+            if colaborador.sueldo is not None
+            else "N/A"
+        )
+
+        # -----------------------------
+        # Crear mensaje (CON EMOJIS)
+        # -----------------------------
+        mensaje = (
+            f"👤 *Colaborador:* {colaborador.nombre} {colaborador.apellido}\n"
+            f"🏢 *Área:* {area_nombre}\n"
+            f"💼 *Puesto:* {puesto_nombre}\n"
+            f"📅 *Fecha de alta:* {fecha_alta_str}\n"
+            f"💰 *Sueldo:* {sueldo_str}\n"
+            f"📧 *Correo:* {colaborador.correo}"
+        )
+
+        data = {
+            "titulo": "🚨 Solicitud de Alta de Colaborador",
+            "mensaje": mensaje
+        }
+
+        # -----------------------------
+        # Enviar al webhook de Teams
+        # -----------------------------
+        webhook_url = app.config.get("WEBHOOK_URL")
+
+        if not webhook_url or not webhook_url.startswith("https://"):
+            logger.warning("[WARNING] URL de webhook no configurada o inválida")
+            return
+
+        response = requests.post(webhook_url, json=data, timeout=10)
+
+        # -----------------------------
+        # Teams responde 202 = OK
+        # -----------------------------
+        if response.status_code in (200, 202):
+            logger.info(
+                f"[OK] Notificación enviada a Teams "
+                f"(Status {response.status_code}) - "
+                f"{colaborador.nombre} {colaborador.apellido}"
+            )
+        else:
+            logger.error(
+                f"[ERROR] Error al enviar notificación a Teams: "
+                f"{response.status_code} - {response.text}"
+            )
+
+    except Exception as e:
+        logger.error(
+            f"[ERROR] Excepción al enviar notificación a Teams: {e}",
+            exc_info=True
+        )
 
 # ======================================
 # RUTA PARA PÁGINA DE CAMBIO DE ÁREA
@@ -1430,7 +1673,7 @@ def api_reclutadores_comercial():
     except Exception as e:
         logger.error(f"Error in reclutadores comercial API: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 500
-     
+    
 # ======================================
 # API PARA GENERAR CORREO (MEJORADA)
 # ======================================
@@ -2949,6 +3192,9 @@ def alta_colaborador_post():
         # Obtener datos del colaborador para el mensaje flash
         colaborador = db.query(Colaborador).get(colaborador_id)
         
+        # ENVIAR NOTIFICACIÓN A SLACK DESPUÉS DE CREAR EL COLABORADOR
+        enviar_notificacion_slack(colaborador, db)
+        
         # Mensaje de éxito con el nombre del colaborador
         flash(f"✅ Colaborador <strong>{colaborador.nombre} {colaborador.apellido}</strong> registrado exitosamente", "success")
         
@@ -3140,15 +3386,15 @@ def api_colaborador_detalle(colaborador_id):
         }
         
         # Log para depuración
-        logger.info(f"✅ Detalles cargados para colaborador ID: {colaborador_id}")
-        logger.info(f"📋 Campos cargados: NSS={'SÍ' if col.nss else 'NO'}, "
-                   f"Domicilio={'SÍ' if col.domicilio else 'NO'}, "
-                   f"Comentarios={'SÍ' if col.comentarios else 'NO'}")
+        logger.info(f"[OK] Detalles cargados para colaborador ID: {colaborador_id}")
+        logger.info(f"[INFO] Campos cargados: NSS={'SÍ' if col.nss else 'NO'}, "
+                f"Domicilio={'SÍ' if col.domicilio else 'NO'}, "
+                f"Comentarios={'SÍ' if col.comentarios else 'NO'}")
         
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"❌ Error obteniendo detalle de colaborador {colaborador_id}: {e}", exc_info=True)
+        logger.error(f"[ERROR] Error obteniendo detalle de colaborador {colaborador_id}: {e}", exc_info=True)
         return jsonify({
             "success": False, 
             "error": f"Error al obtener detalles del colaborador: {str(e)}"
@@ -3205,14 +3451,14 @@ def api_colaborador_por_id(colaborador_id):
             
             # NUEVOS CAMPOS DE CAMBIO DE ÁREA
             "fecha_ultimo_cambio_area": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
-                                       if colaborador.fecha_ultimo_cambio_area else "N/A",
+                                    if colaborador.fecha_ultimo_cambio_area else "N/A",
             "motivo_ultimo_cambio_area": colaborador.motivo_ultimo_cambio_area or "N/A",
             "area_anterior": area_anterior_nombre,
             "area_anterior_id": colaborador.area_anterior_id or "N/A",
             
             # Para compatibilidad
             "ultimo_cambio": colaborador.fecha_ultimo_cambio_area.strftime("%Y-%m-%d") 
-                           if colaborador.fecha_ultimo_cambio_area else "N/A"
+                        if colaborador.fecha_ultimo_cambio_area else "N/A"
         })
         
     except Exception as e:

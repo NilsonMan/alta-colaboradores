@@ -1,0 +1,769 @@
+{% extends "base.html" %}
+
+{% block title %}Baja de Colaborador{% endblock %}
+
+{% block head %}
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --text-color: #333333;
+        }
+
+        .dark {
+            --primary: #34495e;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --card-bg: #1a252f;
+            --border-color: #2c3e50;
+            --text-color: #ecf0f1;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+        
+        .colaborador-info {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--warning);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.15);
+            border-color: rgba(243, 156, 18, 0.3);
+            color: var(--text-color);
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: var(--text-color);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        /* Modal para múltiples resultados */
+        .modal-dark .modal-content {
+            background-color: #1a252f;
+            color: #ecf0f1;
+        }
+        
+        .modal-dark .modal-header {
+            border-bottom-color: #2c3e50;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        .modal-dark .modal-footer {
+            border-top-color: #2c3e50;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        .modal-dark .table {
+            color: #ecf0f1;
+            background-color: transparent;
+        }
+        
+        .modal-dark .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <!-- Encabezado -->
+        <div class="text-center mb-5 fade-in">
+            <h2 class="fw-bold mb-3" style="color: #e74c3c">
+                <i class="bi bi-person-x me-2"></i>Baja de Colaborador
+            </h2>
+            <p class="text-muted">Procesa la baja de un colaborador del sistema</p>
+        </div>
+        
+        <!-- Buscador de colaborador -->
+        <div class="search-container fade-in">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-search me-2"></i>Buscar Colaborador a Dar de Baja
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Buscar por:</label>
+                        <select id="searchType" class="form-select mb-3">
+                            <option value="rfc">RFC</option>
+                            <option value="nombre">Nombre</option>
+                            <option value="correo">Correo</option>
+                        </select>
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control" 
+                                   placeholder="Ingresa el RFC del colaborador">
+                            <button class="btn btn-primary" id="btnBuscar">
+                                <i class="bi bi-search me-1"></i>Buscar
+                            </button>
+                        </div>
+                        <div class="form-text mt-2">
+                            <small>Ingresa el RFC exacto del colaborador (12-13 caracteres)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información del colaborador -->
+        <div id="colaboradorInfo" class="d-none fade-in">
+            <div class="colaborador-info">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 id="colaboradorNombre">-</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>RFC:</strong> <span id="infoRFC">-</span></p>
+                                <p class="mb-2"><strong>CURP:</strong> <span id="infoCURP">-</span></p>
+                                <p class="mb-2"><strong>Correo:</strong> <span id="infoCorreo">-</span></p>
+                                <p class="mb-2"><strong>ID:</strong> <span id="infoId">-</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Estado:</strong> 
+                                    <span class="badge" id="infoEstado">-</span>
+                                </p>
+                                <p class="mb-2"><strong>Fecha de alta:</strong> <span id="infoFechaAlta">-</span></p>
+                                <p class="mb-2"><strong>Área actual:</strong> <span id="infoAreaActual">-</span></p>
+                                <p class="mb-0"><strong>Puesto actual:</strong> <span id="infoPuestoActual">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div id="alertaBaja" class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            <strong>ATENCIÓN:</strong> Este colaborador será dado de baja
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de baja -->
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title mb-4 text-danger">
+                        <i class="bi bi-person-x me-2"></i>Datos de la Baja
+                    </h5>
+                    
+                    <form id="formBaja">
+                        <input type="hidden" id="colaboradorId" name="colaborador_id">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Fecha de baja *</label>
+                                <input type="date" id="fechaBaja" name="fecha_baja" 
+                                       class="form-control" required>
+                                <div class="invalid-feedback">La fecha de baja es requerida</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Motivo de la baja *</label>
+                                <select id="motivoBaja" name="motivo" class="form-select" required>
+                                    <option value="">Selecciona un motivo</option>
+                                    <option value="Renuncia voluntaria">Renuncia voluntaria</option>
+                                    <option value="Despido">Despido</option>
+                                    <option value="Término de contrato">Término de contrato</option>
+                                    <option value="Jubilación">Jubilación</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div class="invalid-feedback">Por favor selecciona un motivo</div>
+                            </div>
+                        </div>
+                        
+                        <!-- AQUÍ VAN LOS COMENTARIOS ADICIONALES -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Comentarios adicionales</label>
+                                <textarea id="comentariosBaja" name="comentarios" class="form-control" 
+                                          rows="3" placeholder="Agrega comentarios adicionales sobre la baja..."></textarea>
+                                <div class="form-text">
+                                    <strong>Estos comentarios se guardarán en el campo "comentarios" de la base de datos.</strong><br>
+                                    Se agregarán con el prefijo "[BAJA]" al historial del colaborador.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Confirmación -->
+                        <div class="alert alert-danger mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmarBaja">
+                                <label class="form-check-label fw-bold" for="confirmarBaja">
+                                    Confirmo que deseo dar de baja al colaborador <span id="confirmNombre">-</span>. 
+                                    Esta acción no se puede deshacer.
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Botones -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" id="btnCancelar">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-danger px-4" id="btnProcesarBaja" disabled>
+                                    <i class="bi bi-person-x me-1"></i>Procesar Baja
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sin resultados -->
+        <div id="sinResultados" class="text-center d-none mt-5 fade-in">
+            <i class="bi bi-person-x" style="font-size: 4rem; color: #95a5a6;"></i>
+            <h4 class="mt-3">No se encontró el colaborador</h4>
+            <p class="text-muted">Verifica los datos e intenta nuevamente</p>
+            <button class="btn btn-warning mt-2" onclick="resetSearch()">
+                <i class="bi bi-arrow-clockwise me-1"></i>Intentar de nuevo
+            </button>
+        </div>
+        
+        <!-- Ya dado de baja -->
+        <div id="yaBaja" class="text-center d-none mt-5 fade-in">
+            <i class="bi bi-person-check" style="font-size: 4rem; color: #27ae60;"></i>
+            <h4 class="mt-3">El colaborador ya está dado de baja</h4>
+            <p class="text-muted" id="yaBajaMensaje">No es necesario procesar la baja nuevamente</p>
+            <button class="btn btn-warning mt-2" onclick="resetSearch()">
+                <i class="bi bi-arrow-clockwise me-1"></i>Buscar otro colaborador
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar fecha actual
+            const today = new Date().toISOString().split('T')[0];
+            const fechaBaja = document.getElementById('fechaBaja');
+            if (fechaBaja) {
+                fechaBaja.value = today;
+                fechaBaja.max = today;
+            }
+            
+            // Configurar búsqueda
+            setupSearch();
+            
+            // Configurar formulario
+            setupForm();
+        });
+        
+        function resetSearch() {
+            document.getElementById('colaboradorInfo').classList.add('d-none');
+            document.getElementById('sinResultados').classList.add('d-none');
+            document.getElementById('yaBaja').classList.add('d-none');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').focus();
+            document.getElementById('confirmarBaja').checked = false;
+            document.getElementById('btnProcesarBaja').disabled = true;
+        }
+        
+        function setupSearch() {
+            const searchType = document.getElementById('searchType');
+            const searchInput = document.getElementById('searchInput');
+            const btnBuscar = document.getElementById('btnBuscar');
+            
+            // Configurar placeholder inicial
+            updatePlaceholder();
+            
+            // Cambiar placeholder según tipo
+            searchType.addEventListener('change', updatePlaceholder);
+            
+            // Buscar con Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnBuscar.click();
+                }
+            });
+            
+            // Botón buscar
+            btnBuscar.addEventListener('click', async function() {
+                const tipo = searchType.value;
+                const valor = searchInput.value.trim();
+                
+                if (!valor) {
+                    showAlert('Ingresa un valor para buscar', 'warning');
+                    return;
+                }
+                
+                await buscarColaborador(tipo, valor);
+            });
+            
+            function updatePlaceholder() {
+                const placeholders = {
+                    'rfc': 'Ingresa el RFC (12-13 caracteres)',
+                    'nombre': 'Ingresa el nombre (búsqueda aproximada)',
+                    'correo': 'Ingresa el correo exacto'
+                };
+                searchInput.placeholder = placeholders[searchType.value] || 'Ingresa el término de búsqueda';
+            }
+        }
+        
+        async function buscarColaborador(tipo, valor) {
+            const btnBuscar = document.getElementById('btnBuscar');
+            const colaboradorInfo = document.getElementById('colaboradorInfo');
+            const sinResultados = document.getElementById('sinResultados');
+            const yaBaja = document.getElementById('yaBaja');
+            
+            // Ocultar todas las secciones primero
+            colaboradorInfo.classList.add('d-none');
+            sinResultados.classList.add('d-none');
+            yaBaja.classList.add('d-none');
+            
+            // Mostrar carga
+            btnBuscar.disabled = true;
+            btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+            
+            try {
+                let url;
+                
+                if (tipo === 'rfc') {
+                    url = `/api/verificar-rfc?rfc=${encodeURIComponent(valor.toUpperCase())}`;
+                } else if (tipo === 'nombre') {
+                    url = `/api/buscar-colaboradores?q=${encodeURIComponent(valor)}`;
+                } else if (tipo === 'correo') {
+                    url = `/api/buscar-colaborador?campo=correo&valor=${encodeURIComponent(valor)}`;
+                }
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Error en la respuesta: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (tipo === 'rfc') {
+                    if (data.existe) {
+                        if (data.colaborador.baja) {
+                            // Ya está dado de baja
+                            mostrarYaBaja(data.colaborador);
+                        } else {
+                            // Está activo, mostrar formulario de baja
+                            mostrarInformacionColaborador(data.colaborador);
+                        }
+                    } else {
+                        mostrarSinResultados();
+                    }
+                } else if (tipo === 'nombre') {
+                    if (data.resultados && data.resultados.length === 1) {
+                        // Si solo hay un resultado, obtener detalles completos
+                        await buscarPorId(data.resultados[0].id);
+                    } else if (data.resultados && data.resultados.length > 1) {
+                        mostrarResultadosMultiples(data.resultados);
+                    } else {
+                        mostrarSinResultados();
+                    }
+                } else if (tipo === 'correo') {
+                    if (data.existe) {
+                        if (data.colaborador.baja) {
+                            mostrarYaBaja(data.colaborador);
+                        } else {
+                            await buscarPorId(data.colaborador.id);
+                        }
+                    } else {
+                        mostrarSinResultados();
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error buscando colaborador:', error);
+                showAlert(error.message || 'Error al buscar colaborador', 'danger');
+                mostrarSinResultados();
+            } finally {
+                btnBuscar.disabled = false;
+                btnBuscar.innerHTML = '<i class="bi bi-search me-1"></i>Buscar';
+            }
+        }
+        
+        async function buscarPorId(id) {
+            try {
+                const response = await fetch(`/api/colaborador/${id}`);
+                const data = await response.json();
+                
+                if (data && !data.error) {
+                    // Verificar si ya está dado de baja
+                    if (data.baja) {
+                        mostrarYaBaja(data);
+                    } else {
+                        mostrarInformacionColaborador(data);
+                    }
+                } else {
+                    mostrarSinResultados();
+                }
+            } catch (error) {
+                console.error('Error buscando por ID:', error);
+                mostrarSinResultados();
+            }
+        }
+        
+        function mostrarInformacionColaborador(col) {
+            const colaboradorInfo = document.getElementById('colaboradorInfo');
+            const sinResultados = document.getElementById('sinResultados');
+            const yaBaja = document.getElementById('yaBaja');
+            
+            colaboradorInfo.classList.remove('d-none');
+            sinResultados.classList.add('d-none');
+            yaBaja.classList.add('d-none');
+            
+            // Actualizar información
+            document.getElementById('colaboradorNombre').textContent = col.nombre || '-';
+            document.getElementById('infoRFC').textContent = col.rfc || '-';
+            document.getElementById('infoCURP').textContent = col.curp || '-';
+            document.getElementById('infoCorreo').textContent = col.correo || '-';
+            document.getElementById('infoId').textContent = col.id || '-';
+            
+            const estadoBadge = document.getElementById('infoEstado');
+            estadoBadge.textContent = 'Activo';
+            estadoBadge.className = 'badge bg-success';
+            
+            document.getElementById('infoFechaAlta').textContent = col.fecha_alta || '-';
+            document.getElementById('infoAreaActual').textContent = col.area || '-';
+            document.getElementById('infoPuestoActual').textContent = col.puesto || '-';
+            
+            // ID para el formulario
+            document.getElementById('colaboradorId').value = col.id;
+            
+            // Actualizar nombre en confirmación
+            document.getElementById('confirmNombre').textContent = col.nombre;
+            
+            showAlert('Colaborador encontrado. Completa los datos de la baja.', 'warning');
+            
+            // Scroll a la información
+            colaboradorInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function mostrarYaBaja(col) {
+            const yaBaja = document.getElementById('yaBaja');
+            const colaboradorInfo = document.getElementById('colaboradorInfo');
+            const sinResultados = document.getElementById('sinResultados');
+            
+            yaBaja.classList.remove('d-none');
+            colaboradorInfo.classList.add('d-none');
+            sinResultados.classList.add('d-none');
+            
+            // Actualizar información en el mensaje
+            let mensaje = 'No es necesario procesar la baja nuevamente.';
+            if (col.fecha_baja) {
+                const fechaBaja = new Date(col.fecha_baja).toLocaleDateString('es-MX');
+                mensaje = `El colaborador fue dado de baja el ${fechaBaja}. No es necesario procesar la baja nuevamente.`;
+            }
+            
+            if (col.motivo_baja) {
+                mensaje += ` Motivo: ${col.motivo_baja}`;
+            }
+            
+            document.getElementById('yaBajaMensaje').textContent = mensaje;
+        }
+        
+        function mostrarSinResultados() {
+            document.getElementById('colaboradorInfo').classList.add('d-none');
+            document.getElementById('sinResultados').classList.remove('d-none');
+            document.getElementById('yaBaja').classList.add('d-none');
+        }
+        
+        // FUNCIÓN FALTANTE: Para mostrar múltiples resultados
+        function mostrarResultadosMultiples(resultados) {
+            const isDark = document.body.classList.contains('dark');
+            
+            const modalHTML = `
+                <div class="modal fade" id="modalResultadosBaja" tabindex="-1" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-lg ${isDark ? 'modal-dark' : ''}">
+                        <div class="modal-content ${isDark ? 'modal-dark' : ''}">
+                            <div class="modal-header ${isDark ? 'bg-dark text-light' : ''}">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-people me-2"></i>Selecciona un colaborador
+                                </h5>
+                                <button type="button" class="btn-close ${isDark ? 'btn-close-white' : ''}" 
+                                        data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Se encontraron ${resultados.length} resultados similares:</p>
+                                <div class="table-responsive">
+                                    <table class="table table-hover ${isDark ? 'table-dark' : ''}">
+                                        <thead class="${isDark ? 'table-dark' : ''}">
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Correo</th>
+                                                <th>Área</th>
+                                                <th>Estado</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${resultados.map(col => {
+                                                const estaActivo = col.activo;
+                                                
+                                                return `
+                                                <tr>
+                                                    <td>${escapeHtml(col.nombre_completo || 'N/A')}</td>
+                                                    <td>${escapeHtml(col.correo || 'N/A')}</td>
+                                                    <td>${escapeHtml(col.area || 'N/A')}</td>
+                                                    <td>
+                                                        <span class="badge ${estaActivo ? 'bg-success' : 'bg-danger'}">
+                                                            ${estaActivo ? 'Activo' : 'Baja'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-danger" 
+                                                                onclick="seleccionarColaboradorModalBaja(${col.id})">
+                                                            <i class="bi bi-person-x"></i> Dar de baja
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer ${isDark ? 'bg-dark text-light' : ''}">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Crear modal temporal
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            
+            const modal = new bootstrap.Modal(document.getElementById('modalResultadosBaja'));
+            modal.show();
+            
+            modalDiv.querySelector('.modal').addEventListener('hidden.bs.modal', function() {
+                modalDiv.remove();
+            });
+        }
+        
+        // Función global para seleccionar desde el modal (BAJA)
+        window.seleccionarColaboradorModalBaja = function(id) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalResultadosBaja'));
+            if (modal) modal.hide();
+            
+            buscarPorId(id);
+        };
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function setupForm() {
+            const formBaja = document.getElementById('formBaja');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const confirmarBaja = document.getElementById('confirmarBaja');
+            const btnProcesarBaja = document.getElementById('btnProcesarBaja');
+            
+            // Habilitar/deshabilitar botón de procesar baja
+            confirmarBaja.addEventListener('change', function() {
+                btnProcesarBaja.disabled = !this.checked;
+            });
+            
+            // Validar y enviar formulario
+            formBaja.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validarFormulario()) {
+                    return;
+                }
+                
+                await procesarBaja();
+            });
+            
+            // Cancelar
+            btnCancelar.addEventListener('click', function() {
+                if (confirm('¿Estás seguro de cancelar la baja?')) {
+                    resetSearch();
+                }
+            });
+        }
+        
+        function validarFormulario() {
+            let valido = true;
+            const form = document.getElementById('formBaja');
+            
+            // Limpiar validaciones previas
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            
+            // Validar campos requeridos
+            const camposRequeridos = form.querySelectorAll('[required]');
+            camposRequeridos.forEach(campo => {
+                if (!campo.value.trim()) {
+                    campo.classList.add('is-invalid');
+                    valido = false;
+                }
+            });
+            
+            // Validar fecha (no futura)
+            const fechaInput = document.getElementById('fechaBaja');
+            const hoy = new Date().toISOString().split('T')[0];
+            if (fechaInput.value > hoy) {
+                fechaInput.classList.add('is-invalid');
+                showAlert('La fecha de baja no puede ser futura', 'warning');
+                valido = false;
+            }
+            
+            // Validar confirmación
+            const confirmarCheckbox = document.getElementById('confirmarBaja');
+            if (!confirmarCheckbox.checked) {
+                showAlert('Debes confirmar la baja marcando la casilla', 'warning');
+                valido = false;
+            }
+            
+            return valido;
+        }
+        
+        async function procesarBaja() {
+            const btnProcesar = document.getElementById('btnProcesarBaja');
+            const form = document.getElementById('formBaja');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Validar que se haya seleccionado un colaborador
+            if (!data.colaborador_id) {
+                showAlert('Primero debes buscar y seleccionar un colaborador', 'warning');
+                return;
+            }
+            
+            // Mostrar carga
+            btnProcesar.disabled = true;
+            btnProcesar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...';
+            
+            try {
+                const response = await fetch('/api/procesar-baja', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        colaborador_id: data.colaborador_id,
+                        motivo: data.motivo,
+                        fecha_baja: data.fecha_baja,
+                        comentarios: data.comentarios  // <-- AQUÍ VAN LOS COMENTARIOS ADICIONALES
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('¡Baja procesada correctamente!', 'success');
+                    
+                    // Redirigir después de 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 2000);
+                } else {
+                    showAlert(result.error || 'Error al procesar la baja', 'danger');
+                    btnProcesar.disabled = false;
+                    btnProcesar.innerHTML = '<i class="bi bi-person-x me-1"></i>Procesar Baja';
+                }
+                
+            } catch (error) {
+                console.error('Error procesando baja:', error);
+                showAlert('Error de conexión al procesar la baja', 'danger');
+                btnProcesar.disabled = false;
+                btnProcesar.innerHTML = '<i class="bi bi-person-x me-1"></i>Procesar Baja';
+            }
+        }
+        
+        function showAlert(message, type = 'info') {
+            const icons = {
+                'success': 'check-circle',
+                'warning': 'exclamation-triangle',
+                'danger': 'exclamation-circle',
+                'info': 'info-circle'
+            };
+            
+            const titles = {
+                'success': 'Éxito',
+                'warning': 'Advertencia',
+                'danger': 'Error',
+                'info': 'Información'
+            };
+            
+            const textClass = type === 'warning' ? 'text-dark' : 'text-white';
+            
+            const toastHTML = `
+                <div class="toast" role="alert">
+                    <div class="toast-header bg-${type} ${textClass}">
+                        <i class="bi bi-${icons[type]} me-2"></i>
+                        <strong class="me-auto">${titles[type]}</strong>
+                        <button type="button" class="btn-close ${type === 'warning' ? '' : 'btn-close-white'}" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            const container = document.getElementById('toastContainer');
+            container.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastEl = container.lastElementChild;
+            const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+            toast.show();
+            
+            // Remover toast después de ocultarse
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
+    </script>
+{% endblock %}
